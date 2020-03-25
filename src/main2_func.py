@@ -25,6 +25,10 @@ transition_airway = np.array(transition_airway, dtype = np.float32)
 transition_matrix = (transition_railway + transition_airway).astype(int)
 
 
+####
+# ALL parameters from here
+
+
 #  from Mukhamet Parameters
 param_br = 0.0*np.ones(nodes_num)           # Daily birth rate
 param_dr = 0.0*np.ones(nodes_num)           # Daily mortality rate except infected people
@@ -50,7 +54,7 @@ param_gamma_mor2 = 0.1*np.ones(nodes_num) # Severe Infected (Not Hospitalized) t
 param_gamma_im = 0.9*np.ones(nodes_num)      # Infected to Recovery Immunized transition probability
 
 param_dt = 1/24*np.ones(nodes_num)               # Sampling time in days (1/24 corresponds to one hour)
-param_sim_len = 10*np.ones(nodes_num)            # Length of simulation in days
+param_sim_len = 5*np.ones(nodes_num)            # Length of simulation in days
 
 param_t_exp = 5*np.ones(nodes_num)             # Incubation period (The period from the start of incubation to the end of the incubation state
 param_t_inf = 8*np.ones(nodes_num)             # Infection period (The period from the start of infection to the end of the infection state
@@ -85,6 +89,10 @@ param_num_sim = int(param_sim_len[0] / param_dt[0]) + 1       # Number of simula
 param_dt_transition = 1/2            # Sampling time for transition in days (1/2 corresponds to 12 hour)
 param_static_types = ['Birth', 'Dead']         # States not subject to transition
 param_freq_transition  = int(param_dt_transition/param_dt[0])
+
+
+####
+# Till here we need from sliders
 
 transition_matrix = transition_matrix
 params_network = [param_num_sim, param_dt_transition, param_static_types, transition_matrix, nodes_population]
@@ -154,6 +162,7 @@ def simulate_network(params_node, inits_node, params_network, nodes_old, sim_ite
     for iter in range(param_num_sim):
         for i_node in range(nodes_num):
             states_arr_plot[iter, i_node, 0] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_vac)
+            print(states_arr_plot[iter, i_node, 0])
             states_arr_plot[iter, i_node, 1] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_inf)
             states_arr_plot[iter, i_node, 2] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_exp)
             states_arr_plot[iter, i_node, 3] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_sin)
@@ -165,18 +174,17 @@ def simulate_network(params_node, inits_node, params_network, nodes_old, sim_ite
     print('hi ------', states_arr_plot.shape)
 
 
-    return nodes, states_arr_plot, w
+    return nodes, states_arr_plot
 
-
+####
+# Mukhamet , you need this part to run
 nodes_old = []
-
 for i in range(3):
-    new_nodes, new_plot, w  = simulate_network(params_node, inits_node, params_network, nodes_old, i)
+    new_nodes, new_plot = simulate_network(params_node, inits_node, params_network, nodes_old, i)
     nodes_old = new_nodes
 
-print('finish', new_plot.shape)
+####
 
-new_plot.shape
 
 time_arr = np.linspace(0, new_nodes[0].param_num_sim, new_nodes[0].param_num_sim)*new_nodes[0].param_dt
 state_sus = new_plot[:, 0,0]
@@ -187,7 +195,7 @@ state_qua = new_plot[:, 0,0]
 state_imm = new_plot[:, 0,0]
 state_dea = new_plot[:, 0,0]
 
-plt.plot(time_arr, w, label = 'Susceptible')
+plt.plot(time_arr, state_sus, label = 'Susceptible')
 plt.plot(time_arr, state_exp, label = 'Exposed')
 plt.plot(time_arr, state_qua, label = 'Quarantined')
 plt.plot(time_arr, state_inf, label = 'Infected')
@@ -199,5 +207,34 @@ plt.ylabel("Population")
 plt.legend(loc="upper right")
 plt.show()
 
-#if __name__ == '__main__':
-#    simulate_network(params_node, inits_node, params_network, nodes_old)
+
+'''
+if __name__ == '__main__':
+
+    for i in range(3):
+        new_nodes, new_plot = simulate_network(params_node, inits_node, params_network, nodes_old, i)
+        nodes_old = new_nodes
+
+
+    time_arr = np.linspace(0, new_nodes[0].param_num_sim, new_nodes[0].param_num_sim)*new_nodes[0].param_dt
+    state_sus = new_plot[:, 0,0]
+    state_exp = new_plot[:, 0,0]
+    state_inf = new_plot[:, 0,0]
+    state_sin = new_plot[:, 0,0]
+    state_qua = new_plot[:, 0,0]
+    state_imm = new_plot[:, 0,0]
+    state_dea = new_plot[:, 0,0]
+
+    plt.plot(time_arr, state_sus, label = 'Susceptible')
+    plt.plot(time_arr, state_exp, label = 'Exposed')
+    plt.plot(time_arr, state_qua, label = 'Quarantined')
+    plt.plot(time_arr, state_inf, label = 'Infected')
+    plt.plot(time_arr, state_sin, label = 'Severe Infected')
+    plt.plot(time_arr, state_imm, label = 'Immunized')
+    plt.plot(time_arr, state_dea, label = 'Dead')
+    plt.xlabel("Day")
+    plt.ylabel("Population")
+    plt.legend(loc="upper right")
+    plt.show()
+
+'''
