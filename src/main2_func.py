@@ -9,7 +9,7 @@ import copy
 import time
 import matplotlib.pyplot as plt
 
-nodes_num = 17
+nodes_num = 1
 
 # load population data
 nodes_population = list(csv.reader(open('../data/population.csv')))
@@ -54,7 +54,7 @@ param_gamma_mor2 = 0.1*np.ones(nodes_num) # Severe Infected (Not Hospitalized) t
 param_gamma_im = 0.9*np.ones(nodes_num)      # Infected to Recovery Immunized transition probability
 
 param_dt = 1/24*np.ones(nodes_num)               # Sampling time in days (1/24 corresponds to one hour)
-param_sim_len = 5*np.ones(nodes_num)            # Length of simulation in days
+param_sim_len = 10*np.ones(nodes_num)            # Length of simulation in days
 
 param_t_exp = 5*np.ones(nodes_num)             # Incubation period (The period from the start of incubation to the end of the incubation state
 param_t_inf = 8*np.ones(nodes_num)             # Infection period (The period from the start of infection to the end of the infection state
@@ -108,13 +108,10 @@ def simulate_network(params_node, inits_node, params_network, nodes_old, sim_ite
     # Start simulation
 
     param_num_sim = params_network[0]
-
     transition_matrix = params_network[3]
-
     static_states_types = params_network[2]
 
     params_node = params_node
-
     inits_node = inits_node
 
     # create nodes
@@ -139,7 +136,6 @@ def simulate_network(params_node, inits_node, params_network, nodes_old, sim_ite
 
     start = time.time()
 
-
     for ind in range(param_num_sim):
 
         #nodes = list(pool.map(process_node, nodes))
@@ -150,19 +146,15 @@ def simulate_network(params_node, inits_node, params_network, nodes_old, sim_ite
             print(ind)
             #static_states_indices = [0,1]
             #nodes = nodes_network.node_states_transition(nodes, transition_matrix)      # Update the state of every node due to transition
-        if ind == 0:
-             w = nodes_state_arr[:, 0, 1]
 
     end = time.time()
 
     print("Sim.time: {:.4f} sec".format(end - start))
     states_arr_plot = np.zeros((param_num_sim, nodes_num, 8))
 
-
     for iter in range(param_num_sim):
         for i_node in range(nodes_num):
             states_arr_plot[iter, i_node, 0] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_vac)
-            print(states_arr_plot[iter, i_node, 0])
             states_arr_plot[iter, i_node, 1] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_inf)
             states_arr_plot[iter, i_node, 2] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_exp)
             states_arr_plot[iter, i_node, 3] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_sin)
@@ -171,37 +163,50 @@ def simulate_network(params_node, inits_node, params_network, nodes_old, sim_ite
             states_arr_plot[iter, i_node, 6] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_sus)
             states_arr_plot[iter, i_node, 7] = nodes[i_node].states_x[nodes[0].param_num_states-1].sum()
 
-    print('hi ------', states_arr_plot.shape)
-
-
     return nodes, states_arr_plot
 
 ####
 # Mukhamet , you need this part to run
 nodes_old = []
-for i in range(3):
+
+state_sus = []
+state_exp = []
+state_inf = []
+state_sin = []
+state_qua = []
+state_imm = []
+state_dea = []
+
+a  = 5
+
+for i in range(a):
     new_nodes, new_plot = simulate_network(params_node, inits_node, params_network, nodes_old, i)
     nodes_old = new_nodes
 
+    state_sus = np.append(state_sus, new_plot[:, 0,0])
+    state_exp = np.append(state_exp, new_plot[:, 0,1])
+    state_inf = np.append(state_inf, new_plot[:, 0,2])
+    state_sin = np.append(state_sin, new_plot[:, 0,3])
+    state_qua = np.append(state_qua, new_plot[:, 0,4])
+    state_imm = np.append(state_imm, new_plot[:, 0,5])
+    state_dea = np.append(state_dea, new_plot[:, 0,6])
+
 ####
 
+time_arr = np.linspace(0, new_nodes[0].param_num_sim, new_nodes[0].param_num_sim)*new_nodes[0].param_dt*a
 
-time_arr = np.linspace(0, new_nodes[0].param_num_sim, new_nodes[0].param_num_sim)*new_nodes[0].param_dt
-state_sus = new_plot[:, 0,0]
-state_exp = new_plot[:, 0,0]
-state_inf = new_plot[:, 0,0]
-state_sin = new_plot[:, 0,0]
-state_qua = new_plot[:, 0,0]
-state_imm = new_plot[:, 0,0]
-state_dea = new_plot[:, 0,0]
 
-plt.plot(time_arr, state_sus, label = 'Susceptible')
-plt.plot(time_arr, state_exp, label = 'Exposed')
-plt.plot(time_arr, state_qua, label = 'Quarantined')
-plt.plot(time_arr, state_inf, label = 'Infected')
-plt.plot(time_arr, state_sin, label = 'Severe Infected')
-plt.plot(time_arr, state_imm, label = 'Immunized')
-plt.plot(time_arr, state_dea, label = 'Dead')
+
+
+plt.plot(state_sus, label = 'Susceptible')
+plt.plot(state_exp, label = 'Susceptible')
+plt.plot(state_inf, label = 'Susceptible')
+plt.plot(state_sin, label = 'Susceptible')
+plt.plot(state_qua, label = 'Susceptible')
+plt.plot(state_imm, label = 'Susceptible')
+plt.plot(state_dea, label = 'Susceptible')
+
+
 plt.xlabel("Day")
 plt.ylabel("Population")
 plt.legend(loc="upper right")
