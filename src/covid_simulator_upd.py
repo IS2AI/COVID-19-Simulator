@@ -13,42 +13,42 @@ import time
 import matplotlib.pyplot as plt
 
 class Node(object):
-    def __init__(self, params, inits):
+    def __init__(self, params, sim_iter):
 
-        self.param_br = params[0]    # Daily birth rate
-        self.param_dr = params[1]     # Daily mortality rate except infected people
-        self.param_vr = params[2]           # Daily vaccination rate (Ratio of susceptible
+        self.param_br = 0.0    # Daily birth rate
+        self.param_dr = 0.0     # Daily mortality rate except infected people
+        self.param_vr = 0.0           # Daily vaccination rate (Ratio of susceptible
                                        # population getting vaccinated)
-        self.param_vir = params[3]           # Ratio of the immunized after vaccination
-        self.param_mir = params[4]           # Maternal immunization rate
+        self.param_vir = 0.0           # Ratio of the immunized after vaccination
+        self.param_mir = 0.0           # Maternal immunization rate
 
-        self.param_beta_exp = params[5]      # Susceptible to exposed transition constant
-        self.param_qr  = params[6]           # Daily quarantine rate (Ratio of Exposed getting Quarantined)
-        self.param_beta_inf = params[7]      # Susceptible to infected transition constant
-        self.param_sir   = params[8]          # Daily isolation rate (Ratio of Infected getting Isolated)
+        self.param_beta_exp = params[0]      # Susceptible to exposed transition constant
+        self.param_qr  = params[1]           # Daily quarantine rate (Ratio of Exposed getting Quarantined)
+        self.param_beta_inf = 0.0        # Susceptible to infected transition constant
+        self.param_sir = params[2]          # Daily isolation rate (Ratio of Infected getting Isolated)
 
-        self.param_eps_exp = params[9]       # Disease transmission rate of exposed compared to the infected
-        self.param_eps_qua = params[10]       # Disease transmission rate of quarantined compared to the infected
-        self.param_eps_sev  = params[11]       # Disease transmission rate of isolated compared to the
+        self.param_eps_exp = params[3]       # Disease transmission rate of exposed compared to the infected
+        self.param_eps_qua = params[4]       # Disease transmission rate of quarantined compared to the infected
+        self.param_eps_sev  = params[5]       # Disease transmission rate of isolated compared to the
 
-        self.param_hosp_capacity = params[12]   # Maximum amount patients that hospital can accommodate
+        self.param_hosp_capacity = params[6]   # Maximum amount patients that hospital can accommodate
 
-        self.param_gamma_mor = params[13]    # Infected to Dead transition probability
-        self.param_gamma_mor1 = params[14] # Severe Infected (Hospitalized) to Dead transition probability
-        self.param_gamma_mor2 = params[15] # Severe Infected (Not Hospitalized) to Dead transition probability
-        self.param_gamma_im = params[16]      # Infected to Recovery Immunized transition probability
+        self.param_gamma_mor = 0.0    # Infected to Dead transition probability
+        self.param_gamma_mor1 = params[7] # Severe Infected (Hospitalized) to Dead transition probability
+        self.param_gamma_mor2 = params[8] # Severe Infected (Not Hospitalized) to Dead transition probability
+        self.param_gamma_im = params[9]      # Infected to Recovery Immunized transition probability
 
-        self.param_dt = params[17]        # Sampling time in days (1/24 corresponds to one hour)
-        self.param_sim_len = params[18]       # Length of simulation in days
+        self.param_dt = 1/24                # Sampling time in days (1/24 corresponds to one hour)
+        self.param_sim_len = params[10]       # Length of simulation in days
 
         self.param_num_states = 0    # Number of states
         self.param_num_sim = int(self.param_sim_len / self.param_dt) + 1       # Number of simulation
 
-        self.param_t_exp = params[19]           # Incubation period (The period from the start of
+        self.param_t_exp = params[11]           # Incubation period (The period from the start of
                                       # incubation to the end of the incubation state)
-        self.param_t_inf = params[20]           # Infection period (The period from the start of
+        self.param_t_inf = params[12]           # Infection period (The period from the start of
                                       # infection to the end of the infection state)
-        self.param_t_vac = params[21]           # Vaccination immunization period (The time to
+        self.param_t_vac = 3 # Vaccination immunization period (The time to
                                       # vaccinatization immunization after being vaccinated)
 
         self.param_n_exp = int(self.param_t_exp / self.param_dt)
@@ -64,14 +64,14 @@ class Node(object):
         self.param_rand_seed = np.random.randint(low = 1, high = 100, size = 625)
 
         # Define the initial values for the states
-        self.init_susceptible = inits[0];
-        self.init_exposed = inits[1];
-        self.init_quarantined = inits[2];
-        self.init_infected = inits[3];
-        self.init_isolated = inits[4];
-        self.init_vaccination_imm = inits[5];
-        self.init_maternally_imm = inits[6];
-        self.init_recovery_imm = inits[7];
+        self.init_susceptible = params[13]
+        self.init_exposed = params[14]
+        self.init_quarantined = 0.0
+        self.init_infected = 0.0
+        self.init_isolated = 0.0
+        self.init_vaccination_imm = 0.0
+        self.init_maternally_imm = 0.0
+        self.init_recovery_imm = 0.0
 
         # Define states
         self.states_x = [0, self.init_susceptible]
@@ -175,7 +175,7 @@ class Node(object):
         # initialize number of states
         self.param_num_states = len(self.states_x)
 
-        print("[INFO] States were created...")
+        #print("[INFO] States were created...")
 
 
     def create_transitions(self):
@@ -288,7 +288,7 @@ class Node(object):
             self.source_ind.append(self.states_name.index(self.source[ind]))
             self.dest_ind.append(self.states_name.index(self.dest[ind]))
 
-        print("[INFO] State transitions were created...")
+        #print("[INFO] State transitions were created...")
 
 
     def indexes(self):
