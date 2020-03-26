@@ -122,7 +122,7 @@ if __name__ == '__main__':
     ####
     # ALL parameters from here
 
-    #  from Mukhamet Parameters
+    #  Parameters
 
     param_beta_exp = 0.2*np.ones(nodes_num)     # Susceptible to exposed transition constant
     param_qr  = 0.02*np.ones(nodes_num)         # Daily quarantine rate (Ratio of Exposed getting Quarantined)
