@@ -1,3 +1,9 @@
+"""
+Created: Mar 25 2020
+
+@author: Daulet
+"""
+
 from multiprocessing import Pool
 from network_sim import Network
 import os
@@ -122,7 +128,7 @@ if __name__ == '__main__':
     ####
     # ALL parameters from here
 
-    #   Parameters
+    #    Parameters
 
     param_beta_exp = 0.2*np.ones(nodes_num)     # Susceptible to exposed transition constant
     param_qr  = 0.02*np.ones(nodes_num)         # Daily quarantine rate (Ratio of Exposed getting Quarantined)

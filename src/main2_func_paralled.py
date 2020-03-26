@@ -1,3 +1,8 @@
+"""
+Created: Mar 25 2020
+
+@author: Daulet
+"""
 from multiprocessing import Pool
 from network_sim import Network
 import os

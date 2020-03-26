@@ -1,3 +1,9 @@
+"""
+Created: Mar 20 2020
+
+@author: Daulet
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from copy import copy
