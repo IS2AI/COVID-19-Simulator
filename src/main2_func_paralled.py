@@ -138,7 +138,7 @@ if __name__ == '__main__':
     param_gamma_mor2 = 0.1*np.ones(nodes_num) # Severe Infected (Not Hospitalized) to Dead transition probability
     param_gamma_im = 0.9*np.ones(nodes_num)      # Infected to Recovery Immunized transition probability
 
-    param_sim_len = 100*np.ones(nodes_num)            # Length of simulation in days
+    param_sim_len = 10*np.ones(nodes_num)            # Length of simulation in days
 
     param_t_exp = 5*np.ones(nodes_num)             # Incubation period (The period from the start of incubation to the end of the incubation state
     param_t_inf = 8*np.ones(nodes_num)             # Infection period (The period from the start of infection to the end of the infection state
@@ -161,7 +161,7 @@ if __name__ == '__main__':
 
     # Run the script
 
-    a  = 2
+    a  = 5
     b = 0
 
     nodes_old = []
@@ -189,8 +189,7 @@ if __name__ == '__main__':
         state_imm = np.append(state_imm, new_plot[:, b,4])
         state_dea = np.append(state_dea, new_plot[:, b,6])
 
-    #print(state_sus.shape)
-    plt.plot(state_sus, label = 'Susceptible'
+    plt.plot(state_sus, label = 'Susceptible')
     plt.plot(state_exp, label = 'Exposed')
     plt.plot(state_inf, label = 'Infected')
     plt.plot(state_sin, label = 'Severe')
