@@ -4,6 +4,7 @@ Created: Mar 25 2020
 
 @author: Daulet
 """
+from sympy.core.cache import *
 
 import time
 import threading
@@ -15,6 +16,8 @@ from multiprocessing import Process
 import config
 import os
 
+
+import multiprocessing
 from multiprocessing import Pool
 from network_sim import Network
 import os
@@ -25,6 +28,8 @@ import csv
 import copy
 import time
 import matplotlib.pyplot as plt
+import sys
+
 
 def process_node(node):
     temp_node = node
@@ -72,7 +77,7 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
             tr[:, i] = tr[i, :]*param_transition_box[i,j]
 
     transition_matrix = (transition_railway + transition_airway + transition_roadway).astype(int)
-    transition_matrix = 0.5*transition_matrix * (param_transition_scale )
+    transition_matrix = 0.5*transition_matrix * (param_transition_scale)
 
     for i in range(nodes_num):
         for j in range(nodes_num):
@@ -80,7 +85,7 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
                 transition_matrix[i,j] = transition_matrix_init[i,j]*param_transition_leakage # base data is for 24 days, tran_dt = 1/2
 
     transition_matrix = transition_matrix.astype(int)
-    
+
     # create nodes
     params_node = params_node_
 
@@ -147,8 +152,12 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
             states_arr_plot[iter, i_node, 5] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_sus)
             states_arr_plot[iter, i_node, 6] = nodes_state_arr[iter, i_node, -1]
 
-    return nodes, states_arr_plot, params_node, transition_matrix
 
+    states_arr_plotx = np.zeros((2,17,7))
+    states_arr_plotx[0, :, :] = states_arr_plot[24,:,:]
+    states_arr_plotx[1, :, :] = states_arr_plot[48,:,:]
+    print(states_arr_plot.shape)
+    return nodes, states_arr_plotx, params_node, transition_matrix
 
 
 class DataStream(threading.Thread):
@@ -173,8 +182,9 @@ class DataStream(threading.Thread):
         state_dea = []
         while True:
             while config.counter != count+1 and config.run_iteration:
-                new_plot_all = []
+                config.new_plot_all = []
                 for i in range(config.loop_num):
+
                     config.iteration_over = False
                     config.param_transition_box = []
                     config.param_transition_box.append(config.box1)
@@ -190,7 +200,8 @@ class DataStream(threading.Thread):
 
                     new_nodes, new_plot, new_params, tr_m = simulate_network(config.params_node, config.params_network, config.nodes_old, config.counter_func, config.params_old)
                     config.nodes_old = new_nodes
-                    config.new_plot_all.append(new_plot)
+                    config.new_plot_all.append(new_plot) # new plot is 2*17*7 matrix not large
+                    print('mem', sys.getsizeof(config.new_plot_all))
                     config.params_old = new_params.copy()
                     config.counter_func +=1
                     self.callbackFunc.doc.add_next_tick_callback(partial(self.callbackFunc.update, False))

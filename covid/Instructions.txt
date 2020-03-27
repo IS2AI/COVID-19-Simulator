@@ -1,4 +1,4 @@
-1) First install anaconda with from 
+1) First install anaconda with from
 
 https://www.anaconda.com/distribution/#download-section
 
@@ -18,7 +18,7 @@ windows and start typing 'anaconda prompt' and run it
 
 5) After completion of installation of bokeh, in anaconda terminal go to the directory of folder covid
 
- if you have put it in desktop, the command should be 
+ if you have put it in desktop, the command should be
 
  cd desktop/covid
 
