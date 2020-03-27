@@ -2,7 +2,7 @@ import numpy as np
 
 initial_params = 5
 nodes_num = 17
-sim_len = 100
+sim_len = 10000
 run_iteration = False
 region = 0
 is_finished = False
@@ -21,7 +21,7 @@ newx = []
 counter = 1
 counter_func = 0
 
-#  from Mukhamet Parameters
+#  Parameters
 param_beta_exp = 0.2*np.ones(nodes_num)     # Susceptible to exposed transition constant
 param_qr  = 0.02*np.ones(nodes_num)         # Daily quarantine rate (Ratio of Exposed getting Quarantined)
 param_sir  = 0.01*np.ones(nodes_num)        # Daily isolation rate (Ratio of Infected getting Isolated)
@@ -45,6 +45,8 @@ param_init_exposed = 10*np.ones(nodes_num) # np.array([100,100,100])#10*np.ones(
 
 param_transition_leakage = 0.0
 param_transition_scale = 1.0
+
+param_save_file = 'default'
 
 # Init values for nodes constant
 param_init_susceptible = np.squeeze(np.array([1854556,2039379,738587,869603,633801,652314,1125297,678224,1078362,753804,1378554,872736,794165,1378504,1011511,554519,1981747]))

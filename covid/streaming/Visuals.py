@@ -31,6 +31,7 @@ from bokeh.models import (CDSView, ColorBar, ColumnDataSource,
                           GeoJSONDataSource, HoverTool,
                           LinearColorMapper, Slider,PrintfTickFormatter)
 
+import csv
 
 #import geopandas as gpd
 #df_kz = gpd.read_file('data_geomap/KAZ_adm1.shp')
@@ -58,6 +59,8 @@ class Visual:
         self.doc = curdoc()
         self.layout()
         self.prev_y1 = 0
+        self.region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
+                            'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan', 'Qazaqstan']
 
     def set_initial_params(self, params):
         global initial_params
@@ -280,11 +283,49 @@ class Visual:
         config.run_iteration=False
         self.update(False)
 
-
     def run_click(self):
         config.run_iteration=True
         self.update(False)
-        print('set to true')
+        print('Run the simulation')
+
+    def save_file_click(self):
+        # points*nodes*states
+        info = 'This file contains the results. Region name'
+        params = 'Params: '
+        print('sd', config.param_save_file)
+
+        params_local = np.vstack([config.param_beta_exp, config.param_qr, config.param_sir, config.param_eps_exp, config.param_eps_qua,
+                config.param_eps_sev,config.param_hosp_capacity, config.param_gamma_mor1,config.param_gamma_mor2,
+                config.param_gamma_im, config.param_init_susceptible, config.param_init_exposed])
+
+        params_global = [config.counter_func, config.param_t_exp, config.param_t_inf, 1, 12]
+
+        directory = 'results' + '/' +  config.param_save_file
+
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        for j in range(17):
+            filename =  directory + '/' + self.region_names[j] + '.csv'
+            with open(filename, 'w', newline='') as csvfile:
+                spamwriter = csv.writer(csvfile, delimiter=',')
+                # points*nodes*states
+                info = 'This file contains the results. Region name'
+                params = 'params: '
+                spamwriter.writerow([info])
+                spamwriter.writerow([params])
+                for iter in range(config.counter_func-1):
+                    arr = config.new_plot_all[iter][j][:] # iter * 17 * 7
+                    print(arr)
+                    spamwriter.writerow([arr])
+
+                    #list = [(params_local[j]) for i in range(0,17)]
+                    #spamwriter.writerow([a for a in list])
+
+        # points*nodes*states
+        print(config.param_save_file)
+        print(config.new_plot_all)
+        print('saving results to .csv format')
 
     def handler_beta_exp(self, attr, old, new):
         config.param_beta_exp[config.region]=new
@@ -340,20 +381,23 @@ class Visual:
         config.box1 = new
         config.testing_var = config.box1
 
-
     def handler_checkbox_group2(self, new):
         config.box2 = new
+
     def handler_checkbox_group3(self, new):
         config.box3 = new
 
-
-
+    def handler_param_save_file(self, attr, old, new):
+        config.param_save_file= str(new)
 
     def layout(self):
         regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',  'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan']
 
         regions_for_show = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy',
                                 'Qostanai',  'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan', 'Qazaqstan']
+
+        text_save = TextInput(value="default", title="Output Folder Name: (will be improved)")
+        text_save.on_change('value', self.handler_param_save_file)
 
         # select region
         initial_region = 'Almaty'
@@ -419,10 +463,13 @@ class Visual:
         # Buttons
         reset_button = Button(label = 'Reset Button')
         save_button = Button(label='Update transition matrix')
+        save_button_result = Button(label='Save current plot to csv')
         run_button = Button(label='Run the simulation')
+
         save_button.on_click(self.save_click)
         run_button.on_click(self.run_click)
         reset_button.on_click(self.reset_click)
+        save_button_result.on_click(self.save_file_click)
 
         div_cb1 = Div(text = 'Airways', width = 150)
         div_cb2 = Div(text = 'Railways', width = 150)
@@ -495,7 +542,7 @@ class Visual:
 
         buttons = row(reset_button,save_button, run_button)
 
-        params =  column(sliders, self.text3, self.text4, sliders_3, self.text5, self.text4,)
+        params =  column(sliders, self.text3, self.text4, sliders_3, self.text5, self.text4)
 
         sliders_4 = column(param_tr_scale, param_tr_leakage)
         check_table = row(column(div_cb1,checkbox_group1), column(div_cb2,checkbox_group2), column(div_cb3,checkbox_group3), sliders_4)
@@ -503,6 +550,6 @@ class Visual:
 
         layout = column(self.text1, self.pAll)
         layout = column (layout, params, check_table)
-        layout = column (layout, check_trans, buttons, self.text4 )
+        layout = column (layout, check_trans, buttons, self.text4, text_save, save_button_result)
         self.doc.title = 'Covid Simulation'
         self.doc.add_root(layout)

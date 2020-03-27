@@ -181,32 +181,36 @@ class DataStream(threading.Thread):
         state_qua = []
         state_imm = []
         state_dea = []
-        while True:
-            while config.counter != count+1 and config.run_iteration:
-                config.new_plot_all = []
-                for i in range(config.loop_num):
+        try:
+            while True:
+                while config.counter != count+1 and config.run_iteration:
+                    config.new_plot_all = []
+                    for i in range(int(config.loop_num/2)):
 
-                    config.iteration_over = False
-                    config.param_transition_box = []
-                    config.param_transition_box.append(config.box1)
-                    config.param_transition_box.append(config.box2)
-                    config.param_transition_box.append(config.box3)
+                        config.iteration_over = False
+                        config.param_transition_box = []
+                        config.param_transition_box.append(config.box1)
+                        config.param_transition_box.append(config.box2)
+                        config.param_transition_box.append(config.box3)
 
-                    config.params_node = np.vstack([config.param_beta_exp, config.param_qr,
-                                    config.param_sir, config.param_eps_exp, config.param_eps_qua, config.param_eps_sev,config.param_hosp_capacity,
-                                    config.param_gamma_mor1,config.param_gamma_mor2, config.param_gamma_im, config.param_sim_len,
-                                    config.param_t_exp, config.param_t_inf, config.param_init_susceptible, config.param_init_exposed])
+                        config.params_node = np.vstack([config.param_beta_exp, config.param_qr,
+                                        config.param_sir, config.param_eps_exp, config.param_eps_qua, config.param_eps_sev,config.param_hosp_capacity,
+                                        config.param_gamma_mor1,config.param_gamma_mor2, config.param_gamma_im, config.param_sim_len,
+                                        config.param_t_exp, config.param_t_inf, config.param_init_susceptible, config.param_init_exposed])
 
-                    config.params_network = [config.param_transition_box, config.param_transition_leakage, config.param_transition_scale]
+                        config.params_network = [config.param_transition_box, config.param_transition_leakage, config.param_transition_scale]
 
-                    new_nodes, new_plot, new_params, tr_m = simulate_network(config.params_node, config.params_network, config.nodes_old, config.counter_func, config.params_old)
-                    config.nodes_old = new_nodes
-                    config.new_plot_all.append(new_plot) # new plot is 2*17*7 matrix not large
-                    print('mem', sys.getsizeof(config.new_plot_all))
-                    config.params_old = new_params.copy()
-                    config.counter_func +=1
-                    self.callbackFunc.doc.add_next_tick_callback(partial(self.callbackFunc.update, False))
-                print('Simulation finished, press Simulation button for another iteration')
-                config.counter +=1
-                config.run_iteration = False
-                config.iteration_over = True
+                        new_nodes, new_plot, new_params, tr_m = simulate_network(config.params_node, config.params_network, config.nodes_old, config.counter_func, config.params_old)
+                        config.nodes_old = new_nodes
+                        config.new_plot_all.append(new_plot) # new plot is 2*17*7 matrix not large
+                        print('mem', sys.getsizeof(config.new_plot_all))
+                        config.params_old = new_params.copy()
+                        config.counter_func +=1
+                        self.callbackFunc.doc.add_next_tick_callback(partial(self.callbackFunc.update, False))
+                    print('Simulation finished, press Simulation button for another iteration')
+                    config.counter +=1
+                    config.run_iteration = False
+                    config.iteration_over = True
+        except (KeyboardInterrupt, SystemExit):
+            print('Exiting the program. ')
+            pass
