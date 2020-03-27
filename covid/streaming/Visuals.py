@@ -311,16 +311,14 @@ class Visual:
                 spamwriter = csv.writer(csvfile, delimiter=',')
                 # points*nodes*states
                 info = 'This file contains the results. Region name'
-                params = 'params: '
+                params = 'params:'
                 spamwriter.writerow([info])
                 spamwriter.writerow([params])
                 for iter in range(config.counter_func-1):
-                    arr = config.new_plot_all[iter][j][:] # iter * 17 * 7
-                    print(arr)
-                    spamwriter.writerow([arr])
-
-                    #list = [(params_local[j]) for i in range(0,17)]
-                    #spamwriter.writerow([a for a in list])
+                    arr = config.new_plot_all[iter][j][:]
+                    print(config.new_plot_all[iter][j][:])
+                    #list = [(params_local[j]) for i in range(0,17)] arr = [()] # iter * 17 * 7
+                    spamwriter.writerow([arr]) # spamwriter.writerow([a for a in arr])
 
         # points*nodes*states
         print(config.param_save_file)
@@ -550,6 +548,9 @@ class Visual:
 
         layout = column(self.text1, self.pAll)
         layout = column (layout, params, check_table)
-        layout = column (layout, check_trans, buttons, self.text4, text_save, save_button_result)
+        layout = column (layout, check_trans, buttons, self.text4)
+        layouts = column(text_save, save_button_result)
+        layout = column (layout, layouts)
+
         self.doc.title = 'Covid Simulation'
         self.doc.add_root(layout)
