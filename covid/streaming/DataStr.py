@@ -157,6 +157,7 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
     states_arr_plotx[0, :, :] = states_arr_plot[24,:,:]
     states_arr_plotx[1, :, :] = states_arr_plot[48,:,:]
     print(states_arr_plot.shape)
+    pool.close()
     return nodes, states_arr_plotx, params_node, transition_matrix
 
 
