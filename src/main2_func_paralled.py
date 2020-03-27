@@ -14,6 +14,7 @@ import copy
 import time
 import matplotlib.pyplot as plt
 
+# node parallelization
 def process_node(node):
     temp_node = node
     temp_node.stoch_solver()
@@ -143,7 +144,7 @@ if __name__ == '__main__':
     param_gamma_mor2 = 0.1*np.ones(nodes_num) # Severe Infected (Not Hospitalized) to Dead transition probability
     param_gamma_im = 0.9*np.ones(nodes_num)      # Infected to Recovery Immunized transition probability
 
-    param_sim_len = 10*np.ones(nodes_num)            # Length of simulation in days
+    param_sim_len = 2*np.ones(nodes_num)            # Length of simulation in days
 
     param_t_exp = 5*np.ones(nodes_num)             # Incubation period (The period from the start of incubation to the end of the incubation state
     param_t_inf = 8*np.ones(nodes_num)             # Infection period (The period from the start of infection to the end of the infection state
@@ -166,7 +167,7 @@ if __name__ == '__main__':
 
     # Run the script
 
-    a  = 5
+    a  = 50
     b = 0
 
     nodes_old = []

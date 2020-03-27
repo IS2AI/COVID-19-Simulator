@@ -38,7 +38,7 @@ class Node(object):
         self.param_gamma_mor2 = params[8] # Severe Infected (Not Hospitalized) to Dead transition probability
         self.param_gamma_im = params[9]      # Infected to Recovery Immunized transition probability
 
-        self.param_dt = 1/8                # Sampling time in days (1/24 corresponds to one hour)
+        self.param_dt = 1/12                # Sampling time in days (1/24 corresponds to one hour)
         self.param_sim_len = params[10]       # Length of simulation in days
 
         self.param_num_states = 0    # Number of states
@@ -95,9 +95,8 @@ class Node(object):
             print('[ERROR] Both beta_exp and beta_inf cannot be non-zero.')
             return 0
         else:
-            print("[INFO] Initialization was done properly!")
+            #print("[INFO] Initialization was done properly!")
             return 1
-
 
     def create_states(self):
 
@@ -244,10 +243,10 @@ class Node(object):
             self.source.append('Quarantined_{}'.format(ind + 1))
             self.dest.append('Quarantined_{}'.format(ind + 2))
 
-        # Transition 14 - Quarantined[n_exp] to Severe_Infected[1]
+        # Transition 14 - Quarantined[n_exp] to Infected[1]
         if self.param_n_exp != 0:
             self.source.append('Quarantined_{}'.format(n_exp))
-            self.dest.append('Severe_Infected_1')
+            self.dest.append('Infected_1')
 
         # Transition 15 - Infected[i] to Infected[i+1] until i+1 == n_inf
         for ind in range(n_inf - 1):
@@ -345,7 +344,6 @@ class Node(object):
             rand_num = random.uniform(0, 1)
             if rand_num < val:
                 dx += 1
-
         return dx
 
 
@@ -409,7 +407,7 @@ class Node(object):
         expval += (self.states_x[self.ind_qua1:self.ind_qua1 + self.param_n_exp - 1] * \
                    (1 - self.param_dr * self.param_dt)).tolist()
 
-        # Transition 14 - Quarantined[n_exp] to Severe_Infected[1]
+        # Transition 14 - Quarantined[n_exp] to Infected[1]
         if self.param_n_exp != 0:
             expval.append(self.states_x[self.ind_quan] * (1 - self.param_dr * self.param_dt))
 

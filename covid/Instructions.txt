@@ -1,0 +1,32 @@
+1) First install anaconda with from 
+
+https://www.anaconda.com/distribution/#download-section
+
+choose 3.7 version
+
+
+2) After completion of the installation run Anaconda Terminal (Anaconda Prompt)
+
+windows and start typing 'anaconda prompt' and run it
+
+
+3) in anaconda terminal write 'conda install bokeh' and press run
+
+
+4) download the 'covid' folder and put it on desktop
+
+
+5) After completion of installation of bokeh, in anaconda terminal go to the directory of folder covid
+
+ if you have put it in desktop, the command should be 
+
+ cd desktop/covid
+
+6) Copy the 5 files: config.py, covid_simulator_upd.py, DataStr.py, network_sim.py, Visuals.py to the C:\Users\user\Anaconda3\Lib folder.
+This is the default anaconda installation folder.
+
+7) Once you are in the directory, run the following command on terminal
+
+  bokeh serve --show streaming
+
+8) it should start web browser with visualization
