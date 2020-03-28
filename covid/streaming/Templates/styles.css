@@ -1,68 +1,69 @@
 .bk-root .bk-bs-btn-primary{
-color: #FDFEFE;
-background-color: #21618C;
-border-color: #21618C;
+	color: #FDFEFE;
+	background-color: #21618C;
+	border-color: #21618C;
 }
 .bk-root .bk-bs-btn:focus {
-color: #FDFEFE;
-background-color: #21618C;
-border-color: #21618C;
+	color: #FDFEFE;
+	background-color: #21618C;
+	border-color: #21618C;
 }
 .bk-root .bk-bs-btn:active {
-color: #FDFEFE;
-background-color: #21618C;
-border-color: #21618C;
+	color: #FDFEFE;
+	background-color: #21618C;
+	border-color: #21618C;
 }
 .bk-root .bk-bs-btn:hover {
-color: #FDFEFE;
-background-color: #5DADE2;
-border-color: #5DADE2;
+	color: #FDFEFE;
+	background-color: #5DADE2;
+	border-color: #5DADE2;
 }
 
-	.state{
-		fill: none;
-		stroke: #a9a9a9;
-		stroke-width: 1;
-	}
-	.state:hover{
-		fill-opacity:0.5;
-	}
-	#tooltip {   
-		position: absolute !important;           
-        text-align: center;
-        width: 500px !important;
-		padding: 20px;             
-		margin: 10px;
-		font: 12px sans-serif;        
-		background: lightsteelblue;   
-		border: 1px;      
-		border-radius: 2px;           
-		pointer-events: none;         
-	}
-	#tooltip h4{
-		margin:0;
-		font-size:14px;
-	}
-	#tooltip{
-		background:rgba(0,0,0,0.9) !important;
-		border:1px solid grey;
-		border-radius:5px;
-		font-size:12px;
-		width:auto;
-		padding:4px;
-		color:white;
-		opacity:0;
-	}
-	#tooltip table{
-		table-layout:fixed;
-	}
-	#tooltip tr td{
-		padding:0;
-		margin:0;
-	}
-	#tooltip tr td:nth-child(1){
-		width:50px;
-	}
-	#tooltip tr td:nth-child(2){
-		text-align:center;
-	}
+.state{
+	fill: none;
+	stroke: #a9a9a9;
+	stroke-width: 1;
+}
+.state:hover{
+	fill-opacity:0.5;
+}
+#tooltip {   
+	z-index: 2000 !important;          
+	text-align: center;
+	width: 150px;
+	padding: 20px; 
+	padding-top: -100px;             
+	margin: 10px;
+	font: 12px sans-serif;        
+	background: lightsteelblue;   
+	border: 1px;      
+	border-radius: 2px;           
+	pointer-events: none;         
+}
+#tooltip h4{
+	margin:0;
+	font-size:14px;
+}
+#tooltip{
+	background:rgba(0,0,0,0.9) !important;
+	border:1px solid grey;
+	border-radius:5px;
+	font-size:12px;
+	width:auto;
+	padding:4px;
+	color:white;
+	opacity:0;
+}
+#tooltip table{
+	table-layout:fixed;
+}
+#tooltip tr td{
+	padding:0;
+	margin:0;
+}
+#tooltip tr td:nth-child(1){
+	width:50px;
+}
+#tooltip tr td:nth-child(2){
+	text-align:center;
+}

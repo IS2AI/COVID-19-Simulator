@@ -175,6 +175,7 @@ class Visual:
         #pAll = gridplot([[row(p1], [p_map]])
         pAll = row(p1,p2)
         return pAll
+
     #@gen.coroutine
     def update(self, change_view):
         new_nodes_all = config.new_plot_all
@@ -190,6 +191,15 @@ class Visual:
         state_imm = [0]
         state_dea = [0]
 
+        region_states = [ None for lregion in range(19)][1:]
+        tmp_state_inf = [0]
+        tmp_state_sus=[config.param_init_susceptible[config.region]]
+        tmp_state_exp = [config.param_init_exposed[config.region]]
+        tmp_state_sin = [0]
+        tmp_state_qua = [0]
+        tmp_state_imm = [0]
+        tmp_state_dea = [0]
+
         if new_nodes_all != [] and config.region != 17:
             for i in range(len(config.new_plot_all)):
 
@@ -203,6 +213,39 @@ class Visual:
 
                 #newx = np.arange(0,2*config.counter_func/2)
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
+
+                # for map
+                regions_ids = [ lregion for lregion in range(18)][1:]
+                for region in regions_ids:
+                    print('Region number', region, type(region_states[region]))
+                    if type(region_states[region]) is dict:
+                        region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
+                        region_states[region]["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
+                        region_states[region]["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
+                        region_states[region]["tmp_state_qua"].append(new_nodes_all[i][:, region, 3][-1])
+                        region_states[region]["tmp_state_imm"].append(new_nodes_all[i][:, region, 4][-1])
+                        region_states[region]["tmp_state_sus"].append(new_nodes_all[i][:, region, 5][-1])
+                        region_states[region]["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
+                    else:
+                        tmp_data = {
+                            "tmp_state_inf": [], 
+                            "tmp_state_sin": [], 
+                            "tmp_state_exp": [], 
+                            "tmp_state_qua": [],
+                            "tmp_state_imm": [],
+                            "tmp_state_sus": [],
+                            "tmp_state_dea": []
+                            }
+
+                        tmp_data["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
+                        tmp_data["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
+                        tmp_data["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
+                        tmp_data["tmp_state_qua"].append(new_nodes_all[i][:, region, 3][-1])
+                        tmp_data["tmp_state_imm"].append(new_nodes_all[i][:, region, 4][-1])
+                        tmp_data["tmp_state_sus"].append(new_nodes_all[i][:, region, 5][-1])
+                        tmp_data["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
+
+                        region_states[region] = tmp_data
 
         elif new_nodes_all != [] and config.region == 17:
             for i in range(len(config.new_plot_all)):
@@ -239,6 +282,8 @@ class Visual:
             c15=[(config.transition_matrix[15,i]) for i in range(0,17)],
             c16=[(config.transition_matrix[16,i]) for i in range(0,17)],
                 )
+
+        print(new_data)
         self.source.data.update(new_data)
         self.sourceT.data.update(self.data1)
         self.data_tableT.update()
@@ -602,6 +647,8 @@ class Visual:
         text = column(self.text1, text2)
         header = row(nu_logo, text , issai_logo)
 
+        draw_map_js = CustomJS(code=""" uStates.draw("#statesvg", sampleData, tooltipHtml); """)
+        run_button.js_on_click(draw_map_js)
 
         ########### CHANGE ###################
         layout_t = column(save_button_result, text_save)
@@ -614,13 +661,16 @@ class Visual:
         check_table = row(column(div_cb1,checkbox_group1), column(div_cb2,checkbox_group2), column(div_cb3,checkbox_group3), sliders_4)
         check_trans = row(self.data_tableT)
 
+        kz_map_tag = Div(text=""" <svg width="960" height="600" id="statesvg"></svg> <div id="tooltip"></div>   """, width=960, height=600)
+        #kz_map_tag.js_on
         ###
-        layout = column(header, self.pAll, buttons)
+        layout = column(header, self.pAll, buttons, kz_map_tag)
         layout = column (layout, params, check_table)
 
         layout = column (layout, check_trans, self.text4)
 
 
+        
 
         layout = column (layout)
         layout = column (layout,self.text4, text_footer)
