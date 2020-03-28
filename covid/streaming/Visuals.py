@@ -39,7 +39,7 @@ import pandas as pd
 
 class Visual:
     def __init__(self, callbackFunc, running):
-        self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulation in Kazakhstan</h1>""", width=900, height=50) # Text to be displayed at the top of the webpage
+        self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=500, height=50) # Text to be displayed at the top of the webpage
         self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
         self.text3 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
         self.text4 = Div(text="""<h1 style="color:blue"> </h1>""", width=900, height=50) # Text to be displayed at the top of the webpage
@@ -78,14 +78,22 @@ class Visual:
 
 
         # create glyph for graph plotting
+        # create glyph for graph plotting
         p1 = figure(**self.plot_options, title='Covid Simulation',  toolbar_location='above')
         p1.yaxis.axis_label = 'Number of people'
-
+        p1.xaxis.axis_label = 'Simulation time (days)'
+        p1.xaxis[0].formatter = PrintfTickFormatter(format="%9.0f")
+        p1.yaxis[0].formatter = PrintfTickFormatter(format="%9.0f")
+        p1.xaxis.major_label_text_font_size = "10pt"
+        p1.yaxis.major_label_text_font_size = "10pt"
 
         p2 = figure(**self.plot_options, title='Number of Susceptible people', toolbar_location='above')
         p2.yaxis.axis_label = 'Number of people'
+        p2.xaxis.axis_label = 'Simulation time (days)'
         p2.xaxis[0].formatter = PrintfTickFormatter(format="%9.0f")
         p2.yaxis[0].formatter = PrintfTickFormatter(format="%9.0f")
+        p2.xaxis.major_label_text_font_size = "10pt"
+        p2.yaxis.major_label_text_font_size = "10pt"
 
         #######################
 
@@ -127,8 +135,8 @@ class Visual:
         p1.background_fill_color = "black"
         p1.background_fill_alpha = 0.8
         p1.legend.location = "top_left"
-        p1.legend.background_fill_color = "black"
-        p1.legend.background_fill_alpha = 0.8
+        p1.legend.background_fill_color = "cyan"
+        p1.legend.background_fill_alpha = 0.5
         p1.outline_line_width = 7
         p1.outline_line_alpha = 0.9
         p1.outline_line_color = "black"
@@ -139,11 +147,12 @@ class Visual:
         p2.background_fill_color = "black"
         p2.background_fill_alpha = 0.8
         p2.legend.location = "top_left"
-        p2.legend.background_fill_color = "black"
-        p2.legend.background_fill_alpha = 0.8
+        p2.legend.background_fill_color = "cyan"
+        p2.legend.background_fill_alpha = 0.5
         p2.outline_line_width = 7
         p2.outline_line_alpha = 0.9
         p2.outline_line_color = "black"
+
 
        # p_map.outline_line_width = 7
        # p_map.outline_line_alpha = 0.9
@@ -550,12 +559,48 @@ class Visual:
         sliders_0 = column(init_exposed)
 
         sliders = row(sliders_1, dumdiv3, sliders_2, dumdiv3, sliders_0)
-        sliders = column(region_selection,  self.text2, self.text4 ,sliders)
+        sliders = column(self.text2, self.text4 ,sliders)
         # regions
 
         sliders_3 = row(param_t_exp, param_t_inf, param_sim_len)
         #sliders_3
         # global
+        nu_logo = Div(text="""<img src='/streaming/static/nu_logo1.jpg'>""", width=650, height=100)
+        issai_logo = Div(text="""<img src='/streaming/static/issai_logo_new.png'>""", width=650, height=252)
+        text2 = Div(text="""<h1 style='color:black'>   issai.nu.edu.kz/episim </h1>""", width = 500, height = 100)
+
+        text_footer_1 = Div(text="""<h3 style='color:green'> Developed by ISSAI Researchers : Askat Kuzdeuov, Daulet Baimukashev, Bauyrzhan Ibragimov, Aknur Karabay, Almas Mirzakhmetov, Mukhamet Nurpeiissov and Huseyin Atakan Varol </h3>""", width = 1500, height = 10)
+        text_footer_2 = Div(text="""<h3 style='color:red'> Disclaimer : This simulator is a research tool. The simulation results will show general trends based on entered parameters and initial conditions  </h3>""", width = 1500, height = 10)
+        text_footer = column(text_footer_1, text_footer_2)
+        text = column(self.text1, text2)
+        header = row(nu_logo, text , issai_logo)
+
+
+        ###########
+
+        buttons = row(reset_button,save_button, run_button)
+        buttons = column(buttons, region_selection)
+
+        params =  column(sliders, self.text3, self.text4, sliders_3, self.text5, self.text4,)
+
+        sliders_4 = column(param_tr_scale, param_tr_leakage)
+        check_table = row(column(div_cb1,checkbox_group1), column(div_cb2,checkbox_group2), column(div_cb3,checkbox_group3), sliders_4)
+        check_trans = row(self.data_tableT)
+
+        ###
+        layout = column(header, self.pAll, buttons)
+        layout = column (layout, params, check_table)
+
+        layout = column (layout, check_trans, self.text7, self.text4)
+
+        layout_t = column(text_save, save_button_result)
+        layout = column (layout, layout_t)
+        layout = column (layout, text_footer)
+
+        self.doc.title = 'Covid Simulation'
+        self.doc.add_root(layout)
+        #################################
+        '''
 
         buttons = row(reset_button,save_button, run_button)
 
@@ -567,9 +612,10 @@ class Visual:
 
         layout = column(self.text1, self.pAll)
         layout = column (layout, params, check_table)
-        layout = column (layout, check_trans, buttons, self.text7, self.text4 )
+        layout = column (layout, check_trans, buttons, self.text7, self.text4)
         layout_t = column(text_save, save_button_result)
         layout = column (layout, layout_t)
 
         self.doc.title = 'Covid Simulation'
         self.doc.add_root(layout)
+        '''
