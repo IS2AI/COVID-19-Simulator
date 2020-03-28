@@ -4,7 +4,6 @@ https://www.anaconda.com/distribution/#download-section
 
 choose 3.7 version
 
-
 2) After completion of the installation run Anaconda Terminal (Anaconda Prompt)
 
 windows and start typing 'anaconda prompt' and run it

@@ -51,7 +51,7 @@ class Visual:
 
         self.running = running
         self.callbackFunc = callbackFunc
-        self.source = ColumnDataSource(dict(x=[0], sus=[0], exp=[0], inf=[0], sin=[0],
+        self.source = ColumnDataSource(dict(x=[0], sus=[0], exp=[config.param_init_exposed[config.region]], inf=[0], sin=[0],
                                         qua=[0], imm=[0], dea=[0]))
         self.tools = 'pan, box_zoom, wheel_zoom, reset'
         self.plot_options = dict(plot_width=800, plot_height=600, tools = [self.tools])
@@ -170,7 +170,7 @@ class Visual:
         newx = [0]
         state_inf = [0]
         state_sus = [0]
-        state_exp = [0]
+        state_exp = [config.param_init_exposed[config.region]]
         state_sin = [0]
         state_qua = [0]
         state_imm = [0]
@@ -305,7 +305,6 @@ class Visual:
         if config.flag_sim == 0:
             config.run_iteration=True
             self.update(False)
-            print('Run the simulation')
 
     def save_file_click(self):
         if config.flag_sim == 0:
@@ -323,14 +322,14 @@ class Visual:
             for j in range(17):
                 filename =  directory + '/' + self.region_names[j] + '.csv'
                 with open(filename, 'w', newline='') as csvfile:
-                    spamwriter = csv.writer(csvfile, delimiter=',')
+                    spamwriter = csv.writer(csvfile, delimiter=',',
+                            escapechar=' ', quoting=csv.QUOTE_NONE)
                     #points*nodes*states
                     spamwriter.writerow([info])
                     for iter in range(config.counter_func):
                         if config.new_plot_all:
-                            print('iet', iter)
                             one_arr = config.new_plot_all[iter] #
-                            one_arr_node = one_arr[-1,j,:]
+                            one_arr_node = one_arr[-1,j,:].astype(int)
                             spamwriter.writerows([one_arr_node])
 
                     #print(np.array(config.new_plot_all[:][j][:]))
@@ -349,7 +348,7 @@ class Visual:
                         #numpy.savetxt("FILENAME.csv", arr, delimiter=",")
 
             # points*nodes*states
-            print('saving results to .csv format')
+            print('[INFO] Saving results to .csv format')
 
     def handler_beta_exp(self, attr, old, new):
         config.param_beta_exp[config.region]=new
@@ -389,10 +388,10 @@ class Visual:
 
     def handler_param_t_inf(self, attr, old, new):
         config.param_t_inf[config.region]=new
-
-
     def handler_init_exposed(self, attr, old, new):
         config.param_init_exposed[config.region]=new
+        self.update(False)
+
 
     def handler_param_tr_scale(self, attr, old, new):
         config.param_transition_scale=new
@@ -550,11 +549,11 @@ class Visual:
                     TableColumn(field="c15", title="Soltustik Qazaqstan",),
                     TableColumn(field="c16", title="Turkistan",),]
 
-        self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=2000, height=500, sortable = False)
+        self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1200, height=500, sortable = False)
 
-        sliders_1 = column(sus_to_exp_slider, param_qr_slider, param_sir, param_eps_exp, param_eps_qua)
-        sliders_2 = column(param_eps_sev, param_hosp_capacity, param_gamma_mor1, param_gamma_mor2, param_gamma_im)
-        sliders_0 = column(init_exposed)
+        sliders_1 = column(init_exposed, sus_to_exp_slider, param_qr_slider, param_sir)
+        sliders_2 = column(param_hosp_capacity, param_gamma_mor1, param_gamma_mor2, param_gamma_im)
+        sliders_0 = column(param_eps_exp, param_eps_qua, param_eps_sev)
 
         sliders = row(sliders_1, dumdiv3, sliders_2, dumdiv3, sliders_0)
         sliders = column(self.text2, self.text4 ,sliders)

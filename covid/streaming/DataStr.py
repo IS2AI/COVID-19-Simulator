@@ -139,7 +139,7 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
 
     end = time.time()
 
-    print("Sim.time: {:.4f} sec".format(end - start))
+    print("[INFO] Sim.time: {:.4f} sec".format(end - start))
     states_arr_plot = np.zeros((param_num_sim, nodes_num, 7))
 
     for iter in range(param_num_sim):
@@ -171,7 +171,6 @@ class DataStream(threading.Thread):
     def run(self):
 
         count = config.sim_len/2
-        print(count)
         df = pd.DataFrame()
         nodes_old = []
         state_sus = []
@@ -207,7 +206,7 @@ class DataStream(threading.Thread):
                         config.counter_func +=1
                         self.callbackFunc.doc.add_next_tick_callback(partial(self.callbackFunc.update, False))
                     config.flag_sim = 0
-                    print('Simulation finished, press Simulation button for another iteration')
+                    print('[INFO] Simulation is finished, press Simulation button for next iteration')
                     config.counter +=1
                     config.run_iteration = False
                     config.iteration_over = True
