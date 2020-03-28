@@ -182,8 +182,8 @@ class DataStream(threading.Thread):
         state_dea = []
         try:
             while True:
+                #config.new_plot_all = []
                 while config.counter != count+1 and config.run_iteration:
-                    config.new_plot_all = []
                     for i in range(int(config.loop_num/2)):
                         config.flag_sim = 1
 

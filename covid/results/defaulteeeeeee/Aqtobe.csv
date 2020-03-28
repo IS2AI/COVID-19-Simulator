@@ -1,0 +1,5 @@
+"This file contains the results of the simulation for the region.Params: number of Infected, number of Exposed, number of Severe Infected,  number of Quarantined,   number of Immunized, number of Susceptible, number of Dead "
+0.0,10.0,0.0,0.0,0.0,869603.0,0.0
+0.0,9.0,0.0,0.0,0.0,869603.0,0.0
+0.0,27.0,0.0,1.0,0.0,869594.0,0.0
+0.0,24.0,0.0,1.0,0.0,869594.0,0.0

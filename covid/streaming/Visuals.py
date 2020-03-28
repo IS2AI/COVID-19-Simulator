@@ -46,6 +46,7 @@ class Visual:
 
         self.text5 = Div(text="""<h1 style="color:blue"> Change transition matrix </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
         self.text6 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
+        self.text7 = Div(text="""<h1 style="color:blue">Save results to file </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
 
 
         self.running = running
@@ -165,6 +166,7 @@ class Visual:
         state_qua = [0]
         state_imm = [0]
         state_dea = [0]
+
         if new_nodes_all != [] and config.region != 17:
             for i in range(len(config.new_plot_all)):
 
@@ -175,6 +177,7 @@ class Visual:
                 state_imm.append(new_nodes_all[i][:, config.region, 4][-1])
                 state_sus.append(new_nodes_all[i][:, config.region, 5][-1])
                 state_dea.append(new_nodes_all[i][:, config.region, 6][-1])
+                #newx = np.arange(0,2*config.counter_func/2)
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
 
         elif new_nodes_all != [] and config.region == 17:
@@ -187,9 +190,10 @@ class Visual:
                 state_imm.append(sum(new_nodes_all[i][:, :, 4][-1]))
                 state_sus.append(sum(new_nodes_all[i][:, :, 5][-1]))
                 state_dea.append(sum(new_nodes_all[i][:, :, 6][-1]))
+                #newx = np.arange(0,2*config.counter_func/2)
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
-                            qua=state_qua, imm=state_imm, dea=state_dea)
+                    qua=state_qua, imm=state_imm, dea=state_dea)
 
         self.data1 = dict(
             c0=[(config.transition_matrix[0,i]) for i in range(0,17)],
@@ -295,7 +299,7 @@ class Visual:
     def save_file_click(self):
         if config.flag_sim == 0:
             # points*nodes*states
-            info = 'This file contains the results of the simulation for the region.Params: number of Infected, number of Exposed, number of Severe Infected,  number of Quarantined,   number of Immunized, number of Susceptible, number of Dead '
+            info = 'Number of Infected, Exposed, Severe Infected, Quarantined, Immunized, Susceptible, Dead '
             params_local = np.vstack([config.param_beta_exp, config.param_qr, config.param_sir, config.param_eps_exp, config.param_eps_qua,
                     config.param_eps_sev,config.param_hosp_capacity, config.param_gamma_mor1,config.param_gamma_mor2,
                     config.param_gamma_im, config.param_init_susceptible, config.param_init_exposed])
@@ -307,16 +311,18 @@ class Visual:
                 os.makedirs(directory)
             for j in range(17):
                 filename =  directory + '/' + self.region_names[j] + '.csv'
-                with open(filename, 'a', newline='') as csvfile:
+                with open(filename, 'w', newline='') as csvfile:
                     spamwriter = csv.writer(csvfile, delimiter=',')
                     #points*nodes*states
                     spamwriter.writerow([info])
-                    for iter in range(config.counter):
-                        one_arr = config.new_plot_all[iter] #
-                        one_arr_node = one_arr[0,j,:]
-                        one_arr_node1 =  one_arr[1,j,:]
-                        spamwriter.writerows([one_arr_node])
-                        spamwriter.writerows([one_arr_node1])
+                    for iter in range(config.counter_func):
+                        if config.new_plot_all:
+                            print('iet', iter)
+                            one_arr = config.new_plot_all[iter] #
+                            one_arr_node = one_arr[0,j,:]
+                            one_arr_node1 =  one_arr[1,j,:]
+                            spamwriter.writerows([one_arr_node])
+                            spamwriter.writerows([one_arr_node1])
 
                     #print(np.array(config.new_plot_all[:][j][:]))
                     #spamwriter.writerow([info])
@@ -405,7 +411,7 @@ class Visual:
         regions_for_show = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy',
                                 'Qostanai',  'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan', 'Qazaqstan']
 
-        text_save = TextInput(value="default", title="Output Folder Name: (will be improved)")
+        text_save = TextInput(value="default", title="Output Folder Name: results/... ")
         text_save.on_change('value', self.handler_param_save_file)
 
         # select region
@@ -559,9 +565,9 @@ class Visual:
 
         layout = column(self.text1, self.pAll)
         layout = column (layout, params, check_table)
-        layout = column (layout, check_trans, buttons, self.text4)
-        layouts = column(text_save, save_button_result)
-        layout = column (layout, layouts)
+        layout = column (layout, check_trans, buttons, self.text7, self.text4 )
+        layout_t = column(text_save, save_button_result)
+        layout = column (layout, layout_t)
 
         self.doc.title = 'Covid Simulation'
         self.doc.add_root(layout)
