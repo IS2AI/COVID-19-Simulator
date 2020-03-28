@@ -260,6 +260,8 @@ class Visual:
         config.param_transition_box.append(config.box2)
         config.param_transition_box.append(config.box3)
 
+        config.box_time.append(config.param_transition_box)
+
         tr_boxes = config.param_transition_box
 
         param_transition_box = np.zeros((17,3))
@@ -334,23 +336,25 @@ class Visual:
             if not os.path.exists(directory):
                 os.makedirs(directory)
 
-            config.param_transition_box = []
-            config.param_transition_box.append(config.box1)
-            config.param_transition_box.append(config.box2)
-            config.param_transition_box.append(config.box3)
 
-            tr_boxes = config.param_transition_box
+            #####
+            box_corr = np.zeros((17,3))
+            for b in range(config.counter_func):
+                curr_transition_box = config.box_time[b]
+                tr_boxes = curr_transition_box
+                param_transition_box = np.zeros((17,3))
+                for i, way in enumerate(tr_boxes): # air 0 rail 1 road 2
+                    for j, node in enumerate(way):
+                        status = int(node)
+                        param_transition_box[status, i] = 1
+                box_corr = np.dstack([box_corr, param_transition_box])
+                #box_corr = box_corr[:,:,]
+                #, box_corr[iter,j,0], box_corr[j,1],  box_corr[j,2]
+                #print(box_corr)
+                #print(box_corr.shape)
+                #print(box_corr[0,0,:])
 
-            for i in range(config.params_coun)
-
-            param_transition_box = np.zeros((17,3))
-
-
-
-            for i, way in enumerate(tr_boxes): # air 0 rail 1 road 2
-                for j, node in enumerate(way):
-                    status = int(node)
-                    param_transition_box[status, i] = 1
+            #####
 
             for j in range(17):
                 filename =  directory + '/' + self.region_names[j] + '.csv'
@@ -366,7 +370,7 @@ class Visual:
                             one_arr_node = np.append(one_arr_node, (config.param_beta_exp[j], config.param_qr[j], config.param_sir[j],
                                 config.param_hosp_capacity[j], config.param_gamma_mor1[j], config.param_gamma_mor2[j], config.param_gamma_im[j], config.param_eps_exp[j],
                                 config.param_eps_qua[j], config.param_eps_sev[j], config.param_t_exp[j], config.param_t_inf[j], config.param_transition_leakage,
-                                config.param_transition_scale, param_transition_box[j,0], param_transition_box[j,1],  param_transition_box[j,2] ))
+                                config.param_transition_scale,box_corr[j,0,iter],box_corr[j,1,iter],box_corr[j,2,iter]))
                             #print(param_transition_box)
                             #print(one_arr_node.shape)
                             #print(one_arr_node)
@@ -641,7 +645,7 @@ class Visual:
         check_trans = row(self.data_tableT)
 
         ###
-        layout = column(header, self.pAll, buttons)
+        layout = column(self.pAll, buttons) #header
         layout = column (layout, params, check_table)
 
         layout = column (layout, check_trans, self.text4)
