@@ -260,7 +260,7 @@ class Visual:
         config.param_transition_box.append(config.box2)
         config.param_transition_box.append(config.box3)
 
-        config.box_time.append(config.param_transition_box)
+        #config.box_time.append(config.param_transition_box)
 
         tr_boxes = config.param_transition_box
 
@@ -340,7 +340,7 @@ class Visual:
             #####
             box_corr = np.zeros((17,3))
             for b in range(config.counter_func):
-                curr_transition_box = config.box_time[b]
+                curr_transition_box = config.box_time[b+1]
                 tr_boxes = curr_transition_box
                 param_transition_box = np.zeros((17,3))
                 for i, way in enumerate(tr_boxes): # air 0 rail 1 road 2
@@ -350,10 +350,12 @@ class Visual:
                 box_corr = np.dstack([box_corr, param_transition_box])
                 #box_corr = box_corr[:,:,]
                 #, box_corr[iter,j,0], box_corr[j,1],  box_corr[j,2]
+                #print(b)
                 #print(box_corr)
                 #print(box_corr.shape)
+            #print(box_corr)
+            box_corr = box_corr[:,:,1:]
                 #print(box_corr[0,0,:])
-
             #####
 
             for j in range(17):
