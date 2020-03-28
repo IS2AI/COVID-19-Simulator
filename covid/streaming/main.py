@@ -30,14 +30,14 @@ def main():
     threads(callbackFunc=webVisual, running=event)
 
 if __name__ == '__main__':
-    print('[INFO] Start the program.')
-    main()
+    try:
+        print('[INFO] Start the program.')
+        main()
+    except (KeyboardInterrupt):
+        print('Exiting the program. ')
+        pass
 
 '''
-try:
-    print('start')
+    print('[INFO] Start the program.')
     main()
-except (KeyboardInterrupt):
-    print('Exiting the program. ')
-    pass
 '''

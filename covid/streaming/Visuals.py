@@ -305,6 +305,8 @@ class Visual:
         config.param_transition_box.append(config.box2)
         config.param_transition_box.append(config.box3)
 
+        config.box_time.append(config.param_transition_box)
+
         tr_boxes = config.param_transition_box
 
         param_transition_box = np.zeros((17,3))
@@ -368,7 +370,7 @@ class Visual:
     def save_file_click(self):
         if config.flag_sim == 0:
             # points*nodes*states
-            info = r'Infected,Exposed,Severe Infected,Quarantined,Immunized,Susceptible,Dead'
+            info = config.header_file_csv
             params_local = np.vstack([config.param_beta_exp, config.param_qr, config.param_sir, config.param_eps_exp, config.param_eps_qua,
                     config.param_eps_sev,config.param_hosp_capacity, config.param_gamma_mor1,config.param_gamma_mor2,
                     config.param_gamma_im, config.param_init_susceptible, config.param_init_exposed])
@@ -378,6 +380,27 @@ class Visual:
             directory = 'results' + '/' +  config.param_save_file
             if not os.path.exists(directory):
                 os.makedirs(directory)
+
+
+            #####
+            box_corr = np.zeros((17,3))
+            for b in range(config.counter_func):
+                curr_transition_box = config.box_time[b]
+                tr_boxes = curr_transition_box
+                param_transition_box = np.zeros((17,3))
+                for i, way in enumerate(tr_boxes): # air 0 rail 1 road 2
+                    for j, node in enumerate(way):
+                        status = int(node)
+                        param_transition_box[status, i] = 1
+                box_corr = np.dstack([box_corr, param_transition_box])
+                #box_corr = box_corr[:,:,]
+                #, box_corr[iter,j,0], box_corr[j,1],  box_corr[j,2]
+                #print(box_corr)
+                #print(box_corr.shape)
+                #print(box_corr[0,0,:])
+
+            #####
+
             for j in range(17):
                 filename =  directory + '/' + self.region_names[j] + '.csv'
                 with open(filename, 'w', newline='') as csvfile:
@@ -389,6 +412,13 @@ class Visual:
                         if config.new_plot_all:
                             one_arr = config.new_plot_all[iter] #
                             one_arr_node = one_arr[-1,j,:].astype(int)
+                            one_arr_node = np.append(one_arr_node, (config.param_beta_exp[j], config.param_qr[j], config.param_sir[j],
+                                config.param_hosp_capacity[j], config.param_gamma_mor1[j], config.param_gamma_mor2[j], config.param_gamma_im[j], config.param_eps_exp[j],
+                                config.param_eps_qua[j], config.param_eps_sev[j], config.param_t_exp[j], config.param_t_inf[j], config.param_transition_leakage,
+                                config.param_transition_scale,box_corr[j,0,iter],box_corr[j,1,iter],box_corr[j,2,iter]))
+                            #print(param_transition_box)
+                            #print(one_arr_node.shape)
+                            #print(one_arr_node)
                             spamwriter.writerows([one_arr_node])
 
                     #print(np.array(config.new_plot_all[:][j][:]))
