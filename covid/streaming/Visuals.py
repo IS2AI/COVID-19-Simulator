@@ -62,7 +62,7 @@ class Visual:
         self.prev_y1 = 0
         self.region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
                             'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan', 'Qazaqstan']
-        
+
         self.init_exposed.value = config.param_init_exposed[config.region]
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
         self.param_qr_slider.value = config.param_qr[config.region]
@@ -74,7 +74,7 @@ class Visual:
         self.param_eps_exp.value = config.param_eps_exp[config.region]
         self.param_eps_qua.value = config.param_eps_qua[config.region]
         self.param_eps_sev.value = config.param_eps_sev[config.region]
-        
+
     def set_initial_params(self, params):
         global initial_params
         config.initial_params = params
@@ -325,7 +325,7 @@ class Visual:
     def save_file_click(self):
         if config.flag_sim == 0:
             # points*nodes*states
-            info = r'Number of Infected,Exposed,Severe Infected,Quarantined,Immunized,Susceptible,Dead'
+            info = r'Infected,Exposed,Severe Infected,Quarantined,Immunized,Susceptible,Dead'
             params_local = np.vstack([config.param_beta_exp, config.param_qr, config.param_sir, config.param_eps_exp, config.param_eps_qua,
                     config.param_eps_sev,config.param_hosp_capacity, config.param_gamma_mor1,config.param_gamma_mor2,
                     config.param_gamma_im, config.param_init_susceptible, config.param_init_exposed])
@@ -377,7 +377,7 @@ class Visual:
         self.param_eps_exp.value = config.param_eps_exp[config.region]
         self.param_eps_qua.value = config.param_eps_qua[config.region]
         self.param_eps_sev.value = config.param_eps_sev[config.region]
-    
+
 
     def handler_beta_exp(self, attr, old, new):
         config.param_beta_exp[config.region]=new
@@ -476,7 +476,7 @@ class Visual:
         self.param_eps_sev = Slider(start=0,end=1,step=0.01,value=config.param_eps_sev[config.region], title='Disease transmission rate of Severe Infected compared to Infected')
         self.param_eps_sev.on_change('value', self.handler_param_eps_sev)
 
-        self.param_hosp_capacity = Slider(start=0,end=100000,step=100,value=config.param_hosp_capacity[config.region], title='Hospital Capacity')
+        self.param_hosp_capacity = Slider(start=0,end=10000,step=1,value=config.param_hosp_capacity[config.region], title='Hospital Capacity')
         self.param_hosp_capacity.on_change('value', self.handler_param_hosp_capacity)
 
         self.param_gamma_mor1 = Slider(start=0,end=1,step=0.01,value=config.param_gamma_mor1[config.region], title='Severe Infected to Dead transition probability')
@@ -498,7 +498,7 @@ class Visual:
         self.param_t_inf.on_change('value', self.handler_param_t_inf)
 
 
-        self.init_exposed = Slider(start=1,end=10000,step=100,value=config.param_init_exposed[config.region], title='Initial Exposed')
+        self.init_exposed = Slider(start=0,end=100,step=1,value=config.param_init_exposed[config.region], title='Initial Exposed')
         self.init_exposed.on_change('value', self.handler_init_exposed)
 
         self.param_tr_scale = Slider(start=0.0,end=1,step=0.01,value=config.param_transition_scale, title='Traffic ratio')
@@ -518,8 +518,8 @@ class Visual:
         save_button_result = Button(label='Save current plot to csv', button_type='primary')
         run_button = Button(label='Run the simulation',button_type='primary')
         #########  CHANGE
-        
-        
+
+
         save_button.on_click(self.save_click)
         run_button.on_click(self.run_click)
         reset_button.on_click(self.reset_click)
@@ -621,7 +621,7 @@ class Visual:
 
         layout = column (layout, check_trans, self.text4)
 
-        
+
 
         layout = column (layout)
         layout = column (layout,self.text4, text_footer)
@@ -629,7 +629,7 @@ class Visual:
 
         self.doc.title = 'Covid Simulation'
         self.doc.add_root(layout)
-        
+
         ################################# CHANGE #########################
         '''
 

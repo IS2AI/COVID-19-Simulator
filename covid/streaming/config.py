@@ -52,7 +52,7 @@ param_sim_len = 1*np.ones(nodes_num)            # Length of simulation in days
 param_t_exp = 5*np.ones(nodes_num)             # Incubation period (The period from the start of incubation to the end of the incubation state
 param_t_inf = 14*np.ones(nodes_num)             # Infection period (The period from the start of infection to the end of the infection state
 
-param_init_exposed = 1*np.ones(nodes_num) # np.array([100,100,100])#10*np.ones(nodes_num)
+param_init_exposed = 0*np.ones(nodes_num) # np.array([100,100,100])#10*np.ones(nodes_num)
 
 param_transition_leakage = 0.0
 param_transition_scale = 1.0
