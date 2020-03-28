@@ -191,6 +191,7 @@ class DataStream(threading.Thread):
                         config.param_transition_box.append(config.box1)
                         config.param_transition_box.append(config.box2)
                         config.param_transition_box.append(config.box3)
+                        config.box_time.append(config.param_transition_box)
 
                         config.params_node = np.vstack([config.param_beta_exp, config.param_qr,
                                         config.param_sir, config.param_eps_exp, config.param_eps_qua, config.param_eps_sev,config.param_hosp_capacity,
