@@ -153,12 +153,11 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
             states_arr_plot[iter, i_node, 6] = nodes_state_arr[iter, i_node, -1]
 
 
-    states_arr_plotx = np.zeros((2,17,7))
-    states_arr_plotx[0, :, :] = states_arr_plot[24,:,:]
-    states_arr_plotx[1, :, :] = states_arr_plot[48,:,:]
-    print(states_arr_plot.shape)
+    #states_arr_plotx = np.zeros((2,17,7))
+    #states_arr_plotx[0, :, :] = states_arr_plot[24,:,:]
+    #states_arr_plotx[1, :, :] = states_arr_plot[48,:,:]
     pool.close()
-    return nodes, states_arr_plotx, params_node, transition_matrix
+    return nodes, states_arr_plot, params_node, transition_matrix
 
 
 class DataStream(threading.Thread):
@@ -186,6 +185,7 @@ class DataStream(threading.Thread):
                 while config.counter != count+1 and config.run_iteration:
                     config.new_plot_all = []
                     for i in range(int(config.loop_num/2)):
+                        config.flag_sim = 1
 
                         config.iteration_over = False
                         config.param_transition_box = []
@@ -203,10 +203,10 @@ class DataStream(threading.Thread):
                         new_nodes, new_plot, new_params, tr_m = simulate_network(config.params_node, config.params_network, config.nodes_old, config.counter_func, config.params_old)
                         config.nodes_old = new_nodes
                         config.new_plot_all.append(new_plot) # new plot is 2*17*7 matrix not large
-                        print('mem', sys.getsizeof(config.new_plot_all))
                         config.params_old = new_params.copy()
                         config.counter_func +=1
                         self.callbackFunc.doc.add_next_tick_callback(partial(self.callbackFunc.update, False))
+                    config.flag_sim = 0
                     print('Simulation finished, press Simulation button for another iteration')
                     config.counter +=1
                     config.run_iteration = False

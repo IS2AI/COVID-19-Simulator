@@ -32,9 +32,12 @@ def main():
 #main()
 
 if __name__ == '__main__':
+    main()
+'''
     try:
         print('start')
         main()
-    except (KeyboardInterrupt, SystemExit):
+    except (KeyboardInterrupt):
         print('Exiting the program. ')
         pass
+'''

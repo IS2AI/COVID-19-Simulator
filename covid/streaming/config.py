@@ -21,6 +21,17 @@ newx = []
 counter = 1
 counter_func = 0
 
+pstate_sus = []
+pstate_exp = []
+pstate_inf = []
+pstate_sin = []
+pstate_qua = []
+pstate_imm = []
+pstate_dea = []
+
+
+flag_sim = 0
+
 #  Parameters
 param_beta_exp = 0.2*np.ones(nodes_num)     # Susceptible to exposed transition constant
 param_qr  = 0.02*np.ones(nodes_num)         # Daily quarantine rate (Ratio of Exposed getting Quarantined)

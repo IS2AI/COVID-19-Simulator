@@ -20,7 +20,6 @@ from bokeh.models.widgets import *
 import copy
 from bokeh.io import output_file, show
 
-
 from datetime import date
 from random import randint
 
@@ -32,6 +31,7 @@ from bokeh.models import (CDSView, ColorBar, ColumnDataSource,
                           LinearColorMapper, Slider,PrintfTickFormatter)
 
 import csv
+import pandas as pd
 
 #import geopandas as gpd
 #df_kz = gpd.read_file('data_geomap/KAZ_adm1.shp')
@@ -176,6 +176,7 @@ class Visual:
                 state_sus.append(new_nodes_all[i][:, config.region, 5][-1])
                 state_dea.append(new_nodes_all[i][:, config.region, 6][-1])
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
+
         elif new_nodes_all != [] and config.region == 17:
             for i in range(len(config.new_plot_all)):
 
@@ -189,6 +190,7 @@ class Visual:
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
                             qua=state_qua, imm=state_imm, dea=state_dea)
+
         self.data1 = dict(
             c0=[(config.transition_matrix[0,i]) for i in range(0,17)],
             c1=[(config.transition_matrix[1,i]) for i in range(0,17)],
@@ -277,53 +279,62 @@ class Visual:
         self.update(False)
 
     def reset_click(self):
-        config.new_plot_all = []
-        config.counter_func = 0
-        config.counter = 0
-        config.run_iteration=False
-        self.update(False)
+        if config.flag_sim == 0:
+            config.new_plot_all = []
+            config.counter_func = 0
+            config.counter = 0
+            config.run_iteration=False
+            self.update(False)
 
     def run_click(self):
-        config.run_iteration=True
-        self.update(False)
-        print('Run the simulation')
+        if config.flag_sim == 0:
+            config.run_iteration=True
+            self.update(False)
+            print('Run the simulation')
 
     def save_file_click(self):
-        # points*nodes*states
-        info = 'This file contains the results. Region name'
-        params = 'Params: '
-        print('sd', config.param_save_file)
+        if config.flag_sim == 0:
+            # points*nodes*states
+            info = 'This file contains the results of the simulation for the region.Params: number of Infected, number of Exposed, number of Severe Infected,  number of Quarantined,   number of Immunized, number of Susceptible, number of Dead '
+            params_local = np.vstack([config.param_beta_exp, config.param_qr, config.param_sir, config.param_eps_exp, config.param_eps_qua,
+                    config.param_eps_sev,config.param_hosp_capacity, config.param_gamma_mor1,config.param_gamma_mor2,
+                    config.param_gamma_im, config.param_init_susceptible, config.param_init_exposed])
 
-        params_local = np.vstack([config.param_beta_exp, config.param_qr, config.param_sir, config.param_eps_exp, config.param_eps_qua,
-                config.param_eps_sev,config.param_hosp_capacity, config.param_gamma_mor1,config.param_gamma_mor2,
-                config.param_gamma_im, config.param_init_susceptible, config.param_init_exposed])
+            params_global = [config.counter_func, config.param_t_exp, config.param_t_inf, 1, 12]
 
-        params_global = [config.counter_func, config.param_t_exp, config.param_t_inf, 1, 12]
+            directory = 'results' + '/' +  config.param_save_file
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            for j in range(17):
+                filename =  directory + '/' + self.region_names[j] + '.csv'
+                with open(filename, 'a', newline='') as csvfile:
+                    spamwriter = csv.writer(csvfile, delimiter=',')
+                    #points*nodes*states
+                    spamwriter.writerow([info])
+                    for iter in range(config.counter):
+                        one_arr = config.new_plot_all[iter] #
+                        one_arr_node = one_arr[0,j,:]
+                        one_arr_node1 =  one_arr[1,j,:]
+                        spamwriter.writerows([one_arr_node])
+                        spamwriter.writerows([one_arr_node1])
 
-        directory = 'results' + '/' +  config.param_save_file
+                    #print(np.array(config.new_plot_all[:][j][:]))
+                    #spamwriter.writerow([info])
+                    #spamwriter.writerows([np.array(config.new_plot_all[:][j][:])])
+                    #spamwriter.writerows([[1,2,3],[4,5,6], [6,7,8]])
+                    #spamwriter.writerow([arr])
+                    #arr = config.new_plot_all[iter][j][:]
+                    #for iter in range(config.counter_func-1):
+                    #    arr = config.new_plot_all[iter][j][:]
+                    #spamwriter.writerow([arr])
+                    #print(config.new_plot_all[iter][j][:])
+                    #print(config.new_plot_all.shape)
+                        #list = [(params_local[j]) for i in range(0,17)] arr = [()] # iter * 17 * 7
+                        #spamwriter.writerow([arr]) # spamwriter.writerow([a for a in arr])
+                        #numpy.savetxt("FILENAME.csv", arr, delimiter=",")
 
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-
-        for j in range(17):
-            filename =  directory + '/' + self.region_names[j] + '.csv'
-            with open(filename, 'w', newline='') as csvfile:
-                spamwriter = csv.writer(csvfile, delimiter=',')
-                # points*nodes*states
-                info = 'This file contains the results. Region name'
-                params = 'params:'
-                spamwriter.writerow([info])
-                spamwriter.writerow([params])
-                for iter in range(config.counter_func-1):
-                    arr = config.new_plot_all[iter][j][:]
-                    print(config.new_plot_all[iter][j][:])
-                    #list = [(params_local[j]) for i in range(0,17)] arr = [()] # iter * 17 * 7
-                    spamwriter.writerow([arr]) # spamwriter.writerow([a for a in arr])
-
-        # points*nodes*states
-        print(config.param_save_file)
-        print(config.new_plot_all)
-        print('saving results to .csv format')
+            # points*nodes*states
+            print('saving results to .csv format')
 
     def handler_beta_exp(self, attr, old, new):
         config.param_beta_exp[config.region]=new
