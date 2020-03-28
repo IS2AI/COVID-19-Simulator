@@ -552,7 +552,7 @@ class Visual:
                     TableColumn(field="c15", title="Soltustik Qazaqstan",),
                     TableColumn(field="c16", title="Turkistan",),]
 
-        self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=2000, height=500, sortable = False)
+        self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1000, height=500, sortable = False)
 
         sliders_1 = column(sus_to_exp_slider, param_qr_slider, param_sir, param_eps_exp, param_eps_qua)
         sliders_2 = column(param_eps_sev, param_hosp_capacity, param_gamma_mor1, param_gamma_mor2, param_gamma_im)
@@ -594,8 +594,10 @@ class Visual:
         layout = column (layout, check_trans, self.text7, self.text4)
 
         layout_t = column(text_save, save_button_result)
+
         layout = column (layout, layout_t)
-        layout = column (layout, text_footer)
+        layout = column (layout,self.text4, text_footer)
+
 
         self.doc.title = 'Covid Simulation'
         self.doc.add_root(layout)
