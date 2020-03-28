@@ -184,7 +184,7 @@ class DataStream(threading.Thread):
             while True:
                 #config.new_plot_all = []
                 while config.counter != count+1 and config.run_iteration:
-                    for i in range(int(config.loop_num/2)):
+                    for i in range(int(config.loop_num)):
                         config.flag_sim = 1
 
                         config.iteration_over = False

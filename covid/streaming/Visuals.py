@@ -177,6 +177,7 @@ class Visual:
                 state_imm.append(new_nodes_all[i][:, config.region, 4][-1])
                 state_sus.append(new_nodes_all[i][:, config.region, 5][-1])
                 state_dea.append(new_nodes_all[i][:, config.region, 6][-1])
+
                 #newx = np.arange(0,2*config.counter_func/2)
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
 
@@ -190,6 +191,7 @@ class Visual:
                 state_imm.append(sum(new_nodes_all[i][:, :, 4][-1]))
                 state_sus.append(sum(new_nodes_all[i][:, :, 5][-1]))
                 state_dea.append(sum(new_nodes_all[i][:, :, 6][-1]))
+
                 #newx = np.arange(0,2*config.counter_func/2)
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
