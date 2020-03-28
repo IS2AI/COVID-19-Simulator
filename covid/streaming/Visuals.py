@@ -215,6 +215,7 @@ class Visual:
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
 
                 # for map
+                '''
                 regions_ids = [ lregion for lregion in range(18)][1:]
                 for region in regions_ids:
                     print('Region number', region, type(region_states[region]))
@@ -246,6 +247,7 @@ class Visual:
                         tmp_data["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
 
                         region_states[region] = tmp_data
+                '''
 
         elif new_nodes_all != [] and config.region == 17:
             for i in range(len(config.new_plot_all)):
