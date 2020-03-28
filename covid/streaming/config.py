@@ -33,7 +33,7 @@ pstate_dea = []
 flag_sim = 0
 
 #  Parameters
-param_beta_exp = 0.2*np.ones(nodes_num)     # Susceptible to exposed transition constant
+param_beta_exp = 0.225*np.ones(nodes_num)     # Susceptible to exposed transition constant
 param_qr  = 0.02*np.ones(nodes_num)         # Daily quarantine rate (Ratio of Exposed getting Quarantined)
 param_sir  = 0.01*np.ones(nodes_num)        # Daily isolation rate (Ratio of Infected getting Isolated)
 
@@ -43,8 +43,8 @@ param_eps_sev  = 0.3*np.ones(nodes_num)       # D  isease transmission rate of i
 
 param_hosp_capacity = 3000*np.ones(nodes_num)   # Maximum amount patients that hospital can accommodate
 
-param_gamma_mor1 = 0.03*np.ones(nodes_num) # Severe Infected (Hospitalized) to Dead transition probability
-param_gamma_mor2 = 0.1*np.ones(nodes_num) # Severe Infected (Not Hospitalized) to Dead transition probability
+param_gamma_mor1 = 0.3*np.ones(nodes_num) # Severe Infected (Hospitalized) to Dead transition probability
+param_gamma_mor2 = 0.15*np.ones(nodes_num) # Severe Infected (Not Hospitalized) to Dead transition probability
 param_gamma_im = 0.9*np.ones(nodes_num)      # Infected to Recovery Immunized transition probability
 
 param_sim_len = 1*np.ones(nodes_num)            # Length of simulation in days
@@ -53,6 +53,8 @@ param_t_exp = 5*np.ones(nodes_num)             # Incubation period (The period f
 param_t_inf = 14*np.ones(nodes_num)             # Infection period (The period from the start of infection to the end of the infection state
 
 param_init_exposed = 0*np.ones(nodes_num) # np.array([100,100,100])#10*np.ones(nodes_num)
+
+hosp_cap_init = np.array((2395, 2395, 895, 300, 650, 250, 645, 100, 800, 425, 800, 300, 465, 1420, 1505, 380, 300))
 
 param_transition_leakage = 0.0
 param_transition_scale = 1.0

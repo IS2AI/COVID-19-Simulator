@@ -401,7 +401,7 @@ class Visual:
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
         self.param_qr_slider.value = config.param_qr[config.region]
         self.param_sir.value = config.param_sir[config.region]
-        self.param_hosp_capacity.value = config.param_hosp_capacity[config.region]
+        self.param_hosp_capacity.value = config.hosp_cap_init[config.region]
         self.param_gamma_mor1.value = config.param_gamma_mor1[config.region]
         self.param_gamma_mor2.value = config.param_gamma_mor2[config.region]
         self.param_gamma_im.value = config.param_gamma_im[config.region]
@@ -489,13 +489,13 @@ class Visual:
 
         #select parameters
        #select parameters
-        self.sus_to_exp_slider = Slider(start=0,end=1,step=0.01,value=config.param_beta_exp[config.region], title='Susceptible to Exposed transition constant')
+        self.sus_to_exp_slider = Slider(start=0.0,end=0.5,step=0.005,value=config.param_beta_exp[config.region], title='Susceptible to Exposed transition constant')
         self.sus_to_exp_slider.on_change('value', self.handler_beta_exp)
 
-        self.param_qr_slider = Slider(start=0,end=1,step=0.01,value=config.param_qr[config.region], title='Daily Quarantine rate of the Exposed ')
+        self.param_qr_slider = Slider(start=0.0,end=0.25,step=0.0025,value=config.param_qr[config.region], title='Daily Quarantine rate of the Exposed ')
         self.param_qr_slider.on_change('value', self.handler_param_qr)
 
-        self.param_sir = Slider(start=0,end=1,step=0.01,value=config.param_sir[config.region], title='Daily Infected to Severe Infected transition rate ')
+        self.param_sir = Slider(start=0.0,end=0.25,step=0.0025,value=config.param_sir[config.region], title='Daily Infected to Severe Infected transition rate ')
         self.param_sir.on_change('value', self.handler_param_sir)
 
         self.param_eps_exp = Slider(start=0,end=1,step=0.01,value=config.param_eps_exp[config.region], title='Disease transmission rate of Exposed compared to Infected')
@@ -507,7 +507,7 @@ class Visual:
         self.param_eps_sev = Slider(start=0,end=1,step=0.01,value=config.param_eps_sev[config.region], title='Disease transmission rate of Severe Infected compared to Infected')
         self.param_eps_sev.on_change('value', self.handler_param_eps_sev)
 
-        self.param_hosp_capacity = Slider(start=0,end=10000,step=1,value=config.param_hosp_capacity[config.region], title='Hospital Capacity')
+        self.param_hosp_capacity = Slider(start=0,end=10000,step=1,value=config.hosp_cap_init[config.region], title='Hospital Capacity')
         self.param_hosp_capacity.on_change('value', self.handler_param_hosp_capacity)
 
         self.param_gamma_mor1 = Slider(start=0,end=1,step=0.01,value=config.param_gamma_mor1[config.region], title='Severe Infected to Dead transition probability')
@@ -647,7 +647,7 @@ class Visual:
         check_trans = row(self.data_tableT)
 
         ###
-        layout = column(self.pAll, buttons) #header
+        layout = column(header, self.pAll, buttons) #header
         layout = column (layout, params, check_table)
 
         layout = column (layout, check_trans, self.text4)
