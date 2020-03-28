@@ -8,11 +8,15 @@
              {% include 'styles.css' %}
         </style>
         <script>
-              {% include 'script.js' %}
+              {% include 'd3.js' %}
         </script>
+        
     </head>
     <body>
       {{ plot_div|indent(8) }}
       {{ plot_script|indent(8) }}
     </body>
+    <script>
+      {% include 'script.js' %}
+    </script>
 </html>
