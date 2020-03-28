@@ -51,7 +51,7 @@ class Visual:
 
         self.running = running
         self.callbackFunc = callbackFunc
-        self.source = ColumnDataSource(dict(x=[0], sus=[0], exp=[config.param_init_exposed[config.region]], inf=[0], sin=[0],
+        self.source = ColumnDataSource(dict(x=[0], sus=[config.param_init_susceptible[config.region]], exp=[config.param_init_exposed[config.region]], inf=[0], sin=[0],
                                         qua=[0], imm=[0], dea=[0]))
         self.tools = 'pan, box_zoom, wheel_zoom, reset'
         self.plot_options = dict(plot_width=800, plot_height=600, tools = [self.tools])
@@ -62,7 +62,19 @@ class Visual:
         self.prev_y1 = 0
         self.region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
                             'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan', 'Qazaqstan']
-
+        
+        self.init_exposed.value = config.param_init_exposed[config.region]
+        self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
+        self.param_qr_slider.value = config.param_qr[config.region]
+        self.param_sir.value = config.param_sir[config.region]
+        self.param_hosp_capacity.value = config.param_hosp_capacity[config.region]
+        self.param_gamma_mor1.value = config.param_gamma_mor1[config.region]
+        self.param_gamma_mor2.value = config.param_gamma_mor2[config.region]
+        self.param_gamma_im.value = config.param_gamma_im[config.region]
+        self.param_eps_exp.value = config.param_eps_exp[config.region]
+        self.param_eps_qua.value = config.param_eps_qua[config.region]
+        self.param_eps_sev.value = config.param_eps_sev[config.region]
+        
     def set_initial_params(self, params):
         global initial_params
         config.initial_params = params
@@ -169,7 +181,9 @@ class Visual:
         counter_func = config.counter_func-2
         newx = [0]
         state_inf = [0]
-        state_sus = [0]
+        ######## change
+        state_sus=[config.param_init_susceptible[config.region]]
+        #### change
         state_exp = [config.param_init_exposed[config.region]]
         state_sin = [0]
         state_qua = [0]
@@ -236,7 +250,9 @@ class Visual:
             if new == region:
                 config.region = i
                 break
+        print('select region')
         self.update(True)
+        self.slider_update_initial_val(self, old, new)
 
     def save_click(self):
         print('save this button')
@@ -349,6 +365,19 @@ class Visual:
 
             # points*nodes*states
             print('[INFO] Saving results to .csv format')
+    def slider_update_initial_val(self, attr, old, new):
+        self.init_exposed.value = config.param_init_exposed[config.region]
+        self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
+        self.param_qr_slider.value = config.param_qr[config.region]
+        self.param_sir.value = config.param_sir[config.region]
+        self.param_hosp_capacity.value = config.param_hosp_capacity[config.region]
+        self.param_gamma_mor1.value = config.param_gamma_mor1[config.region]
+        self.param_gamma_mor2.value = config.param_gamma_mor2[config.region]
+        self.param_gamma_im.value = config.param_gamma_im[config.region]
+        self.param_eps_exp.value = config.param_eps_exp[config.region]
+        self.param_eps_qua.value = config.param_eps_qua[config.region]
+        self.param_eps_sev.value = config.param_eps_sev[config.region]
+    
 
     def handler_beta_exp(self, attr, old, new):
         config.param_beta_exp[config.region]=new
@@ -424,71 +453,73 @@ class Visual:
 
         # select region
         initial_region = 'Almaty'
-        region_selection = Select(value=initial_region, title='Region Selection', options=regions_for_show)
+        region_selection = Select(value=initial_region, title='Region Selection', options=regions_for_show, max_width=250)
         region_selection.on_change('value', self.SelectRegionHandler)
 
         #select parameters
        #select parameters
-        sus_to_exp_slider = Slider(start=0,end=1,step=0.01,value=config.param_beta_exp[config.region], title='Susceptible to Exposed transition constant')
-        sus_to_exp_slider.on_change('value', self.handler_beta_exp)
+        self.sus_to_exp_slider = Slider(start=0,end=1,step=0.01,value=config.param_beta_exp[config.region], title='Susceptible to Exposed transition constant')
+        self.sus_to_exp_slider.on_change('value', self.handler_beta_exp)
 
-        param_qr_slider = Slider(start=0,end=1,step=0.01,value=config.param_qr[config.region], title='Daily Quarantine rate of the Exposed ')
-        param_qr_slider.on_change('value', self.handler_param_qr)
+        self.param_qr_slider = Slider(start=0,end=1,step=0.01,value=config.param_qr[config.region], title='Daily Quarantine rate of the Exposed ')
+        self.param_qr_slider.on_change('value', self.handler_param_qr)
 
-        param_sir = Slider(start=0,end=1,step=0.01,value=config.param_sir[config.region], title='Daily Infected to Severe Infected transition rate ')
-        param_sir.on_change('value', self.handler_param_sir)
+        self.param_sir = Slider(start=0,end=1,step=0.01,value=config.param_sir[config.region], title='Daily Infected to Severe Infected transition rate ')
+        self.param_sir.on_change('value', self.handler_param_sir)
 
-        param_eps_exp = Slider(start=0,end=1,step=0.01,value=config.param_eps_exp[config.region], title='Disease transmission rate of Exposed compared to Infected')
-        param_eps_exp.on_change('value', self.handler_param_eps_exp)
+        self.param_eps_exp = Slider(start=0,end=1,step=0.01,value=config.param_eps_exp[config.region], title='Disease transmission rate of Exposed compared to Infected')
+        self.param_eps_exp.on_change('value', self.handler_param_eps_exp)
 
-        param_eps_qua = Slider(start=0,end=1,step=0.01,value=config.param_eps_qua[config.region], title='Disease transmission rate of Quarantined compared to Infected')
-        param_eps_qua.on_change('value', self.handler_param_eps_qua)
+        self.param_eps_qua = Slider(start=0,end=1,step=0.01,value=config.param_eps_qua[config.region], title='Disease transmission rate of Quarantined compared to Infected')
+        self.param_eps_qua.on_change('value', self.handler_param_eps_qua)
 
-        param_eps_sev = Slider(start=0,end=1,step=0.01,value=config.param_eps_sev[config.region], title='Disease transmission rate of Severe Infected compared to Infected')
-        param_eps_sev.on_change('value', self.handler_param_eps_sev)
+        self.param_eps_sev = Slider(start=0,end=1,step=0.01,value=config.param_eps_sev[config.region], title='Disease transmission rate of Severe Infected compared to Infected')
+        self.param_eps_sev.on_change('value', self.handler_param_eps_sev)
 
-        param_hosp_capacity = Slider(start=0,end=100000,step=100,value=config.param_hosp_capacity[config.region], title='Hospital Capacity')
-        param_hosp_capacity.on_change('value', self.handler_param_hosp_capacity)
+        self.param_hosp_capacity = Slider(start=0,end=100000,step=100,value=config.param_hosp_capacity[config.region], title='Hospital Capacity')
+        self.param_hosp_capacity.on_change('value', self.handler_param_hosp_capacity)
 
-        param_gamma_mor1 = Slider(start=0,end=1,step=0.01,value=config.param_gamma_mor1[config.region], title='Severe Infected to Dead transition probability')
-        param_gamma_mor1.on_change('value', self.handler_param_gamma_mor1)
+        self.param_gamma_mor1 = Slider(start=0,end=1,step=0.01,value=config.param_gamma_mor1[config.region], title='Severe Infected to Dead transition probability')
+        self.param_gamma_mor1.on_change('value', self.handler_param_gamma_mor1)
 
-        param_gamma_mor2 = Slider(start=0,end=1,step=0.01,value=config.param_gamma_mor2[config.region], title='Severe Infected to Dead transition probability (Hospital Cap. Exceeded)')
-        param_gamma_mor2.on_change('value', self.handler_param_gamma_mor2)
+        self.param_gamma_mor2 = Slider(start=0,end=1,step=0.01,value=config.param_gamma_mor2[config.region], title='Severe Infected to Dead transition probability (Hospital Cap. Exceeded)')
+        self.param_gamma_mor2.on_change('value', self.handler_param_gamma_mor2)
 
-        param_gamma_im = Slider(start=0,end=1,step=0.1,value=config.param_gamma_im[config.region], title='Infected to Recovery Immunized transition probability')
-        param_gamma_im.on_change('value', self.handler_param_gamma_im)
+        self.param_gamma_im = Slider(start=0,end=1,step=0.1,value=config.param_gamma_im[config.region], title='Infected to Recovery Immunized transition probability')
+        self.param_gamma_im.on_change('value', self.handler_param_gamma_im)
 
-        param_sim_len = Slider(start=2,end=100,step=2,value=config.loop_num, title='Length of simulation (Days)')
-        param_sim_len.on_change('value', self.handler_param_sim_len)
+        self.param_sim_len = Slider(start=2,end=100,step=2,value=config.loop_num, title='Length of simulation (Days)')
+        self.param_sim_len.on_change('value', self.handler_param_sim_len)
 
-        param_t_exp = Slider(start=1,end=20,step=1,value=config.param_t_exp[config.region], title='Incubation period (Days) ')
-        param_t_exp.on_change('value', self.handler_param_t_exp)
+        self.param_t_exp = Slider(start=1,end=20,step=1,value=config.param_t_exp[config.region], title='Incubation period (Days) ')
+        self.param_t_exp.on_change('value', self.handler_param_t_exp)
 
-        param_t_inf = Slider(start=1,end=20,step=1,value=config.param_t_inf[config.region], title=' Infection  period (Days) ')
-        param_t_inf.on_change('value', self.handler_param_t_inf)
+        self.param_t_inf = Slider(start=1,end=20,step=1,value=config.param_t_inf[config.region], title=' Infection  period (Days) ')
+        self.param_t_inf.on_change('value', self.handler_param_t_inf)
 
 
-        init_exposed = Slider(start=1,end=10000,step=100,value=config.param_init_exposed[config.region], title='Initial Exposed')
-        init_exposed.on_change('value', self.handler_init_exposed)
+        self.init_exposed = Slider(start=1,end=10000,step=100,value=config.param_init_exposed[config.region], title='Initial Exposed')
+        self.init_exposed.on_change('value', self.handler_init_exposed)
 
-        param_tr_scale = Slider(start=0.0,end=1,step=0.01,value=config.param_transition_scale, title='Traffic ratio')
-        param_tr_scale.on_change('value', self.handler_param_tr_scale)
+        self.param_tr_scale = Slider(start=0.0,end=1,step=0.01,value=config.param_transition_scale, title='Traffic ratio')
+        self.param_tr_scale.on_change('value', self.handler_param_tr_scale)
 
-        param_tr_leakage = Slider(start=0.0,end=1,step=0.01,value=config.param_transition_leakage, title='Leakage ratio')
-        param_tr_leakage.on_change('value', self.handler_param_tr_leakage)
+        self.param_tr_leakage = Slider(start=0.0,end=1,step=0.01,value=config.param_transition_leakage, title='Leakage ratio')
+        self.param_tr_leakage.on_change('value', self.handler_param_tr_leakage)
 
         dumdiv = Div(text='',width=10)
         dumdiv2= Div(text='',width=10)
         dumdiv3= Div(text='',width=150)
 
-
+        ######### CHANGE
         # Buttons
-        reset_button = Button(label = 'Reset Button')
-        save_button = Button(label='Update transition matrix')
-        save_button_result = Button(label='Save current plot to csv')
-        run_button = Button(label='Run the simulation')
-
+        reset_button = Button(label = 'Reset Button', button_type='primary')
+        save_button = Button(label='Update transition matrix', button_type='primary')
+        save_button_result = Button(label='Save current plot to csv', button_type='primary')
+        run_button = Button(label='Run the simulation',button_type='primary')
+        #########  CHANGE
+        
+        
         save_button.on_click(self.save_click)
         run_button.on_click(self.run_click)
         reset_button.on_click(self.reset_click)
@@ -551,15 +582,15 @@ class Visual:
 
         self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1200, height=500, sortable = False)
 
-        sliders_1 = column(init_exposed, sus_to_exp_slider, param_qr_slider, param_sir)
-        sliders_2 = column(param_hosp_capacity, param_gamma_mor1, param_gamma_mor2, param_gamma_im)
-        sliders_0 = column(param_eps_exp, param_eps_qua, param_eps_sev)
+        sliders_1 = column(self.init_exposed, self.sus_to_exp_slider, self.param_qr_slider, self.param_sir)
+        sliders_2 = column(self.param_hosp_capacity, self.param_gamma_mor1, self.param_gamma_mor2, self.param_gamma_im)
+        sliders_0 = column(self.param_eps_exp, self.param_eps_qua, self.param_eps_sev)
 
         sliders = row(sliders_1, dumdiv3, sliders_2, dumdiv3, sliders_0)
         sliders = column(self.text2, self.text4 ,sliders)
         # regions
 
-        sliders_3 = row(param_t_exp, param_t_inf, param_sim_len)
+        sliders_3 = row(self.param_t_exp, self.param_t_inf, self.param_sim_len)
         #sliders_3
         # global
         nu_logo = Div(text="""<img src='/streaming/static/nu_logo1.jpg'>""", width=650, height=100)
@@ -573,14 +604,14 @@ class Visual:
         header = row(nu_logo, text , issai_logo)
 
 
-        ###########
-
-        buttons = row(reset_button,save_button, run_button)
+        ########### CHANGE ###################
+        layout_t = column(save_button_result, text_save)
+        buttons = row(reset_button,save_button, run_button, layout_t)
         buttons = column(buttons, region_selection)
 
         params =  column(sliders, self.text3, self.text4, sliders_3, self.text5, self.text4,)
 
-        sliders_4 = column(param_tr_scale, param_tr_leakage)
+        sliders_4 = column(self.param_tr_scale, self.param_tr_leakage)
         check_table = row(column(div_cb1,checkbox_group1), column(div_cb2,checkbox_group2), column(div_cb3,checkbox_group3), sliders_4)
         check_trans = row(self.data_tableT)
 
@@ -588,17 +619,18 @@ class Visual:
         layout = column(header, self.pAll, buttons)
         layout = column (layout, params, check_table)
 
-        layout = column (layout, check_trans, self.text7, self.text4)
+        layout = column (layout, check_trans, self.text4)
 
-        layout_t = column(text_save, save_button_result)
+        
 
-        layout = column (layout, layout_t)
+        layout = column (layout)
         layout = column (layout,self.text4, text_footer)
 
 
         self.doc.title = 'Covid Simulation'
         self.doc.add_root(layout)
-        #################################
+        
+        ################################# CHANGE #########################
         '''
 
         buttons = row(reset_button,save_button, run_button)
