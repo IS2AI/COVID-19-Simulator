@@ -46,7 +46,7 @@ class Visual:
 
         self.text5 = Div(text="""<h1 style="color:blue"> Change transition matrix </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
         self.text6 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
-        self.text7 = Div(text="""<h1 style="color:blue">Save results to file </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
+        self.text7 = Div(text="""<h1 style="color:blue">Save current results to file </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
 
 
         self.running = running
@@ -310,7 +310,7 @@ class Visual:
     def save_file_click(self):
         if config.flag_sim == 0:
             # points*nodes*states
-            info = 'Number of Infected, Exposed, Severe Infected, Quarantined, Immunized, Susceptible, Dead '
+            info = r'Number of Infected,Exposed,Severe Infected,Quarantined,Immunized,Susceptible,Dead'
             params_local = np.vstack([config.param_beta_exp, config.param_qr, config.param_sir, config.param_eps_exp, config.param_eps_qua,
                     config.param_eps_sev,config.param_hosp_capacity, config.param_gamma_mor1,config.param_gamma_mor2,
                     config.param_gamma_im, config.param_init_susceptible, config.param_init_exposed])
@@ -330,10 +330,8 @@ class Visual:
                         if config.new_plot_all:
                             print('iet', iter)
                             one_arr = config.new_plot_all[iter] #
-                            one_arr_node = one_arr[0,j,:]
-                            one_arr_node1 =  one_arr[1,j,:]
+                            one_arr_node = one_arr[-1,j,:]
                             spamwriter.writerows([one_arr_node])
-                            spamwriter.writerows([one_arr_node1])
 
                     #print(np.array(config.new_plot_all[:][j][:]))
                     #spamwriter.writerow([info])
@@ -394,7 +392,7 @@ class Visual:
 
 
     def handler_init_exposed(self, attr, old, new):
-        config.init_exposed[config.region]=new
+        config.param_init_exposed[config.region]=new
 
     def handler_param_tr_scale(self, attr, old, new):
         config.param_transition_scale=new
@@ -552,7 +550,7 @@ class Visual:
                     TableColumn(field="c15", title="Soltustik Qazaqstan",),
                     TableColumn(field="c16", title="Turkistan",),]
 
-        self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1000, height=500, sortable = False)
+        self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=2000, height=500, sortable = False)
 
         sliders_1 = column(sus_to_exp_slider, param_qr_slider, param_sir, param_eps_exp, param_eps_qua)
         sliders_2 = column(param_eps_sev, param_hosp_capacity, param_gamma_mor1, param_gamma_mor2, param_gamma_im)
