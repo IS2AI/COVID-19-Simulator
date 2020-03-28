@@ -250,12 +250,10 @@ class Visual:
             if new == region:
                 config.region = i
                 break
-        print('select region')
         self.update(True)
         self.slider_update_initial_val(self, old, new)
 
     def save_click(self):
-        print('save this button')
         nodes_num = 17
         config.param_transition_box = []
         config.param_transition_box.append(config.box1)
@@ -364,7 +362,8 @@ class Visual:
                         #numpy.savetxt("FILENAME.csv", arr, delimiter=",")
 
             # points*nodes*states
-            print('[INFO] Saving results to .csv format')
+            print('[INFO] Saving results to .csv format ..')
+
     def slider_update_initial_val(self, attr, old, new):
         self.init_exposed.value = config.param_init_exposed[config.region]
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]

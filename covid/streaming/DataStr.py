@@ -211,5 +211,5 @@ class DataStream(threading.Thread):
                     config.run_iteration = False
                     config.iteration_over = True
         except (KeyboardInterrupt, SystemExit):
-            print('Exiting the program. ')
+            print('[INFO] Exiting the program. ')
             pass

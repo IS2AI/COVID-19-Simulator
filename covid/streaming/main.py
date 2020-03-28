@@ -29,15 +29,15 @@ def main():
     webVisual = Visual(callbackFunc=threads, running=event) #start Bokeh web document
     threads(callbackFunc=webVisual, running=event)
 
-#main()
-
 if __name__ == '__main__':
+    print('[INFO] Start the program.')
     main()
+
 '''
-    try:
-        print('start')
-        main()
-    except (KeyboardInterrupt):
-        print('Exiting the program. ')
-        pass
+try:
+    print('start')
+    main()
+except (KeyboardInterrupt):
+    print('Exiting the program. ')
+    pass
 '''
