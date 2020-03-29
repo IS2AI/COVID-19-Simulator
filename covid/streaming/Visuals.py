@@ -3,7 +3,7 @@ from bokeh.layouts import gridplot, column, row
 from bokeh.io import curdoc
 from tornado import gen
 import numpy as np
-from bokeh.models import CategoricalColorMapper, Panel, Select, Button, DataTable,DateFormatter, TableColumn, PrintfTickFormatter, Legend, Slider, TextInput, CheckboxGroup, Div, ColumnDataSource
+from bokeh.models import CustomJS, CategoricalColorMapper, Panel, Select, Button, DataTable,DateFormatter, TableColumn, PrintfTickFormatter, Legend, Slider, TextInput, CheckboxGroup, Div, ColumnDataSource
 from covid_simulator_upd import Node
 import config
 import os
