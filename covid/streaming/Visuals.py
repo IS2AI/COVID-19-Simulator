@@ -759,7 +759,7 @@ class Visual:
         text_footer_2 = Div(text="""<h3 style='color:red'> Disclaimer : This simulator is a research tool. The simulation results will show general trends based on entered parameters and initial conditions  </h3>""", width = 1500, height = 10)
         text_footer = column(text_footer_1, text_footer_2)
         text = column(self.text1, text2)
-        header = row()
+        #header = None
         #header = row(nu_logo, text , issai_logo)
 
         draw_map_js = CustomJS(code=""" uStates.draw("#statesvg", sampleData, tooltipHtml); """)
@@ -782,7 +782,7 @@ class Visual:
        
         #kz_map_tag.js_on
         ###
-        layout = column(header, self.pAll, buttons)
+        layout = column(self.pAll, buttons)
         layout = column (layout, params, check_table)
 
         layout = column (layout, check_trans, self.text4)
