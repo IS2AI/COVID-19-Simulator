@@ -175,7 +175,7 @@ window.onload = function(){
                 tmp_state_qua: d[1].tmp_state_qua[ d[1].tmp_state_qua.length - 1 ],
                 tmp_state_imm: d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ],
                 tmp_state_dea: d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ],
-                color: d3.interpolate("#ffffcc", "#800026")((d[1].tmp_state_exp[0]*100000/sum_all)*100)
+                color: d3.interpolate("#ffffcc", "#800026")((d[1].tmp_state_exp[0]*1000/sum_all)*100)
 
             }
 
