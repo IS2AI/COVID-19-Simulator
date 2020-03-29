@@ -47,7 +47,7 @@ param_gamma_mor1 = 0.3*np.ones(nodes_num) # Severe Infected (Hospitalized) to De
 param_gamma_mor2 = 0.15*np.ones(nodes_num) # Severe Infected (Not Hospitalized) to Dead transition probability
 param_gamma_im = 0.9*np.ones(nodes_num)      # Infected to Recovery Immunized transition probability
 
-param_sim_len = 10*np.ones(nodes_num)            # Length of simulation in days
+param_sim_len = 1*np.ones(nodes_num)            # Length of simulation in days
 
 param_t_exp = 5*np.ones(nodes_num)             # Incubation period (The period from the start of incubation to the end of the incubation state
 param_t_inf = 14*np.ones(nodes_num)             # Infection period (The period from the start of infection to the end of the infection state
