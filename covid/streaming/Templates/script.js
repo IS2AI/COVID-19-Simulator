@@ -175,8 +175,8 @@ window.onload = function(){
     window.onmousemove = function (e) {
         var x = e.clientX,
             y = e.clientY;
-        d3.select('#tooltip')[0][0].style.top = (y + 20) + 'px';
-        d3.select('#tooltip')[0][0].style.left = (x - 300) + 'px';
+        d3.select('#tooltip')[0][0].style.top = (y + 50) + 'px';
+        d3.select('#tooltip')[0][0].style.left = (x - 350) + 'px';
     };
 
 }
