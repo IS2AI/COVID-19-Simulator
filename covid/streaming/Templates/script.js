@@ -161,7 +161,7 @@ window.onload = function(){
         entries_regions.forEach(function(d){
             ind = "O"+d[0];
             
-            sampleData[d] = {
+            sampleData[ind] = {
                 tmp_state_inf: d[1].tmp_state_inf[0],
                 tmp_state_sus: d[1].tmp_state_sus[0],
                 tmp_state_exp: d[1].tmp_state_exp[0],
