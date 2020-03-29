@@ -148,7 +148,7 @@ window.onload = function(){
     /* draw states on id #statesvg */
     
     setInterval(() => {
-        var jsonObj = JSON.parse(data.text);
+        var jsonObj = JSON.parse(data.text[0]);
         var entries_regions = Object.entries(jsonObj)
 
         this.console.log(entries_regions)

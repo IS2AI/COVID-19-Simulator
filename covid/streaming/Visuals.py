@@ -326,7 +326,7 @@ class Visual:
 
         str_data = json.dumps(region_states, ensure_ascii=False)               
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
-                    qua=state_qua, imm=state_imm, dea=state_dea, text=[str_data])
+                    qua=state_qua, imm=state_imm, dea=state_dea, text=[str_data]*len(state_imm))
 
         self.data1 = dict(
             c0=[(config.transition_matrix[0,i]) for i in range(0,17)],
