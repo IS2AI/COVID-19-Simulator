@@ -508,7 +508,7 @@ class Visual:
         regions_for_show = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy',
                                 'Qostanai',  'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan', 'Qazaqstan']
 
-        text_save = TextInput(value="default", title="Output Folder Name: results/... ")
+        text_save = TextInput(value="foldername", title="")
         text_save.on_change('value', self.handler_param_save_file)
 
         # select region
@@ -575,7 +575,7 @@ class Visual:
         # Buttons
         reset_button = Button(label = 'Reset Button', button_type='primary')
         save_button = Button(label='Update transition matrix', button_type='primary')
-        save_button_result = Button(label='Save current plot to csv', button_type='primary')
+        save_button_result = Button(label='Save current plot to .csv in directory results/', button_type='primary')
         run_button = Button(label='Run the simulation',button_type='primary')
         #########  CHANGE
 
@@ -665,7 +665,7 @@ class Visual:
 
 
         ########### CHANGE ###################
-        layout_t = column(save_button_result, text_save)
+        layout_t = row(save_button_result, text_save)
         buttons = row(reset_button,run_button, layout_t)
         buttons = column(buttons, region_selection)
 

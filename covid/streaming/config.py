@@ -62,7 +62,7 @@ param_transition_scale = 1.0
 param_dt = 1/24
 param_dt_inv = 1/param_dt
 
-param_save_file = 'default'
+param_save_file = 'foldername'
 
 # Init values for nodes constant
 param_init_susceptible = np.squeeze(np.array([1854556,2039379,738587,869603,633801,652314,1125297,678224,1078362,753804,1378554,872736,794165,1378504,1011511,554519,1981747]))
