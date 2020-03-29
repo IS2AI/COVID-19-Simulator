@@ -20,7 +20,7 @@ from PIL import Image
 class Visual:
     def __init__(self, callbackFunc, running):
         self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=500, height=50) # Text to be displayed at the top of the webpage
-        self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
+        self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=500, height=10) # Text to be displayed at the top of the webpage
         self.text3 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
         self.text4 = Div(text="""<h1 style="color:blue"> </h1>""", width=900, height=50) # Text to be displayed at the top of the webpage
 
@@ -472,9 +472,11 @@ class Visual:
         
         
     def handler_init_exposed(self, attr, old, new):
-        config.param_init_exposed[config.region]=new
-        self.update(False)
-
+        if config.counter_func < 1:
+            config.param_init_exposed[config.region]=new
+            self.update(False)
+        else:
+            self.slider_update_initial_val(self, old, new)
 
     def handler_param_tr_scale(self, attr, old, new):
         config.param_transition_scale=new
@@ -647,7 +649,6 @@ class Visual:
         sliders_0 = column(self.param_eps_exp, self.param_eps_qua, self.param_eps_sev)
 
         sliders = row(sliders_1, dumdiv3, sliders_2, dumdiv3, sliders_0)
-        sliders = column(self.text2, self.text4 ,sliders)
         # regions
 
         sliders_3 = row(self.param_t_exp, self.param_t_inf, self.param_sim_len)
@@ -667,7 +668,10 @@ class Visual:
         ########### CHANGE ###################
         layout_t = row(save_button_result, text_save)
         buttons = row(reset_button,run_button, layout_t)
-        buttons = column(buttons, region_selection)
+
+        reg1 = row(self.text2, region_selection)
+
+        buttons = column(buttons, reg1)
 
         params =  column(sliders, self.text3, self.text4, sliders_3, self.text5, self.text4,)
 
@@ -677,7 +681,7 @@ class Visual:
 
         ###
         layout = column(self.pAll, buttons) #header
-        layout = column (layout, params, check_table)
+        layout = column (layout, self.text4, params, check_table)
 
         layout = column (layout, check_trans, self.text4)
 
