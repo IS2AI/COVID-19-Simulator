@@ -130,9 +130,12 @@ window.onload = function(){
 
    tooltipHtml = function(n, d){	/* function to create html content string in tooltip div. */
         return "<h4>"+n+"</h4><table>"+
-        "<tr><td>Low</td><td>"+(d.low)+"</td></tr>"+
-        "<tr><td>Average</td><td>"+(d.avg)+"</td></tr>"+
-        "<tr><td>High</td><td>"+(d.high)+"</td></tr>"+
+        "<tr><td>Infected</td><td>"+(d.tmp_state_inf)+"</td></tr>"+
+        "<tr><td>Suspended</td><td>"+(d.tmp_state_sus)+"</td></tr>"+
+        "<tr><td>Exp</td><td>"+(d.tmp_state_exp)+"</td></tr>"+
+        "<tr><td>Sin</td><td>"+(d.tmp_state_sin)+"</td></tr>"+
+        "<tr><td>Imp</td><td>"+(d.tmp_state_imm)+"</td></tr>"+
+        "<tr><td>Death</td><td>"+(d.tmp_state_dea)+"</td></tr>"+
         "</table>";
     }
 
@@ -151,13 +154,35 @@ window.onload = function(){
     
     setInterval(() => {
         var jsonObj = JSON.parse(data.text);
+        var entries_regions = Object.entries(jsonObj)
 
-        console.log(jsonObj);
+        this.console.log(entries_regions)
 
-        uStates.draw("#statesvg", sampleData, tooltipHtml);
-    }, 2000);
+        entries_regions.forEach(function(d){
+            ind = "O"+d[0];
+            
+            sampleData[d] = {
+                tmp_state_inf: d[1].tmp_state_inf[0],
+                tmp_state_sus: d[1].tmp_state_sus[0],
+                tmp_state_exp: d[1].tmp_state_exp[0],
+                tmp_state_sin: d[1].tmp_state_sin[0],
+                tmp_state_qua: d[1].tmp_state_qua[0],
+                tmp_state_imm: d[1].tmp_state_imm[0],
+                tmp_state_dea: d[1].tmp_state_dea[0]
+
+            }
+        })
+        
+    }, 10000);
     
     d3.select(self.frameElement).style("height", "600px");
+
+    window.onmousemove = function (e) {
+        var x = e.clientX,
+            y = e.clientY;
+        d3.select('#tooltip')[0][0].style.top = (y + 20) + 'px';
+        d3.select('#tooltip')[0][0].style.left = (x - 300) + 'px';
+    };
 
 }
 

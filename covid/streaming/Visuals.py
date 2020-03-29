@@ -184,7 +184,8 @@ class Visual:
        # p_map.yaxis.visible = False
 
         #pAll = gridplot([[row(p1], [p_map]])
-        pAll = row(p1,p2)
+        kz_map_tag = Div(text=""" <svg width="780" height="600" id="statesvg"></svg> <div id="tooltip"></div>   """, width=960, height=600)
+        pAll = row(p1, kz_map_tag)
         return pAll
 
     #@gen.coroutine
@@ -737,10 +738,10 @@ class Visual:
         check_table = row(column(div_cb1,checkbox_group1), column(div_cb2,checkbox_group2), column(div_cb3,checkbox_group3), sliders_4)
         check_trans = row(self.data_tableT)
 
-        kz_map_tag = Div(text=""" <svg width="960" height="600" id="statesvg"></svg> <div id="tooltip"></div>   """, width=960, height=600)
+       
         #kz_map_tag.js_on
         ###
-        layout = column(header, self.pAll, buttons, kz_map_tag)
+        layout = column(header, self.pAll, buttons)
         layout = column (layout, params, check_table)
 
         layout = column (layout, check_trans, self.text4)
