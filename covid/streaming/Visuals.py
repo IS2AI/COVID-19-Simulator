@@ -61,7 +61,7 @@ class Visual:
 
     def definePlot(self, source):
         THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-        img_nu  = Image.open(os.path.join(THIS_FOLDER, 'nu_logo.jpg')).convert('RGBA')
+        img_nu  = Image.open(os.path.join(THIS_FOLDER, 'nu_logo.png')).convert('RGBA')
         img_issai = Image.open(os.path.join(THIS_FOLDER, 'issai_logo.png')).convert('RGBA')
         
         x_nu, y_nu = img_nu.size
@@ -339,6 +339,7 @@ class Visual:
 
     def run_click(self):
         if config.flag_sim == 0:
+            self.save_click()
             config.run_iteration=True
             self.update(False)
 
@@ -468,6 +469,8 @@ class Visual:
 
     def handler_param_t_inf(self, attr, old, new):
         config.param_t_inf[config.region]=new
+        
+        
     def handler_init_exposed(self, attr, old, new):
         config.param_init_exposed[config.region]=new
         self.update(False)
@@ -475,20 +478,26 @@ class Visual:
 
     def handler_param_tr_scale(self, attr, old, new):
         config.param_transition_scale=new
+        self.save_click()
 
 
     def handler_param_tr_leakage(self, attr, old, new):
         config.param_transition_leakage=new
+        self.save_click()
 
     def handler_checkbox_group1(self, new):
         config.box1 = new
         config.testing_var = config.box1
+        self.save_click()
 
     def handler_checkbox_group2(self, new):
         config.box2 = new
+        self.save_click()
 
     def handler_checkbox_group3(self, new):
         config.box3 = new
+        self.save_click()
+
 
     def handler_param_save_file(self, attr, old, new):
         config.param_save_file= str(new)
@@ -657,7 +666,7 @@ class Visual:
 
         ########### CHANGE ###################
         layout_t = column(save_button_result, text_save)
-        buttons = row(reset_button,save_button, run_button, layout_t)
+        buttons = row(reset_button,run_button, layout_t)
         buttons = column(buttons, region_selection)
 
         params =  column(sliders, self.text3, self.text4, sliders_3, self.text5, self.text4,)
