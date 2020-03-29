@@ -9,7 +9,7 @@ Transition matrix can be adjusted to model different situations.
 
 1) Install Anaconda3 with from https://www.anaconda.com/distribution/#download-section
 
-2) Start Anaconda Terminal (Anaconda Prompt)
+2) Start Anaconda3 Terminal (Anaconda Prompt)
 
 3) Install Bokeh visualisation library using the command 'conda install bokeh'
 
