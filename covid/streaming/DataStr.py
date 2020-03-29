@@ -95,7 +95,11 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
         params_node[11,:] = params_old[11,:]
         params_node[12,:] = params_old[12,:]
         params_node[14,:] = params_old[14,:]
-
+        
+    params_node[11,:] = params_node_[11][0]*np.ones(nodes_num)
+    params_node[12,:] = params_node_[12][0]*np.ones(nodes_num)
+       
+    
     nodes = [Node(params_node[:,i], sim_iter) for i in range(nodes_num)]
 
     for index, node in enumerate(nodes):

@@ -23,6 +23,7 @@ class Visual:
         self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=500, height=10) # Text to be displayed at the top of the webpage
         self.text3 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
         self.text4 = Div(text="""<h1 style="color:blue"> </h1>""", width=900, height=50) # Text to be displayed at the top of the webpage
+        self.text4rr = Div(text="""<h1 style="color:blue"> </h1>""", width=200, height=10) # Text to be displayed at the top of the webpage
 
         self.text5 = Div(text="""<h1 style="color:blue"> Change transition matrix </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
         self.text6 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
@@ -392,7 +393,7 @@ class Visual:
                             one_arr_node = one_arr[-1,j,:].astype(int)
                             one_arr_node = np.append(one_arr_node, (config.param_beta_exp[j], config.param_qr[j], config.param_sir[j],
                                 config.param_hosp_capacity[j], config.param_gamma_mor1[j], config.param_gamma_mor2[j], config.param_gamma_im[j], config.param_eps_exp[j],
-                                config.param_eps_qua[j], config.param_eps_sev[j], config.param_t_exp[j], config.param_t_inf[j], config.param_transition_leakage,
+                                config.param_eps_qua[j], config.param_eps_sev[j], config.param_t_exp[0], config.param_t_inf[0], config.param_transition_leakage,
                                 config.param_transition_scale,box_corr[j,0,iter],box_corr[j,1,iter],box_corr[j,2,iter]))
                             #print(param_transition_box)
                             #print(one_arr_node.shape)
@@ -429,6 +430,8 @@ class Visual:
         self.param_eps_exp.value = config.param_eps_exp[config.region]
         self.param_eps_qua.value = config.param_eps_qua[config.region]
         self.param_eps_sev.value = config.param_eps_sev[config.region]
+        self.param_t_exp.value = config.param_t_exp[0]
+        self.param_t_inf.value = config.param_t_inf[0]
 
 
     def handler_beta_exp(self, attr, old, new):
@@ -465,11 +468,16 @@ class Visual:
         config.loop_num=new
 
     def handler_param_t_exp(self, attr, old, new):
-        config.param_beta_exp[config.region]=new
+        if config.counter_func < 1:
+            config.param_t_exp[0]=new
+        else : 
+            self.slider_update_initial_val(self, old, new)
 
     def handler_param_t_inf(self, attr, old, new):
-        config.param_t_inf[config.region]=new
-        
+        if config.counter_func < 1:
+            config.param_t_inf[0]=new
+        else: 
+            self.slider_update_initial_val(self, old, new)
         
     def handler_init_exposed(self, attr, old, new):
         if config.counter_func < 1:
@@ -481,7 +489,6 @@ class Visual:
     def handler_param_tr_scale(self, attr, old, new):
         config.param_transition_scale=new
         self.save_click()
-
 
     def handler_param_tr_leakage(self, attr, old, new):
         config.param_transition_leakage=new
@@ -515,7 +522,7 @@ class Visual:
 
         # select region
         initial_region = 'Almaty'
-        region_selection = Select(value=initial_region, title='Region Selection', options=regions_for_show, max_width=250)
+        region_selection = Select(value=initial_region, title='        ', options=regions_for_show, max_width=250)
         region_selection.on_change('value', self.SelectRegionHandler)
 
         #select parameters
@@ -553,10 +560,10 @@ class Visual:
         self.param_sim_len = Slider(start=2,end=100,step=2,value=config.loop_num, title='Length of simulation (Days)')
         self.param_sim_len.on_change('value', self.handler_param_sim_len)
 
-        self.param_t_exp = Slider(start=1,end=20,step=1,value=config.param_t_exp[config.region], title='Incubation period (Days) ')
+        self.param_t_exp = Slider(start=1,end=20,step=1,value=config.param_t_exp[0], title='Incubation period (Days) ')
         self.param_t_exp.on_change('value', self.handler_param_t_exp)
 
-        self.param_t_inf = Slider(start=1,end=20,step=1,value=config.param_t_inf[config.region], title=' Infection  period (Days) ')
+        self.param_t_inf = Slider(start=1,end=20,step=1,value=config.param_t_inf[0], title=' Infection  period (Days) ')
         self.param_t_inf.on_change('value', self.handler_param_t_inf)
 
 
@@ -669,7 +676,7 @@ class Visual:
         layout_t = row(save_button_result, text_save)
         buttons = row(reset_button,run_button, layout_t)
 
-        reg1 = row(self.text2, region_selection)
+        reg1 = row(self.text2, column(self.text4rr,region_selection))
 
         buttons = column(buttons, reg1)
 
