@@ -152,7 +152,7 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
             states_arr_plot[iter, i_node, 5] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_sus)
             states_arr_plot[iter, i_node, 6] = nodes_state_arr[iter, i_node, -1]
     
-
+     
     #states_arr_plotx = np.zeros((2,17,7))
     #states_arr_plotx[0, :, :] = states_arr_plot[24,:,:]
     #states_arr_plotx[1, :, :] = states_arr_plot[48,:,:]
