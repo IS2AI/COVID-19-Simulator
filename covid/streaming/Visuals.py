@@ -1,37 +1,17 @@
 from bokeh.plotting import figure
 from bokeh.layouts import gridplot, column, row
-from bokeh.models.widgets import CheckboxGroup, Div
 from bokeh.io import curdoc
 from tornado import gen
-import pandas as pd
 import numpy as np
-from bokeh.models import CategoricalColorMapper, Panel, Select, Button, DataTable, DateFormatter, TableColumn
+from bokeh.models import CategoricalColorMapper, Panel, Select, Button, DataTable,DateFormatter, TableColumn, PrintfTickFormatter, Legend, Slider, TextInput, CheckboxGroup, Div, ColumnDataSource
 from covid_simulator_upd import Node
 import config
 import os
 import csv
-
-from bokeh.models import Range1d, HoverTool, ColumnDataSource, Legend
-
-from bokeh.models import CategoricalColorMapper, HoverTool, ColumnDataSource, Panel, Select, Button, Legend
-from covid_simulator_upd import Node
-from bokeh.models.widgets import *
-
 import copy
-from bokeh.io import output_file, show
-
 from datetime import date
 from random import randint
-
-from bokeh.io import output_file, show
-from bokeh.models import ColumnDataSource, DataTable, DateFormatter, TableColumn
-from bokeh.models import (CDSView, ColorBar, ColumnDataSource,
-                          CustomJS, CustomJSFilter,
-                          GeoJSONDataSource, HoverTool,
-                          LinearColorMapper, Slider,PrintfTickFormatter)
-
-import csv
-import pandas as pd
+from PIL import Image
 
 #import geopandas as gpd
 #df_kz = gpd.read_file('data_geomap/KAZ_adm1.shp')
@@ -80,7 +60,36 @@ class Visual:
         config.initial_params = params
 
     def definePlot(self, source):
-
+        THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+        img_nu  = Image.open(os.path.join(THIS_FOLDER, 'nu_logo.jpg')).convert('RGBA')
+        img_issai = Image.open(os.path.join(THIS_FOLDER, 'issai_logo.png')).convert('RGBA')
+        
+        x_nu, y_nu = img_nu.size
+        img_nu_plot = np.empty((x_nu, y_nu), dtype=np.uint32)
+        img_nu_view = img_nu_plot.view(dtype=np.uint8).reshape((y_nu, x_nu, 4))
+        img_nu_view[:,:,:]=np.flipud(np.asarray(img_nu))
+        
+        dim_nu = max(x_nu, y_nu)
+        dim_nu_y = min(x_nu, y_nu)
+        p_nu = figure(x_range=(0,dim_nu), y_range=(0,dim_nu_y), height=250, width=479)
+        p_nu.image_rgba(image=[img_nu_view], x=0, y=0, dw=x_nu, dh=y_nu)
+        p_nu.axis.visible = False
+        p_nu.axis.visible = False
+        p_nu.toolbar.logo = None
+        p_nu.toolbar_location = None
+        
+        x_is, y_is = img_issai.size
+        iss_plot = np.empty((x_is, y_is), dtype=np.uint32)
+        iss_view=iss_plot.view(dtype=np.uint8).reshape((y_is, x_is, 4))
+        iss_view[:,:,:]=np.flipud(np.asarray(img_issai))
+        
+        p_iss = figure(x_range=(0, x_is), y_range=(0, y_is), height=250, width=479)
+        p_iss.image_rgba(image=[iss_view], x=0, y=0, dw=x_is, dh=y_is)
+        p_iss.axis.visible = False
+        p_iss.axis.visible = False
+        p_iss.toolbar.logo = None
+        p_iss.toolbar_location = None        
+        
 
       #  create glyph for kazakhstan map
       #  p_map = figure(title = ' Kazakhstan', plot_height=600, plot_width=800, background_fill_color='black',background_fill_alpha = 0.8, toolbar_location='above')
@@ -174,6 +183,17 @@ class Visual:
 
         #pAll = gridplot([[row(p1], [p_map]])
         pAll = row(p1,p2)
+        dumdiv = Div(text='', width =150)
+        dumdiv_is = Div(text='', width=700)
+        
+        issai_text= Div(text="""<h1 style="color:blue">ISSAI.NU.EDU.KZ/EPISIM</h1>""", width=650, height=50)
+        isstxt = row(dumdiv_is, issai_text)
+        
+        dumdiv3= Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=650, height=50)
+        header = row(p_nu,dumdiv,dumdiv3, p_iss)
+        header = column(header, isstxt)
+        pAll = column(header,pAll)
+        
         return pAll
     #@gen.coroutine
     def update(self, change_view):
@@ -647,7 +667,7 @@ class Visual:
         check_trans = row(self.data_tableT)
 
         ###
-        layout = column(header, self.pAll, buttons) #header
+        layout = column(self.pAll, buttons) #header
         layout = column (layout, params, check_table)
 
         layout = column (layout, check_trans, self.text4)
