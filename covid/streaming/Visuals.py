@@ -32,6 +32,7 @@ from bokeh.models import (CDSView, ColorBar, ColumnDataSource,
 
 import csv
 import pandas as pd
+import json
 
 #import geopandas as gpd
 #df_kz = gpd.read_file('data_geomap/KAZ_adm1.shp')
@@ -52,7 +53,17 @@ class Visual:
         self.running = running
         self.callbackFunc = callbackFunc
         self.source = ColumnDataSource(dict(x=[0], sus=[config.param_init_susceptible[config.region]], exp=[config.param_init_exposed[config.region]], inf=[0], sin=[0],
-                                        qua=[0], imm=[0], dea=[0]))
+                                        qua=[0], imm=[0], dea=[0], text=[""]))
+
+        self.sourceJS = ColumnDataSource(dict(text=[]))
+
+        mcallback = CustomJS(args=dict(source=self.source), code="""  
+            window.data  = source.data
+
+            console.log(source)
+        """)
+        self.source.js_on_change('change',mcallback)
+
         self.tools = 'pan, box_zoom, wheel_zoom, reset'
         self.plot_options = dict(plot_width=800, plot_height=600, tools = [self.tools])
         self.updateValue = True
@@ -191,7 +202,7 @@ class Visual:
         state_imm = [0]
         state_dea = [0]
 
-        region_states = [ None for lregion in range(19)][1:]
+        region_states = dict()
         tmp_state_inf = [0]
         tmp_state_sus=[config.param_init_susceptible[config.region]]
         tmp_state_exp = [config.param_init_exposed[config.region]]
@@ -213,13 +224,12 @@ class Visual:
 
                 #newx = np.arange(0,2*config.counter_func/2)
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
-
+                
                 # for map
-                '''
-                regions_ids = [ lregion for lregion in range(18)][1:]
+                
+                regions_ids = [ lregion for lregion in range(17)]
                 for region in regions_ids:
-                    print('Region number', region, type(region_states[region]))
-                    if type(region_states[region]) is dict:
+                    if str(region) in region_states and type(region_states[region]) is dict:
                         region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
                         region_states[region]["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
                         region_states[region]["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
@@ -247,7 +257,7 @@ class Visual:
                         tmp_data["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
 
                         region_states[region] = tmp_data
-                '''
+                
 
         elif new_nodes_all != [] and config.region == 17:
             for i in range(len(config.new_plot_all)):
@@ -262,8 +272,41 @@ class Visual:
 
                 #newx = np.arange(0,2*config.counter_func/2)
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
+                
+                regions_ids = [ lregion for lregion in range(17)]
+                for region in regions_ids:
+                    if str(region) in region_states and type(region_states[region]) is dict:
+                        region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
+                        region_states[region]["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
+                        region_states[region]["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
+                        region_states[region]["tmp_state_qua"].append(new_nodes_all[i][:, region, 3][-1])
+                        region_states[region]["tmp_state_imm"].append(new_nodes_all[i][:, region, 4][-1])
+                        region_states[region]["tmp_state_sus"].append(new_nodes_all[i][:, region, 5][-1])
+                        region_states[region]["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
+                    else:
+                        tmp_data = {
+                            "tmp_state_inf": [], 
+                            "tmp_state_sin": [], 
+                            "tmp_state_exp": [], 
+                            "tmp_state_qua": [],
+                            "tmp_state_imm": [],
+                            "tmp_state_sus": [],
+                            "tmp_state_dea": []
+                            }
+
+                        tmp_data["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
+                        tmp_data["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
+                        tmp_data["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
+                        tmp_data["tmp_state_qua"].append(new_nodes_all[i][:, region, 3][-1])
+                        tmp_data["tmp_state_imm"].append(new_nodes_all[i][:, region, 4][-1])
+                        tmp_data["tmp_state_sus"].append(new_nodes_all[i][:, region, 5][-1])
+                        tmp_data["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
+
+                        region_states[region] = tmp_data
+
+        str_data = json.dumps(region_states, ensure_ascii=False)               
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
-                    qua=state_qua, imm=state_imm, dea=state_dea)
+                    qua=state_qua, imm=state_imm, dea=state_dea, text=[str_data])
 
         self.data1 = dict(
             c0=[(config.transition_matrix[0,i]) for i in range(0,17)],
@@ -285,8 +328,9 @@ class Visual:
             c16=[(config.transition_matrix[16,i]) for i in range(0,17)],
                 )
 
-        print(new_data)
+        
         self.source.data.update(new_data)
+        #self.sourceJS.data.update(dict(text=[str_data]))
         self.sourceT.data.update(self.data1)
         self.data_tableT.update()
 

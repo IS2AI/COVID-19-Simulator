@@ -147,9 +147,16 @@ window.onload = function(){
         });
     console.log("How are u")
     console.log(sampleData)
-    /* draw states on id #statesvg */	
-    uStates.draw("#statesvg", sampleData, tooltipHtml);
+    /* draw states on id #statesvg */
+    
+    setInterval(() => {
+        var jsonObj = JSON.parse(data.text);
 
+        console.log(jsonObj);
+
+        uStates.draw("#statesvg", sampleData, tooltipHtml);
+    }, 2000);
+    
     d3.select(self.frameElement).style("height", "600px");
 
 }
