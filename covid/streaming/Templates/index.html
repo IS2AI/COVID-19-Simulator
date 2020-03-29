@@ -7,9 +7,19 @@
         <style>
              {% include 'styles.css' %}
         </style>
+        <script>
+              {% include 'd3.js' %}
+        </script>
+        
     </head>
     <body>
       {{ plot_div|indent(8) }}
       {{ plot_script|indent(8) }}
     </body>
+    <script>
+      {% include 'script.js' %}
+    </script>
+    <script type="text/javascript">
+      uStates.draw("#statesvg", sampleData, tooltipHtml);
+    </script>
 </html>
