@@ -203,7 +203,7 @@ class Visual:
        # p_map.yaxis.visible = False
 
         #pAll = gridplot([[row(p1], [p_map]])
-        kz_map_tag = Div(text=""" <svg width="780" height="600" id="statesvg"></svg> <div id="tooltip"></div>   """, width=960, height=600)
+        kz_map_tag = Div(text="""<div id="svg_holder"> <svg width="780" height="600" id="statesvg"></svg> <div id="tooltip"></div>   </div>""", width=960, height=600)
         pAll = row(p1, kz_map_tag)
         return pAll
 
@@ -249,7 +249,8 @@ class Visual:
                 
                 regions_ids = [ lregion for lregion in range(17)]
                 for region in regions_ids:
-                    if str(region) in region_states and type(region_states[region]) is dict:
+                    if region in region_states:
+                        print("GOOD")
                         region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
                         region_states[region]["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
                         region_states[region]["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
@@ -258,6 +259,7 @@ class Visual:
                         region_states[region]["tmp_state_sus"].append(new_nodes_all[i][:, region, 5][-1])
                         region_states[region]["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
                     else:
+                        print("ONLY ZEROOOO")
                         tmp_data = {
                             "tmp_state_inf": [], 
                             "tmp_state_sin": [], 
@@ -296,6 +298,7 @@ class Visual:
                 regions_ids = [ lregion for lregion in range(17)]
                 for region in regions_ids:
                     if str(region) in region_states and type(region_states[region]) is dict:
+                        print("GOOOODDDDD")
                         region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
                         region_states[region]["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
                         region_states[region]["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
@@ -304,6 +307,7 @@ class Visual:
                         region_states[region]["tmp_state_sus"].append(new_nodes_all[i][:, region, 5][-1])
                         region_states[region]["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
                     else:
+                        print("ONLY THIS")
                         tmp_data = {
                             "tmp_state_inf": [], 
                             "tmp_state_sin": [], 
@@ -323,7 +327,7 @@ class Visual:
                         tmp_data["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
 
                         region_states[region] = tmp_data
-
+        #print(region_states)
         str_data = json.dumps(region_states, ensure_ascii=False)               
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
                     qua=state_qua, imm=state_imm, dea=state_dea, text=[str_data]*len(state_imm))
