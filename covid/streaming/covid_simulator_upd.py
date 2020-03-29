@@ -177,6 +177,7 @@ class Node(object):
 
         # initialize number of states
         self.param_num_states = len(self.states_x)
+        #print('nm', self.param_num_states)
 
         #print("[INFO] States were created...")
 

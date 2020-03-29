@@ -54,7 +54,9 @@ param_t_inf = 14*np.ones(nodes_num)             # Infection period (The period f
 
 param_init_exposed = 0*np.ones(nodes_num) # np.array([100,100,100])#10*np.ones(nodes_num)
 
-hosp_cap_init = np.array((2395, 2395, 895, 300, 650, 250, 645, 100, 800, 425, 800, 300, 465, 1420, 1505, 380, 300))
+hosp_cap_init = np.array((280,2395,895,600,650,250,725,100,885,425,1670,300,465,1420,1505,380,300))
+
+
 
 param_transition_leakage = 0.0
 param_transition_scale = 1.0
