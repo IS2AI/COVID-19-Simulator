@@ -751,7 +751,7 @@ class Visual:
         
 
         layout = column (layout)
-        layout = column (layout,self.text4, text_footer)
+        layout = column (layout,self.text4) #text_footer
 
 
         self.doc.title = 'Covid Simulation'

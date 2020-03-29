@@ -27,7 +27,7 @@
             <a type="link" class="btn btn-white" href="https://issai.nu.edu.kz/episim">ISSAI - Episim</a>
           </h5>
         </div>
-        <div class="col-2 ml-auto">s
+        <div class="col-2 ml-auto">
           <img style="max-height: 70px; float:right;" class="img-fluid" src='/streaming/static/issai_logo_yellow.png'>
         </div>
       </div>
@@ -35,7 +35,12 @@
 
       {{ plot_div|indent(8) }}
       {{ plot_script|indent(8) }}
-
+    
+      <footer class="container">
+        <h5 style='color:green'> Developed by ISSAI Researchers :</h5>
+        <p class="lead mb-3">Askat Kuzdeuov, Daulet Baimukashev, Bauyrzhan Ibragimov, Aknur Karabay, Almas Mirzakhmetov, Mukhamet Nurpeiissov and Huseyin Atakan Varol </p>
+        <h5 style='color:red'> Disclaimer : This simulator is a research tool. The simulation results will show general trends based on entered parameters and initial conditions  </h5>
+      </footer>
     </body>
     <script>
       {% include 'script.js' %}
