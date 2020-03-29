@@ -47,7 +47,7 @@ class Visual:
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
         self.param_qr_slider.value = config.param_qr[config.region]
         self.param_sir.value = config.param_sir[config.region]
-        self.param_hosp_capacity.value = config.param_hosp_capacity[config.region]
+        self.param_hosp_capacity.value = config.hosp_cap_init[config.region]
         self.param_gamma_mor1.value = config.param_gamma_mor1[config.region]
         self.param_gamma_mor2.value = config.param_gamma_mor2[config.region]
         self.param_gamma_im.value = config.param_gamma_im[config.region]
