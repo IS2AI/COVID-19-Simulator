@@ -250,7 +250,7 @@ class Visual:
                 regions_ids = [ lregion for lregion in range(17)]
                 for region in regions_ids:
                     if region in region_states:
-                        print("GOOD")
+                        #print("GOOD")
                         region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
                         region_states[region]["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
                         region_states[region]["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
@@ -259,7 +259,7 @@ class Visual:
                         region_states[region]["tmp_state_sus"].append(new_nodes_all[i][:, region, 5][-1])
                         region_states[region]["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
                     else:
-                        print("ONLY ZEROOOO")
+                        #print("ONLY ZEROOOO")
                         tmp_data = {
                             "tmp_state_inf": [], 
                             "tmp_state_sin": [], 
