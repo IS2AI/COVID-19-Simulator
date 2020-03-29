@@ -1,37 +1,17 @@
 from bokeh.plotting import figure
 from bokeh.layouts import gridplot, column, row
-from bokeh.models.widgets import CheckboxGroup, Div
 from bokeh.io import curdoc
 from tornado import gen
-import pandas as pd
 import numpy as np
-from bokeh.models import CategoricalColorMapper, Panel, Select, Button, DataTable, DateFormatter, TableColumn
+from bokeh.models import CategoricalColorMapper, Panel, Select, Button, DataTable,DateFormatter, TableColumn, PrintfTickFormatter, Legend, Slider, TextInput, CheckboxGroup, Div, ColumnDataSource
 from covid_simulator_upd import Node
 import config
 import os
 import csv
-
-from bokeh.models import Range1d, HoverTool, ColumnDataSource, Legend
-
-from bokeh.models import CategoricalColorMapper, HoverTool, ColumnDataSource, Panel, Select, Button, Legend
-from covid_simulator_upd import Node
-from bokeh.models.widgets import *
-
 import copy
-from bokeh.io import output_file, show
-
 from datetime import date
 from random import randint
-
-from bokeh.io import output_file, show
-from bokeh.models import ColumnDataSource, DataTable, DateFormatter, TableColumn
-from bokeh.models import (CDSView, ColorBar, ColumnDataSource,
-                          CustomJS, CustomJSFilter,
-                          GeoJSONDataSource, HoverTool,
-                          LinearColorMapper, Slider,PrintfTickFormatter)
-
-import csv
-import pandas as pd
+from PIL import Image
 
 #import geopandas as gpd
 #df_kz = gpd.read_file('data_geomap/KAZ_adm1.shp')
@@ -67,7 +47,7 @@ class Visual:
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
         self.param_qr_slider.value = config.param_qr[config.region]
         self.param_sir.value = config.param_sir[config.region]
-        self.param_hosp_capacity.value = config.param_hosp_capacity[config.region]
+        self.param_hosp_capacity.value = config.hosp_cap_init[config.region]
         self.param_gamma_mor1.value = config.param_gamma_mor1[config.region]
         self.param_gamma_mor2.value = config.param_gamma_mor2[config.region]
         self.param_gamma_im.value = config.param_gamma_im[config.region]
@@ -80,7 +60,36 @@ class Visual:
         config.initial_params = params
 
     def definePlot(self, source):
-
+        THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+        img_nu  = Image.open(os.path.join(THIS_FOLDER, 'nu_logo.png')).convert('RGBA')
+        img_issai = Image.open(os.path.join(THIS_FOLDER, 'issai_logo.png')).convert('RGBA')
+        
+        x_nu, y_nu = img_nu.size
+        img_nu_plot = np.empty((x_nu, y_nu), dtype=np.uint32)
+        img_nu_view = img_nu_plot.view(dtype=np.uint8).reshape((y_nu, x_nu, 4))
+        img_nu_view[:,:,:]=np.flipud(np.asarray(img_nu))
+        
+        dim_nu = max(x_nu, y_nu)
+        dim_nu_y = min(x_nu, y_nu)
+        p_nu = figure(x_range=(0,dim_nu), y_range=(0,dim_nu_y), height=250, width=479)
+        p_nu.image_rgba(image=[img_nu_view], x=0, y=0, dw=x_nu, dh=y_nu)
+        p_nu.axis.visible = False
+        p_nu.axis.visible = False
+        p_nu.toolbar.logo = None
+        p_nu.toolbar_location = None
+        
+        x_is, y_is = img_issai.size
+        iss_plot = np.empty((x_is, y_is), dtype=np.uint32)
+        iss_view=iss_plot.view(dtype=np.uint8).reshape((y_is, x_is, 4))
+        iss_view[:,:,:]=np.flipud(np.asarray(img_issai))
+        
+        p_iss = figure(x_range=(0, x_is), y_range=(0, y_is), height=250, width=479)
+        p_iss.image_rgba(image=[iss_view], x=0, y=0, dw=x_is, dh=y_is)
+        p_iss.axis.visible = False
+        p_iss.axis.visible = False
+        p_iss.toolbar.logo = None
+        p_iss.toolbar_location = None        
+        
 
       #  create glyph for kazakhstan map
       #  p_map = figure(title = ' Kazakhstan', plot_height=600, plot_width=800, background_fill_color='black',background_fill_alpha = 0.8, toolbar_location='above')
@@ -174,6 +183,17 @@ class Visual:
 
         #pAll = gridplot([[row(p1], [p_map]])
         pAll = row(p1,p2)
+        dumdiv = Div(text='', width =150)
+        dumdiv_is = Div(text='', width=700)
+        
+        issai_text= Div(text="""<h1 style="color:blue">ISSAI.NU.EDU.KZ/EPISIM</h1>""", width=650, height=50)
+        isstxt = row(dumdiv_is, issai_text)
+        
+        dumdiv3= Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=650, height=50)
+        header = row(p_nu,dumdiv,dumdiv3, p_iss)
+        header = column(header, isstxt)
+        pAll = column(header,pAll)
+        
         return pAll
 
     #@gen.coroutine
@@ -307,7 +327,7 @@ class Visual:
         config.param_transition_box.append(config.box2)
         config.param_transition_box.append(config.box3)
 
-        config.box_time.append(config.param_transition_box)
+        #config.box_time.append(config.param_transition_box)
 
         tr_boxes = config.param_transition_box
 
@@ -366,6 +386,7 @@ class Visual:
 
     def run_click(self):
         if config.flag_sim == 0:
+            self.save_click()
             config.run_iteration=True
             self.update(False)
 
@@ -387,7 +408,7 @@ class Visual:
             #####
             box_corr = np.zeros((17,3))
             for b in range(config.counter_func):
-                curr_transition_box = config.box_time[b]
+                curr_transition_box = config.box_time[b+1]
                 tr_boxes = curr_transition_box
                 param_transition_box = np.zeros((17,3))
                 for i, way in enumerate(tr_boxes): # air 0 rail 1 road 2
@@ -397,10 +418,12 @@ class Visual:
                 box_corr = np.dstack([box_corr, param_transition_box])
                 #box_corr = box_corr[:,:,]
                 #, box_corr[iter,j,0], box_corr[j,1],  box_corr[j,2]
+                #print(b)
                 #print(box_corr)
                 #print(box_corr.shape)
+            #print(box_corr)
+            box_corr = box_corr[:,:,1:]
                 #print(box_corr[0,0,:])
-
             #####
 
             for j in range(17):
@@ -446,7 +469,7 @@ class Visual:
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
         self.param_qr_slider.value = config.param_qr[config.region]
         self.param_sir.value = config.param_sir[config.region]
-        self.param_hosp_capacity.value = config.param_hosp_capacity[config.region]
+        self.param_hosp_capacity.value = config.hosp_cap_init[config.region]
         self.param_gamma_mor1.value = config.param_gamma_mor1[config.region]
         self.param_gamma_mor2.value = config.param_gamma_mor2[config.region]
         self.param_gamma_im.value = config.param_gamma_im[config.region]
@@ -493,6 +516,8 @@ class Visual:
 
     def handler_param_t_inf(self, attr, old, new):
         config.param_t_inf[config.region]=new
+        
+        
     def handler_init_exposed(self, attr, old, new):
         config.param_init_exposed[config.region]=new
         self.update(False)
@@ -500,20 +525,26 @@ class Visual:
 
     def handler_param_tr_scale(self, attr, old, new):
         config.param_transition_scale=new
+        self.save_click()
 
 
     def handler_param_tr_leakage(self, attr, old, new):
         config.param_transition_leakage=new
+        self.save_click()
 
     def handler_checkbox_group1(self, new):
         config.box1 = new
         config.testing_var = config.box1
+        self.save_click()
 
     def handler_checkbox_group2(self, new):
         config.box2 = new
+        self.save_click()
 
     def handler_checkbox_group3(self, new):
         config.box3 = new
+        self.save_click()
+
 
     def handler_param_save_file(self, attr, old, new):
         config.param_save_file= str(new)
@@ -524,7 +555,7 @@ class Visual:
         regions_for_show = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy',
                                 'Qostanai',  'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan', 'Qazaqstan']
 
-        text_save = TextInput(value="default", title="Output Folder Name: results/... ")
+        text_save = TextInput(value="foldername", title="")
         text_save.on_change('value', self.handler_param_save_file)
 
         # select region
@@ -534,13 +565,13 @@ class Visual:
 
         #select parameters
        #select parameters
-        self.sus_to_exp_slider = Slider(start=0,end=1,step=0.01,value=config.param_beta_exp[config.region], title='Susceptible to Exposed transition constant')
+        self.sus_to_exp_slider = Slider(start=0.0,end=0.5,step=0.005,value=config.param_beta_exp[config.region], title='Susceptible to Exposed transition constant')
         self.sus_to_exp_slider.on_change('value', self.handler_beta_exp)
 
-        self.param_qr_slider = Slider(start=0,end=1,step=0.01,value=config.param_qr[config.region], title='Daily Quarantine rate of the Exposed ')
+        self.param_qr_slider = Slider(start=0.0,end=0.25,step=0.0025,value=config.param_qr[config.region], title='Daily Quarantine rate of the Exposed ')
         self.param_qr_slider.on_change('value', self.handler_param_qr)
 
-        self.param_sir = Slider(start=0,end=1,step=0.01,value=config.param_sir[config.region], title='Daily Infected to Severe Infected transition rate ')
+        self.param_sir = Slider(start=0.0,end=0.25,step=0.0025,value=config.param_sir[config.region], title='Daily Infected to Severe Infected transition rate ')
         self.param_sir.on_change('value', self.handler_param_sir)
 
         self.param_eps_exp = Slider(start=0,end=1,step=0.01,value=config.param_eps_exp[config.region], title='Disease transmission rate of Exposed compared to Infected')
@@ -552,7 +583,7 @@ class Visual:
         self.param_eps_sev = Slider(start=0,end=1,step=0.01,value=config.param_eps_sev[config.region], title='Disease transmission rate of Severe Infected compared to Infected')
         self.param_eps_sev.on_change('value', self.handler_param_eps_sev)
 
-        self.param_hosp_capacity = Slider(start=0,end=10000,step=1,value=config.param_hosp_capacity[config.region], title='Hospital Capacity')
+        self.param_hosp_capacity = Slider(start=0,end=10000,step=1,value=config.hosp_cap_init[config.region], title='Hospital Capacity')
         self.param_hosp_capacity.on_change('value', self.handler_param_hosp_capacity)
 
         self.param_gamma_mor1 = Slider(start=0,end=1,step=0.01,value=config.param_gamma_mor1[config.region], title='Severe Infected to Dead transition probability')
@@ -591,7 +622,7 @@ class Visual:
         # Buttons
         reset_button = Button(label = 'Reset Button', button_type='primary')
         save_button = Button(label='Update transition matrix', button_type='primary')
-        save_button_result = Button(label='Save current plot to csv', button_type='primary')
+        save_button_result = Button(label='Save current plot to .csv in directory results/', button_type='primary')
         run_button = Button(label='Run the simulation',button_type='primary')
         #########  CHANGE
 
@@ -683,8 +714,8 @@ class Visual:
         run_button.js_on_click(draw_map_js)
 
         ########### CHANGE ###################
-        layout_t = column(save_button_result, text_save)
-        buttons = row(reset_button,save_button, run_button, layout_t)
+        layout_t = row(save_button_result, text_save)
+        buttons = row(reset_button,run_button, layout_t)
         buttons = column(buttons, region_selection)
 
         params =  column(sliders, self.text3, self.text4, sliders_3, self.text5, self.text4,)
