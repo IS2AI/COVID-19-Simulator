@@ -14,23 +14,28 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     </head>
     <body>
-      <div class="container mb-5">
+      <div class="container-fluid mb-5 mt-2 border border-info p-1 border-top-0 border-left-0 border-right-0">
       <div class="row" style="height:120px;" >
-        <div class="col-2">
-          <img class="img-responsive img-fluid img-thumbnail" src='/streaming/static/nu_logo1.jpg'>
+        <div class="col-2 mr-auto">
+          <img style="height: 65px;" class="img-fluid" src='/streaming/static/nu_logo_hor.png'>
         </div>
         <div class="col-8">
-          <h4 class="text-center">
-          Disclaimer : This simulator is a research tool. The simulation results will show general trends based on entered parameters and initial conditions
-          </h4>
+          <h3 class="text-center">
+            First line: COVID-19 Simulator for Kazakhstan
+          </h3>
+          <h5 class="text-center">
+            <a type="link" class="btn btn-white" href="https://issai.nu.edu.kz/episim">ISSAI - Episim</a>
+          </h5>
         </div>
-        <div class="col-2">
-          <img class="img-responsive img-fluid img-thumbnail" src='/streaming/static/issai_logo_new.png'>
+        <div class="col-2 ml-auto">s
+          <img style="max-height: 70px; float:right;" class="img-fluid" src='/streaming/static/issai_logo_yellow.png'>
         </div>
       </div>
     </div>
+
       {{ plot_div|indent(8) }}
       {{ plot_script|indent(8) }}
+
     </body>
     <script>
       {% include 'script.js' %}
