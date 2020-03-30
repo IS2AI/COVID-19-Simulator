@@ -487,7 +487,8 @@ class Visual:
                         if config.new_plot_all:
                             one_arr = config.new_plot_all[iter] #
                             one_arr_node = one_arr[-1,j,:].astype(int)
-                            one_arr_node = np.append(one_arr_node, (config.param_beta_exp[j], config.param_qr[j], config.param_sir[j],
+                            
+                            one_arr_node = np.append(one_arr_node, (config.param_init_exposed[j], config.param_beta_exp[j], config.param_qr[j], config.param_sir[j],
                                 config.param_hosp_capacity[j], config.param_gamma_mor1[j], config.param_gamma_mor2[j], config.param_gamma_im[j], config.param_eps_exp[j],
                                 config.param_eps_qua[j], config.param_eps_sev[j], config.param_t_exp[0], config.param_t_inf[0], config.param_transition_leakage,
                                 config.param_transition_scale,box_corr[j,0,iter],box_corr[j,1,iter],box_corr[j,2,iter]))
