@@ -30,13 +30,13 @@ import json
 class Visual:
     def __init__(self, callbackFunc, running):
         self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=500, height=50) # Text to be displayed at the top of the webpage
-        self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=500, height=10) # Text to be displayed at the top of the webpage
-        self.text3 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
+        self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=800, height=5) # Text to be displayed at the top of the webpage
+        self.text3 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=5) # Text to be displayed at the top of the webpage
         self.text4 = Div(text="""<h1 style="color:blue"> </h1>""", width=900, height=50) # Text to be displayed at the top of the webpage
-        self.text4rr = Div(text="""<h1 style="color:blue"> </h1>""", width=200, height=10) # Text to be displayed at the top of the webpage
+        self.text4rr = Div(text="""<h1 style="color:blue">            </h1>""", width=500, height=15) # Text to be displayed at the top of the webpage
 
-        self.text5 = Div(text="""<h1 style="color:blue"> Change transition matrix </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
-        self.text6 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
+        self.text5 = Div(text="""<h1 style="color:blue"> Change transition matrix </h1>""", width=900, height=5) # Text to be displayed at the top of the webpage
+        self.text6 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=5) # Text to be displayed at the top of the webpage
         self.text7 = Div(text="""<h1 style="color:blue">Save current results to file </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
 
 
@@ -776,7 +776,7 @@ class Visual:
         layout_t = row(save_button_result, text_save)
         buttons = row(reset_button,run_button, layout_t)
 
-        reg1 = row(self.text2, column(self.text4rr,region_selection))
+        reg1 = column(self.text2, column(self.text4rr, row(self.text4rr,region_selection)))
 
         buttons = column(buttons, reg1, self.text4)
 
@@ -790,8 +790,9 @@ class Visual:
         #kz_map_tag.js_on
         ###
         dummy_div = Div(text=""" """, height=25);
+        dummy_div11 = Div(text=""" """, height=5);
         layout = column(self.pAll, buttons)
-        layout = column (layout, dummy_div, params, check_table)
+        layout = column (layout, dummy_div11, params, check_table)
 
         layout = column (layout, check_trans, self.text4)
 
