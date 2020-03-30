@@ -457,7 +457,6 @@ class Node(object):
         for eval, sind, dind in zip(expval, self.source_ind, self.dest_ind):
             if eval < 10 and eval > 0:
                 temp1 = int(np.ceil(eval * 10 + np.finfo(np.float32).eps))
-                print('----------------------*****************', temp1)
                 if temp1 == 0:
                     dx = 0
                 else:

@@ -676,7 +676,7 @@ class Visual:
 
         dumdiv = Div(text='',width=10)
         dumdiv2= Div(text='',width=10)
-        dumdiv3= Div(text='',width=150)
+        dumdiv3= Div(text='',width=200)
 
         ######### CHANGE
         # Buttons
