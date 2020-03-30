@@ -788,7 +788,7 @@ class Visual:
        
         #kz_map_tag.js_on
         ###
-        dummy_div = Div(text=""" """, height=15);
+        dummy_div = Div(text=""" """, height=25);
         layout = column(self.pAll, buttons)
         layout = column (layout, dummy_div, params, check_table)
 
