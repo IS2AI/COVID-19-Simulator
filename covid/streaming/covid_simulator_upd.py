@@ -349,6 +349,7 @@ class Node(object):
 
 
     def stoch_solver(self):
+
         # define a list to store transitions
         expval = []
         state_1 = self.states_x[1]
