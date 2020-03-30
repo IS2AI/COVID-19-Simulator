@@ -32,7 +32,7 @@ class Visual:
     def __init__(self, callbackFunc, running):
 
         self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=500, height=50) # Text to be displayed at the top of the webpage
-        self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=600, height=20) # Text to be displayed at the top of the webpage
+        self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=700, height=20) # Text to be displayed at the top of the webpage
         self.text3 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=5) # Text to be displayed at the top of the webpage
         self.text4 = Div(text="""<h1 style="color:blue"> </h1>""", width=900, height=50) # Text to be displayed at the top of the webpage
         self.text4rr = Div(text="""<h1 style="color:blue">            </h1>""", width=500, height=15) # Text to be displayed at the top of the webpage
@@ -493,7 +493,7 @@ class Visual:
                             ## param_gamma_mor1, param_gamma_mor2, param_gamma_im,
                             ## param_eps_exp, param_eps_qua, param_eps_sev, param_transition_leakage, param_transition_scale), axis=None)
                             m = 17
-                            one_arr_node = np.append(iter, one_arr_node)
+                            one_arr_node = np.append(int(iter+1), one_arr_node)
                             one_arr_node = np.append(one_arr_node, (config.param_init_exposed[j], config.arr_for_save[iter+1,j+0*m],   config.arr_for_save[iter+1,j+1*m], config.arr_for_save[iter+1,j+2*m],
                                 config.arr_for_save[iter+1,j+3*m], config.arr_for_save[iter+1,j+4*m], config.arr_for_save[iter+1,j+5*m], config.arr_for_save[iter+1,j+6*m], config.arr_for_save[iter+1,j+7*m],
                                 config.arr_for_save[iter+1,j+8*m], config.arr_for_save[iter+1,j+9*m], config.param_t_exp[0], config.param_t_inf[0], config.arr_for_save[iter+1,10*m],
