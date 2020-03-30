@@ -455,10 +455,12 @@ class Node(object):
 
         # Randomly generate the transition value based on the expected value
         for eval, sind, dind in zip(expval, self.source_ind, self.dest_ind):
-            if eval < 10:
+            if eval < 10 and eval > 0:
                 temp1 = int(np.ceil(eval * 10 + np.finfo(np.float32).eps))
                 temp2 = eval/temp1
                 dx = self.dx_generator(temp1, temp2)
+            elif eval < 0:
+                dx = 0
             else:
                 dx = round(eval)
 
