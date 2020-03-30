@@ -214,7 +214,21 @@ window.onload = function(){
             sampleDataAll.tmp_state_dea += d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ];
         })
         document.getElementById('statesvg').innerHTML="";
-        uStates.draw("#statesvg", sampleData, tooltipHtml, sampleDataAll);
+        if( entries_regions.length > 0 ){
+            uStates.draw("#statesvg", sampleData, tooltipHtml, sampleDataAll);
+        } else  {
+            // sampleDataAll= {
+            //     tmp_state_inf: 0,
+            //     tmp_state_sus: 0,
+            //     tmp_state_exp: 0,
+            //     tmp_state_sin: 0,
+            //     tmp_state_qua: 0,
+            //     tmp_state_imm: 0,
+            //     tmp_state_dea: 0
+            // }
+            uStates.draw("#statesvg", {}, tooltipHtml, {});
+        }
+            
         
     }, 3000);
     
