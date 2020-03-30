@@ -212,7 +212,6 @@ class DataStream(threading.Thread):
 
                         config.params_network = [config.param_transition_box, config.param_transition_leakage, config.param_transition_scale]
 
-                        init_for_save =
                         new_nodes, new_plot, new_params, tr_m = simulate_network(config.params_node, config.params_network, config.nodes_old, config.counter_func, config.params_old)
 
                         config.nodes_old = new_nodes
