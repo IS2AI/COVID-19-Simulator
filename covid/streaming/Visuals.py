@@ -62,7 +62,7 @@ class Visual:
         self.layout()
         self.prev_y1 = 0
         self.region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
-                            'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan', 'Qazaqstan']
+                            'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan']
 
         self.init_exposed.value = config.param_init_exposed[config.region]
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
@@ -360,7 +360,7 @@ class Visual:
 
     def SelectRegionHandler(self, attr, old, new):
         regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
-                    'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan', 'Qazaqstan']
+                    'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan']
         for i, region in enumerate(regions):
             if new == region:
                 config.region = i
@@ -609,7 +609,7 @@ class Visual:
         regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',  'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan']
 
         regions_for_show = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy',
-                                'Qostanai',  'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan', 'Qazaqstan']
+                                'Qostanai',  'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan']
 
         text_save = TextInput(value="foldername", title="")
         text_save.on_change('value', self.handler_param_save_file)
