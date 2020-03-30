@@ -203,7 +203,7 @@ class Visual:
        # p_map.yaxis.visible = False
 
         #pAll = gridplot([[row(p1], [p_map]])
-        kz_map_tag = Div(text="""<div id="svg_holder" style="float:left;"> <svg width="780" height="600" id="statesvg"></svg> <div id="tooltip"></div>   </div>""", width=960, height=600)
+        kz_map_tag = Div(text="""<div id="svg_holder" style="float:left;"> <svg width="780" height="530" id="statesvg"></svg> <div id="tooltip"></div>   </div>""", width=960, height=600)
         kz_map_tooltip = Div(text="""<div style="float:left;" id="tooltip"></div>""", width=960, height=100)
         kz_map_row = row(kz_map_tag,kz_map_tooltip)
         pAll = row(p1, kz_map_row)
@@ -793,9 +793,6 @@ class Visual:
         layout = column (layout, dummy_div, params, check_table)
 
         layout = column (layout, check_trans, self.text4)
-
-
-        
 
         layout = column (layout)
         layout = column (layout,self.text4) #text_footer
