@@ -10,6 +10,7 @@ nodes_old = []
 new_plot_all = []
 iteration_over = False
 new_nodes_all = []
+
 state_sus = []
 state_exp = []
 state_inf = []
@@ -110,9 +111,11 @@ transition_matrix = 0.5*np.array([[0.000000000000000000e+00,5.100000000000000000
 
 transition_matrix = transition_matrix.astype(int)
 
-header_file_csv = r'Infected,Exposed,Severe Infected,Quarantined,Immunized,Susceptible,Dead,Initial Exposed,Susceptible to Exposed transition constant,Daily Quarantine rate of the Exposed,Daily Infected to Severe Infected transition rate,Hospital Capacity,Severe Infected to Dead transition probability,Severe Infected to Dead transition probability (Hospital Cap. Exceeded),Infected to Recovery Immunized transition probability,Disease transmission rate of Exposed compared to Infected,Disease transmission rate of Quarantined compared to Infected,Disease transmission rate of Severe Infected compared to Infected,Incubation period (Days),Infection  period (Days),Leakage ratio,Traffic ratio,Airway,Railway,Highway'
+header_file_csv = r'Day,Infected,Exposed,Severe Infected,Quarantined,Immunized,Susceptible,Dead,Initial Exposed,Susceptible to Exposed transition constant,Daily Quarantine rate of the Exposed,Daily Infected to Severe Infected transition rate,Hospital Capacity,Severe Infected to Dead transition probability,Severe Infected to Dead transition probability (Hospital Cap. Exceeded),Infected to Recovery Immunized transition probability,Disease transmission rate of Exposed compared to Infected,Disease transmission rate of Quarantined compared to Infected,Disease transmission rate of Severe Infected compared to Infected,Incubation period (Days),Infection  period (Days),Leakage ratio,Traffic ratio,Airway,Railway,Highway'
 
 
 arr_for_save = np.concatenate((param_beta_exp, param_qr,param_sir, param_hosp_capacity,
     param_gamma_mor1, param_gamma_mor2, param_gamma_im, param_eps_exp,
     param_eps_qua, param_eps_sev, param_transition_leakage, param_transition_scale), axis=None)
+
+init_for_save = []

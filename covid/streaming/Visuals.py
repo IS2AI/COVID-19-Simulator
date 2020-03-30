@@ -32,7 +32,7 @@ class Visual:
     def __init__(self, callbackFunc, running):
 
         self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=500, height=50) # Text to be displayed at the top of the webpage
-        self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=800, height=5) # Text to be displayed at the top of the webpage
+        self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=600, height=20) # Text to be displayed at the top of the webpage
         self.text3 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=5) # Text to be displayed at the top of the webpage
         self.text4 = Div(text="""<h1 style="color:blue"> </h1>""", width=900, height=50) # Text to be displayed at the top of the webpage
         self.text4rr = Div(text="""<h1 style="color:blue">            </h1>""", width=500, height=15) # Text to be displayed at the top of the webpage
@@ -63,8 +63,8 @@ class Visual:
         self.doc = curdoc()
         self.layout()
         self.prev_y1 = 0
-        self.region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
-                            'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan']
+        self.region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
+                            'Qyzylorda', 'Shygys Kazakhstan', 'Shymkent', 'Soltustik Kazakhstan', 'Turkistan']
 
         self.init_exposed.value = config.param_init_exposed[config.region]
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
@@ -363,8 +363,8 @@ class Visual:
         self.data_tableT.update()
 
     def SelectRegionHandler(self, attr, old, new):
-        regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
-                    'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan']
+        regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
+                    'Qyzylorda', 'Shygys Kazakhstan', 'Shymkent', 'Soltustik Kazakhstan', 'Turkistan']
         for i, region in enumerate(regions):
             if new == region:
                 config.region = i
@@ -450,7 +450,7 @@ class Visual:
                     config.param_eps_sev,config.param_hosp_capacity, config.param_gamma_mor1,config.param_gamma_mor2,
                     config.param_gamma_im, config.param_init_susceptible, config.param_init_exposed])
 
-            params_global = [config.counter_func, config.param_t_exp, config.param_t_inf, 1, 12]
+            params_global = [config.counter_func +1, config.param_t_exp, config.param_t_inf, 1, 12]
 
             directory = 'results' + '/' +  config.param_save_file
             if not os.path.exists(directory):
@@ -493,6 +493,7 @@ class Visual:
                             ## param_gamma_mor1, param_gamma_mor2, param_gamma_im,
                             ## param_eps_exp, param_eps_qua, param_eps_sev, param_transition_leakage, param_transition_scale), axis=None)
                             m = 17
+                            one_arr_node = np.append(iter, one_arr_node)
                             one_arr_node = np.append(one_arr_node, (config.param_init_exposed[j], config.arr_for_save[iter+1,j+0*m],   config.arr_for_save[iter+1,j+1*m], config.arr_for_save[iter+1,j+2*m],
                                 config.arr_for_save[iter+1,j+3*m], config.arr_for_save[iter+1,j+4*m], config.arr_for_save[iter+1,j+5*m], config.arr_for_save[iter+1,j+6*m], config.arr_for_save[iter+1,j+7*m],
                                 config.arr_for_save[iter+1,j+8*m], config.arr_for_save[iter+1,j+9*m], config.param_t_exp[0], config.param_t_inf[0], config.arr_for_save[iter+1,10*m],
@@ -619,17 +620,17 @@ class Visual:
         config.param_save_file= str(new)
 
     def layout(self):
-        regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',  'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan']
+        regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',  'Qyzylorda', 'Shygys Kazakhstan', 'Shymkent', 'Soltustik Kazakhstan', 'Turkistan']
 
-        regions_for_show = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy',
-                                'Qostanai',  'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan']
+        regions_for_show = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy',
+                                'Qostanai',  'Qyzylorda', 'Shygys Kazakhstan', 'Shymkent', 'Soltustik Kazakhstan', 'Turkistan']
 
         text_save = TextInput(value="foldername", title="")
         text_save.on_change('value', self.handler_param_save_file)
 
         # select region
         initial_region = 'Almaty'
-        region_selection = Select(value=initial_region, title='        ', options=regions_for_show, max_width=250, max_height=20)
+        region_selection = Select(value=initial_region, title=' ', options=regions_for_show, max_width=250, max_height=20)
         region_selection.on_change('value', self.SelectRegionHandler)
 
         #select parameters
@@ -744,7 +745,7 @@ class Visual:
                     TableColumn(field="c2", title="Aqmola",),
                     TableColumn(field="c3", title="Aqtobe",),
                     TableColumn(field="c4", title="Atyrau",),
-                    TableColumn(field="c5", title="Batys Qazaqstan",),
+                    TableColumn(field="c5", title="Batys Kazakhstan",),
                     TableColumn(field="c6", title="Jambyl",),
                     TableColumn(field="c7", title="Mangystau",),
                     TableColumn(field="c8", title="Nur-Sultan",),
@@ -752,9 +753,9 @@ class Visual:
                     TableColumn(field="c10", title="Qaragandy",),
                     TableColumn(field="c11", title="Qostanai",),
                     TableColumn(field="c12", title="Qyzylorda",),
-                    TableColumn(field="c13", title="Shygys Qazaqstan",),
+                    TableColumn(field="c13", title="Shygys Kazakhstan",),
                     TableColumn(field="c14", title="Shymkent",),
-                    TableColumn(field="c15", title="Soltustik Qazaqstan",),
+                    TableColumn(field="c15", title="Soltustik Kazakhstan",),
                     TableColumn(field="c16", title="Turkistan",),]
 
         self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1200, height=500, sortable = False)
@@ -787,7 +788,7 @@ class Visual:
         layout_t = row(save_button_result, text_save)
         buttons = row(reset_button,run_button, layout_t)
 
-        reg1 = column(self.text2, column(self.text4rr, row(self.text4rr,region_selection)))
+        reg1 = row(self.text2, region_selection)
 
         buttons = column(buttons, reg1, self.text4)
 
