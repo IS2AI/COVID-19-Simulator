@@ -1,9 +1,0 @@
-Infected ,Exposed ,Severe  Infected ,Quarantined ,Immunized ,Susceptible ,Dead ,Susceptible  to  Exposed  transition  constant ,Daily  Quarantine  rate  of  the  Exposed ,Daily  Infected  to  Severe  Infected  transition  rate ,Hospital  Capacity ,Severe  Infected  to  Dead  transition  probability ,Severe  Infected  to  Dead  transition  probability  (Hospital  Cap.  Exceeded) ,Infected  to  Recovery  Immunized  transition  probability ,Disease  transmission  rate  of  Exposed  compared  to  Infected ,Disease  transmission  rate  of  Quarantined  compared  to  Infected ,Disease  transmission  rate  of  Severe  Infected  compared  to  Infected ,Incubation  period  (Days) ,Infection    period  (Days) ,Leakage  ratio ,Traffic  ratio ,Airway ,Railway ,Highway
-0.0,61.0,0.0,1.0,0.0,1854603.0,0.0,0.37,0.205,0.1125,3000.0,0.21,0.15,0.9,0.7,0.3,0.3,5.0,14.0,0.0,1.0,1.0,1.0,1.0
-0.0,68.0,0.0,4.0,0.0,1854683.0,0.0,0.37,0.205,0.1125,3000.0,0.21,0.15,0.9,0.7,0.3,0.3,5.0,14.0,0.0,1.0,1.0,1.0,1.0
-0.0,83.0,0.0,7.0,0.0,1854751.0,0.0,0.37,0.205,0.1125,3000.0,0.21,0.15,0.9,0.7,0.3,0.3,5.0,14.0,0.0,1.0,1.0,1.0,1.0
-0.0,112.0,0.0,12.0,0.0,1854803.0,0.0,0.37,0.205,0.1125,3000.0,0.21,0.15,0.9,0.7,0.3,0.3,5.0,14.0,0.0,1.0,1.0,1.0,1.0
-46.0,95.0,0.0,22.0,0.0,1854793.0,0.0,0.37,0.205,0.1125,3000.0,0.21,0.15,0.9,0.7,0.3,0.3,5.0,14.0,0.0,1.0,0.0,0.0,0.0
-46.0,127.0,0.0,37.0,0.0,1854746.0,0.0,0.37,0.205,0.1125,3000.0,0.21,0.15,0.9,0.7,0.3,0.3,5.0,14.0,0.0,1.0,0.0,0.0,0.0
-55.0,161.0,0.0,53.0,0.0,1854687.0,0.0,0.37,0.205,0.1125,3000.0,0.21,0.15,0.9,0.7,0.3,0.3,5.0,14.0,0.0,1.0,0.0,0.0,0.0
-66.0,216.0,2.0,67.0,0.0,1854605.0,0.0,0.37,0.205,0.1125,3000.0,0.21,0.15,0.9,0.7,0.3,0.3,5.0,14.0,0.0,1.0,0.0,0.0,0.0
