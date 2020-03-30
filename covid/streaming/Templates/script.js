@@ -130,7 +130,7 @@ window.onload = function(){
                 '<button type="link" class="btn btn-danger" style="background:#460000 !important;">Severe Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_sin)+'</span></button>'+
                 '<button type="link" class="btn btn-info">Immunized <span class="badge badge-primary badge-pill">'+(d.tmp_state_imm)+'</span></button>'+
                 '<button type="link" class="btn btn-danger">Death <span class="badge badge-primary badge-pill">'+(d.tmp_state_dea)+'</span></button>'+
-                '<button type="link" class="btn btn-muted">Suspended <span class="badge badge-primary badge-pill">'+(d.tmp_state_sus)+'</span></button>'+
+                '<button type="link" class="btn btn-muted">Susceptible <span class="badge badge-primary badge-pill">'+(d.tmp_state_sus)+'</span></button>'+
             "</div>"+
         "</div>";
 
@@ -143,7 +143,7 @@ window.onload = function(){
             '<button type="link" class="btn btn-danger" style="background:#460000 !important;">Severe Infected <span class="badge badge-primary badge-pill">'+(d2.tmp_state_sin)+'</span></button>'+
             '<button type="link" class="btn btn-info">Immunized <span class="badge badge-primary badge-pill">'+(d2.tmp_state_imm)+'</span></button>'+
             '<button type="link" class="btn btn-danger">Death <span class="badge badge-primary badge-pill">'+(d2.tmp_state_dea)+'</span></button>'+
-            '<button type="link" class="btn btn-muted">Suspended <span class="badge badge-primary badge-pill">'+(d2.tmp_state_sus)+'</span></button>'+
+            '<button type="link" class="btn btn-muted">Susceptible <span class="badge badge-primary badge-pill">'+(d2.tmp_state_sus)+'</span></button>'+
             "</div>"+
         "</div>";
 
