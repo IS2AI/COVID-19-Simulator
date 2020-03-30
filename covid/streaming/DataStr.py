@@ -203,8 +203,6 @@ class DataStream(threading.Thread):
 
                         config.arr_for_save = np.vstack([config.arr_for_save, arr_for_save ])
 
-                        print(config.arr_for_save.shape)
-
                         config.params_node = np.vstack([config.param_beta_exp, config.param_qr,
                                         config.param_sir, config.param_eps_exp, config.param_eps_qua, config.param_eps_sev,config.param_hosp_capacity,
                                         config.param_gamma_mor1,config.param_gamma_mor2, config.param_gamma_im, config.param_sim_len,
