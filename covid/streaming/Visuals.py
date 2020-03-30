@@ -775,7 +775,7 @@ class Visual:
 
         reg1 = row(self.text2, column(self.text4rr,region_selection))
 
-        buttons = column(buttons, reg1)
+        buttons = column(buttons, reg1, self.text4)
 
         params =  column(sliders, self.text3, self.text4, sliders_3, self.text5, self.text4,)
 
