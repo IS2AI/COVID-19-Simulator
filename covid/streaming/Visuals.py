@@ -63,8 +63,8 @@ class Visual:
         self.doc = curdoc()
         self.layout()
         self.prev_y1 = 0
-        self.region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
-                            'Qyzylorda', 'Shygys Kazakhstan', 'Shymkent', 'Soltustik Kazakhstan', 'Turkistan']
+        self.region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
+                            'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
 
         self.init_exposed.value = config.param_init_exposed[config.region]
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
@@ -363,8 +363,8 @@ class Visual:
         self.data_tableT.update()
 
     def SelectRegionHandler(self, attr, old, new):
-        regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
-                    'Qyzylorda', 'Shygys Kazakhstan', 'Shymkent', 'Soltustik Kazakhstan', 'Turkistan']
+        regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
+                    'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
         for i, region in enumerate(regions):
             if new == region:
                 config.region = i
@@ -620,10 +620,10 @@ class Visual:
         config.param_save_file= str(new)
 
     def layout(self):
-        regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',  'Qyzylorda', 'Shygys Kazakhstan', 'Shymkent', 'Soltustik Kazakhstan', 'Turkistan']
+        regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',  'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
 
-        regions_for_show = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy',
-                                'Qostanai',  'Qyzylorda', 'Shygys Kazakhstan', 'Shymkent', 'Soltustik Kazakhstan', 'Turkistan']
+        regions_for_show = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy',
+                                'Qostanai',  'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
 
         text_save = TextInput(value="foldername", title="")
         text_save.on_change('value', self.handler_param_save_file)
@@ -745,7 +745,7 @@ class Visual:
                     TableColumn(field="c2", title="Aqmola",),
                     TableColumn(field="c3", title="Aqtobe",),
                     TableColumn(field="c4", title="Atyrau",),
-                    TableColumn(field="c5", title="Batys Kazakhstan",),
+                    TableColumn(field="c5", title="West Kazakhstan",),
                     TableColumn(field="c6", title="Jambyl",),
                     TableColumn(field="c7", title="Mangystau",),
                     TableColumn(field="c8", title="Nur-Sultan",),
@@ -753,9 +753,9 @@ class Visual:
                     TableColumn(field="c10", title="Qaragandy",),
                     TableColumn(field="c11", title="Qostanai",),
                     TableColumn(field="c12", title="Qyzylorda",),
-                    TableColumn(field="c13", title="Shygys Kazakhstan",),
+                    TableColumn(field="c13", title="East Kazakhstan",),
                     TableColumn(field="c14", title="Shymkent",),
-                    TableColumn(field="c15", title="Soltustik Kazakhstan",),
+                    TableColumn(field="c15", title="North Kazakhstan",),
                     TableColumn(field="c16", title="Turkistan",),]
 
         self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1200, height=500, sortable = False)
