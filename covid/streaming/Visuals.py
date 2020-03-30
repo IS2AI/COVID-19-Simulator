@@ -22,7 +22,7 @@ from bokeh.models import (CDSView, ColorBar, ColumnDataSource,
 import csv
 import pandas as pd
 import json
-
+import config_reset
 #import geopandas as gpd
 #df_kz = gpd.read_file('data_geomap/KAZ_adm1.shp')
 #geosource = GeoJSONDataSource(geojson = df_kz.to_json())
@@ -435,7 +435,7 @@ class Visual:
             config.counter = 0
             config.run_iteration=False
             self.update(False)
-
+            self.slider_update_reset(self, 0, 0)
     def run_click(self):
         if config.flag_sim == 0:
             self.save_click()
@@ -541,7 +541,21 @@ class Visual:
         self.param_t_exp.value = config.param_t_exp[0]
         self.param_t_inf.value = config.param_t_inf[0]
 
-
+    def slider_update_reset(self, attr, old, new):
+        self.init_exposed.value = config_reset.param_init_exposed[config.region]
+        self.sus_to_exp_slider.value = config_reset.param_beta_exp[config.region]
+        self.param_qr_slider.value = config_reset.param_qr[config.region]
+        self.param_sir.value = config_reset.param_sir[config.region]
+        self.param_hosp_capacity.value = config_reset.param_hosp_capacity[config.region]
+        self.param_gamma_mor1.value = config_reset.param_gamma_mor1[config.region]
+        self.param_gamma_mor2.value = config_reset.param_gamma_mor2[config.region]
+        self.param_gamma_im.value = config_reset.param_gamma_im[config.region]
+        self.param_eps_exp.value = config_reset.param_eps_exp[config.region]
+        self.param_eps_qua.value = config_reset.param_eps_qua[config.region]
+        self.param_eps_sev.value = config_reset.param_eps_sev[config.region]
+        self.param_t_exp.value = config_reset.param_t_exp[0]
+        self.param_t_inf.value = config_reset.param_t_inf[0]
+        
     def handler_beta_exp(self, attr, old, new):
         config.param_beta_exp[config.region]=new
 
