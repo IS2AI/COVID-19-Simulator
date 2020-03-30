@@ -616,7 +616,7 @@ class Visual:
 
         # select region
         initial_region = 'Almaty'
-        region_selection = Select(value=initial_region, title='        ', options=regions_for_show, max_width=250)
+        region_selection = Select(value=initial_region, title='        ', options=regions_for_show, max_width=250, max_height=20)
         region_selection.on_change('value', self.SelectRegionHandler)
 
         #select parameters
@@ -786,8 +786,9 @@ class Visual:
        
         #kz_map_tag.js_on
         ###
+        dummy_div = Div(text=""" """, height=15);
         layout = column(self.pAll, buttons)
-        layout = column (layout, params, check_table)
+        layout = column (layout, dummy_div, params, check_table)
 
         layout = column (layout, check_trans, self.text4)
 
