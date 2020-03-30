@@ -204,8 +204,8 @@ class Visual:
 
         #pAll = gridplot([[row(p1], [p_map]])
         kz_map_tag = Div(text="""<div id="svg_holder" style="float:left;"> <svg width="780" height="530" id="statesvg"></svg> <div id="tooltip"></div>   </div>""", width=960, height=600)
-        kz_map_tooltip = Div(text="""<div style="float:left;" id="tooltip"></div>""", width=960, height=100)
-        kz_map_row = row(kz_map_tag,kz_map_tooltip)
+        #kz_map_tooltip = Div(text="""<div style="float:left;" id="tooltip"></div>""", width=960, height=100)
+        kz_map_row = row(kz_map_tag)
         pAll = row(p1, kz_map_row)
         return pAll
 
