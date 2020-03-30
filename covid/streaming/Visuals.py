@@ -62,7 +62,7 @@ class Visual:
         self.layout()
         self.prev_y1 = 0
         self.region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
-                            'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan', 'Qazaqstan']
+                            'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan']
 
         self.init_exposed.value = config.param_init_exposed[config.region]
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
@@ -203,8 +203,10 @@ class Visual:
        # p_map.yaxis.visible = False
 
         #pAll = gridplot([[row(p1], [p_map]])
-        kz_map_tag = Div(text="""<div id="svg_holder"> <svg width="780" height="600" id="statesvg"></svg> <div id="tooltip"></div>   </div>""", width=960, height=600)
-        pAll = row(p1, kz_map_tag)
+        kz_map_tag = Div(text="""<div id="svg_holder" style="float:left;"> <svg width="780" height="600" id="statesvg"></svg> <div id="tooltip"></div>   </div>""", width=960, height=600)
+        kz_map_tooltip = Div(text="""<div style="float:left;" id="tooltip"></div>""", width=960, height=100)
+        kz_map_row = row(kz_map_tag,kz_map_tooltip)
+        pAll = row(p1, kz_map_row)
         return pAll
 
     #@gen.coroutine
@@ -360,7 +362,7 @@ class Visual:
 
     def SelectRegionHandler(self, attr, old, new):
         regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'Batys Qazaqstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
-                    'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan', 'Qazaqstan']
+                    'Qyzylorda', 'Shygys Qazaqstan', 'Shymkent', 'Soltustik Qazaqstan', 'Turkistan']
         for i, region in enumerate(regions):
             if new == region:
                 config.region = i
@@ -617,7 +619,7 @@ class Visual:
 
         # select region
         initial_region = 'Almaty'
-        region_selection = Select(value=initial_region, title='        ', options=regions_for_show, max_width=250)
+        region_selection = Select(value=initial_region, title='        ', options=regions_for_show, max_width=250, max_height=20)
         region_selection.on_change('value', self.SelectRegionHandler)
 
         #select parameters
@@ -787,8 +789,9 @@ class Visual:
        
         #kz_map_tag.js_on
         ###
+        dummy_div = Div(text=""" """, height=25);
         layout = column(self.pAll, buttons)
-        layout = column (layout, params, check_table)
+        layout = column (layout, dummy_div, params, check_table)
 
         layout = column (layout, check_trans, self.text4)
 

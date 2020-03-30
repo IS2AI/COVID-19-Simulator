@@ -124,13 +124,13 @@ window.onload = function(){
 
    tooltipHtml = function(n, d){	/* function to create html content string in tooltip div. */
         return "<h4>"+n+"</h4><table>"+
-        "<tr><td>Inf </td><td>"+(d.tmp_state_inf)+"</td></tr>"+
-        "<tr><td>Susp </td><td>"+(d.tmp_state_sus)+"</td></tr>"+
-        "<tr><td>Qua </td><td>"+(d.tmp_state_qua)+"</td></tr>"+
-        "<tr><td>Exp </td><td>"+(d.tmp_state_exp)+"</td></tr>"+
-        "<tr><td>Sin </td><td>"+(d.tmp_state_sin)+"</td></tr>"+
-        "<tr><td>Imp </td><td>"+(d.tmp_state_imm)+"</td></tr>"+
+        "<tr><td>Infected: </td><td>"+(d.tmp_state_inf)+"</td></tr>"+
+        "<tr><td>Quarantined </td><td>"+(d.tmp_state_qua)+"</td></tr>"+
+        "<tr><td>Exposed </td><td>"+(d.tmp_state_exp)+"</td></tr>"+
+        "<tr><td>Severe Infected </td><td>"+(d.tmp_state_sin)+"</td></tr>"+
+        "<tr><td>Immunized </td><td>"+(d.tmp_state_imm)+"</td></tr>"+
         "<tr><td>Death </td><td>"+(d.tmp_state_dea)+"</td></tr>"+
+        "<tr><td>Suspended </td><td>"+(d.tmp_state_sus)+"</td></tr>"+
         "</table>";
     }
 
@@ -173,7 +173,7 @@ window.onload = function(){
                 tmp_state_qua: d[1].tmp_state_qua[ d[1].tmp_state_qua.length - 1 ],
                 tmp_state_imm: d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ],
                 tmp_state_dea: d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ],
-                color: d3.interpolate("#ffffcc", "#800026")((d[1].tmp_state_exp[0]*10/sum_all)*100)
+                color: d3.interpolate("#ffffcc", "#800026")((d[1].tmp_state_exp[0]*100/sum_all)*100)
 
             }
 
@@ -186,40 +186,6 @@ window.onload = function(){
     
     d3.select(self.frameElement).style("height", "600px");
 
-
-    function trackMove(event) {
-        currentTarget = $(event.currentTarget)
-        tooltip = $('#tooltip');
-
-        console.log("Mouse Tracking")
-   
-        //  if the mouse pointer is between 
-        currentTargetRight = currentTarget.offset().left + currentTarget.outerWidth()
-        tooltipWidth = tooltip.outerWidth()
-   
-        $(".console").html("event.clientX = " + event.clientX.toString() + "<br/>");
-        $(".console").append("currentTargetRight - (tooltip.outerWidth()) = " + (currentTargetRight - (tooltip.outerWidth())).toString() + "<br/>");
-        $(".console").append("currentTargetRight = " + currentTargetRight + "<br/>");
-        if (event.clientX < (currentTarget.offset().left + (tooltip.outerWidth() / 2))) {
-            tooltip.css("left", "0px");
-            tooltip.css("right", "");
-           
-        } else if (event.clientX > (currentTargetRight - (tooltip.outerWidth() / 1.5))) {
-            tooltip.css("right", "0px");
-            tooltip.css("left", "");
-          
-   
-        } else if (event.clientX > (currentTarget.offset().left + (tooltip.outerWidth() / 2)) && event.clientX < (currentTargetRight - (tooltip.outerWidth() / 2))) {
-           
-            tooltip.css("left", parseInt(event.clientX) - (tooltip.outerWidth() / 2) + "px");
-            tooltip.css("right", "");
-            
-   
-        }
-   
-    }
-
-    window.onmousemove = trackMove;
 
 }
 

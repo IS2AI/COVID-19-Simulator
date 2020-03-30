@@ -35,14 +35,11 @@
 #tooltip{
 	border:1px solid grey;
 	width: 200px !important;
-	border-radius:5px;
 	font-size:12px;
-	margin:-100px;
 	width:100%;
 	padding:4px;
-	color:red;
-	opacity:0;
 }
+
 #tooltip table{
 	table-layout:fixed;
 }
