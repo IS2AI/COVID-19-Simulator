@@ -99,11 +99,11 @@ window.onload = function(){
             function mouseOver(d) {
                 d3.select("#tooltip").transition().duration(200).style("opacity", .9);
  
-                d3.select("#tooltip").html(toolTip(d.n, data[d.id]));//.style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
+                d3.select("#tooltip").html(toolTip(d.n, data[d.id])).style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
             }
 
             function mouseOut() {
-                d3.select("#tooltip").transition().duration(500).style("opacity", 0.1);
+                d3.select("#tooltip").transition().duration(500).style("opacity", 0.01);
             }
 
             function mouseClick(){
@@ -123,15 +123,16 @@ window.onload = function(){
 
 
    tooltipHtml = function(n, d){	/* function to create html content string in tooltip div. */
-        return "<h4>"+n+"</h4><table>"+
-        "<tr><td>Infected: </td><td>"+(d.tmp_state_inf)+"</td></tr>"+
-        "<tr><td>Quarantined </td><td>"+(d.tmp_state_qua)+"</td></tr>"+
-        "<tr><td>Exposed </td><td>"+(d.tmp_state_exp)+"</td></tr>"+
-        "<tr><td>Severe Infected </td><td>"+(d.tmp_state_sin)+"</td></tr>"+
-        "<tr><td>Immunized </td><td>"+(d.tmp_state_imm)+"</td></tr>"+
-        "<tr><td>Death </td><td>"+(d.tmp_state_dea)+"</td></tr>"+
-        "<tr><td>Suspended </td><td>"+(d.tmp_state_sus)+"</td></tr>"+
-        "</table>";
+        return "<h3 class='lead'>"+n+"</h3>"+
+        '<div class="btn-group bg-whte" role="group" aria-label="Basic example">'+
+            '<button type="link" class="btn btn-white">Quarantined <span class="badge badge-primary badge-pill">'+(d.tmp_state_qua)+'</button>'+
+            '<button type="link" class="btn btn-white">Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_inf)+'</span></button>'+
+            '<button type="link" class="btn btn-white">Exposed <span class="badge badge-primary badge-pill">'+(d.tmp_state_exp)+'</span></button>'+
+            '<button type="link" class="btn btn-white">Severe Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_sin)+'</span></button>'+
+            '<button type="link" class="btn btn-white">Immunized <span class="badge badge-primary badge-pill">'+(d.tmp_state_imm)+'</span></button>'+
+            '<button type="link" class="btn btn-white">Death <span class="badge badge-primary badge-pill">'+(d.tmp_state_dea)+'</span></button>'+
+            '<button type="link" class="btn btn-white">Suspended <span class="badge badge-primary badge-pill">'+(d.tmp_state_sus)+'</span></button>'+
+        "</div>";
     }
 
     sampleData ={};	/* Sample random data. */	

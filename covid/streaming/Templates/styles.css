@@ -33,8 +33,6 @@
 	font-size:14px;
 }
 #tooltip{
-	border:1px solid grey;
-	width: 200px !important;
 	font-size:12px;
 	width:100%;
 	padding:4px;
@@ -53,3 +51,13 @@
 #tooltip tr td:nth-child(2){
 	text-align:center;
 }
+
+ul.list-group:after {
+	clear: both;
+	display: block;
+	content: "";
+  }
+  
+  .list-group-item {
+	  float: left;
+  }
