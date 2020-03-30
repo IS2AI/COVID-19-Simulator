@@ -201,6 +201,8 @@ class DataStream(threading.Thread):
                             config.param_gamma_im, config.param_eps_exp,
                             config.param_eps_qua, config.param_eps_sev, config.param_transition_leakage, config.param_transition_scale), axis=None)
 
+
+
                         config.arr_for_save = np.vstack([config.arr_for_save, arr_for_save ])
 
                         config.params_node = np.vstack([config.param_beta_exp, config.param_qr,
@@ -210,7 +212,9 @@ class DataStream(threading.Thread):
 
                         config.params_network = [config.param_transition_box, config.param_transition_leakage, config.param_transition_scale]
 
+                        init_for_save =
                         new_nodes, new_plot, new_params, tr_m = simulate_network(config.params_node, config.params_network, config.nodes_old, config.counter_func, config.params_old)
+
                         config.nodes_old = new_nodes
                         config.new_plot_all.append(new_plot) # new plot is 2*17*7 matrix not large
                         config.params_old = new_params.copy()

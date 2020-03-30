@@ -32,7 +32,7 @@ class Visual:
     def __init__(self, callbackFunc, running):
 
         self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=500, height=50) # Text to be displayed at the top of the webpage
-        self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=800, height=5) # Text to be displayed at the top of the webpage
+        self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=600, height=20) # Text to be displayed at the top of the webpage
         self.text3 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=5) # Text to be displayed at the top of the webpage
         self.text4 = Div(text="""<h1 style="color:blue"> </h1>""", width=900, height=50) # Text to be displayed at the top of the webpage
         self.text4rr = Div(text="""<h1 style="color:blue">            </h1>""", width=500, height=15) # Text to be displayed at the top of the webpage
@@ -450,7 +450,7 @@ class Visual:
                     config.param_eps_sev,config.param_hosp_capacity, config.param_gamma_mor1,config.param_gamma_mor2,
                     config.param_gamma_im, config.param_init_susceptible, config.param_init_exposed])
 
-            params_global = [config.counter_func, config.param_t_exp, config.param_t_inf, 1, 12]
+            params_global = [config.counter_func +1, config.param_t_exp, config.param_t_inf, 1, 12]
 
             directory = 'results' + '/' +  config.param_save_file
             if not os.path.exists(directory):
@@ -493,6 +493,7 @@ class Visual:
                             ## param_gamma_mor1, param_gamma_mor2, param_gamma_im,
                             ## param_eps_exp, param_eps_qua, param_eps_sev, param_transition_leakage, param_transition_scale), axis=None)
                             m = 17
+                            one_arr_node = np.append(iter, one_arr_node)
                             one_arr_node = np.append(one_arr_node, (config.param_init_exposed[j], config.arr_for_save[iter+1,j+0*m],   config.arr_for_save[iter+1,j+1*m], config.arr_for_save[iter+1,j+2*m],
                                 config.arr_for_save[iter+1,j+3*m], config.arr_for_save[iter+1,j+4*m], config.arr_for_save[iter+1,j+5*m], config.arr_for_save[iter+1,j+6*m], config.arr_for_save[iter+1,j+7*m],
                                 config.arr_for_save[iter+1,j+8*m], config.arr_for_save[iter+1,j+9*m], config.param_t_exp[0], config.param_t_inf[0], config.arr_for_save[iter+1,10*m],
@@ -629,7 +630,7 @@ class Visual:
 
         # select region
         initial_region = 'Almaty'
-        region_selection = Select(value=initial_region, title='        ', options=regions_for_show, max_width=250, max_height=20)
+        region_selection = Select(value=initial_region, title=' ', options=regions_for_show, max_width=250, max_height=20)
         region_selection.on_change('value', self.SelectRegionHandler)
 
         #select parameters
@@ -787,7 +788,7 @@ class Visual:
         layout_t = row(save_button_result, text_save)
         buttons = row(reset_button,run_button, layout_t)
 
-        reg1 = column(self.text2, column(self.text4rr, row(self.text4rr,region_selection)))
+        reg1 = row(self.text2, region_selection)
 
         buttons = column(buttons, reg1, self.text4)
 
