@@ -28,7 +28,9 @@ import json
 #geosource = GeoJSONDataSource(geojson = df_kz.to_json())
 
 class Visual:
+
     def __init__(self, callbackFunc, running):
+
         self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=500, height=50) # Text to be displayed at the top of the webpage
         self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=800, height=5) # Text to be displayed at the top of the webpage
         self.text3 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=5) # Text to be displayed at the top of the webpage
@@ -47,7 +49,7 @@ class Visual:
 
         self.sourceJS = ColumnDataSource(dict(text=[]))
 
-        mcallback = CustomJS(args=dict(source=self.source), code="""  
+        mcallback = CustomJS(args=dict(source=self.source), code="""
             window.data  = source.data
 
             console.log(source)
@@ -68,7 +70,7 @@ class Visual:
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
         self.param_qr_slider.value = config.param_qr[config.region]
         self.param_sir.value = config.param_sir[config.region]
-        self.param_hosp_capacity.value = config.hosp_cap_init[config.region]
+        self.param_hosp_capacity.value = config.param_hosp_capacity[config.region]
         self.param_gamma_mor1.value = config.param_gamma_mor1[config.region]
         self.param_gamma_mor2.value = config.param_gamma_mor2[config.region]
         self.param_gamma_im.value = config.param_gamma_im[config.region]
@@ -84,12 +86,12 @@ class Visual:
         THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
         img_nu  = Image.open(os.path.join(THIS_FOLDER, 'nu_logo.png')).convert('RGBA')
         img_issai = Image.open(os.path.join(THIS_FOLDER, 'issai_logo.png')).convert('RGBA')
-        
+
         x_nu, y_nu = img_nu.size
         img_nu_plot = np.empty((x_nu, y_nu), dtype=np.uint32)
         img_nu_view = img_nu_plot.view(dtype=np.uint8).reshape((y_nu, x_nu, 4))
         img_nu_view[:,:,:]=np.flipud(np.asarray(img_nu))
-        
+
         dim_nu = max(x_nu, y_nu)
         dim_nu_y = min(x_nu, y_nu)
         p_nu = figure(x_range=(0,dim_nu), y_range=(0,dim_nu_y), height=250, width=479)
@@ -98,19 +100,19 @@ class Visual:
         p_nu.axis.visible = False
         p_nu.toolbar.logo = None
         p_nu.toolbar_location = None
-        
+
         x_is, y_is = img_issai.size
         iss_plot = np.empty((x_is, y_is), dtype=np.uint32)
         iss_view=iss_plot.view(dtype=np.uint8).reshape((y_is, x_is, 4))
         iss_view[:,:,:]=np.flipud(np.asarray(img_issai))
-        
+
         p_iss = figure(x_range=(0, x_is), y_range=(0, y_is), height=250, width=479)
         p_iss.image_rgba(image=[iss_view], x=0, y=0, dw=x_is, dh=y_is)
         p_iss.axis.visible = False
         p_iss.axis.visible = False
         p_iss.toolbar.logo = None
-        p_iss.toolbar_location = None        
-        
+        p_iss.toolbar_location = None
+
 
       #  create glyph for kazakhstan map
       #  p_map = figure(title = ' Kazakhstan', plot_height=600, plot_width=800, background_fill_color='black',background_fill_alpha = 0.8, toolbar_location='above')
@@ -246,9 +248,9 @@ class Visual:
 
                 #newx = np.arange(0,2*config.counter_func/2)
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
-                
+
                 # for map
-                
+
                 regions_ids = [ lregion for lregion in range(17)]
                 for region in regions_ids:
                     if region in region_states:
@@ -263,9 +265,9 @@ class Visual:
                     else:
                         #print("ONLY ZEROOOO")
                         tmp_data = {
-                            "tmp_state_inf": [], 
-                            "tmp_state_sin": [], 
-                            "tmp_state_exp": [], 
+                            "tmp_state_inf": [],
+                            "tmp_state_sin": [],
+                            "tmp_state_exp": [],
                             "tmp_state_qua": [],
                             "tmp_state_imm": [],
                             "tmp_state_sus": [],
@@ -281,7 +283,7 @@ class Visual:
                         tmp_data["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
 
                         region_states[region] = tmp_data
-                
+
 
         elif new_nodes_all != [] and config.region == 17:
             for i in range(len(config.new_plot_all)):
@@ -296,7 +298,7 @@ class Visual:
 
                 #newx = np.arange(0,2*config.counter_func/2)
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
-                
+
                 regions_ids = [ lregion for lregion in range(17)]
                 for region in regions_ids:
                     if str(region) in region_states and type(region_states[region]) is dict:
@@ -311,9 +313,9 @@ class Visual:
                     else:
                         print("ONLY THIS")
                         tmp_data = {
-                            "tmp_state_inf": [], 
-                            "tmp_state_sin": [], 
-                            "tmp_state_exp": [], 
+                            "tmp_state_inf": [],
+                            "tmp_state_sin": [],
+                            "tmp_state_exp": [],
                             "tmp_state_qua": [],
                             "tmp_state_imm": [],
                             "tmp_state_sus": [],
@@ -330,7 +332,7 @@ class Visual:
 
                         region_states[region] = tmp_data
         #print(region_states)
-        str_data = json.dumps(region_states, ensure_ascii=False)               
+        str_data = json.dumps(region_states, ensure_ascii=False)
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
                     qua=state_qua, imm=state_imm, dea=state_dea, text=[str_data]*len(state_imm))
 
@@ -354,7 +356,7 @@ class Visual:
             c16=[(config.transition_matrix[16,i]) for i in range(0,17)],
                 )
 
-        
+
         self.source.data.update(new_data)
         #self.sourceJS.data.update(dict(text=[str_data]))
         self.sourceT.data.update(self.data1)
@@ -487,11 +489,19 @@ class Visual:
                         if config.new_plot_all:
                             one_arr = config.new_plot_all[iter] #
                             one_arr_node = one_arr[-1,j,:].astype(int)
-                            
-                            one_arr_node = np.append(one_arr_node, (config.param_init_exposed[j], config.param_beta_exp[j], config.param_qr[j], config.param_sir[j],
-                                config.param_hosp_capacity[j], config.param_gamma_mor1[j], config.param_gamma_mor2[j], config.param_gamma_im[j], config.param_eps_exp[j],
-                                config.param_eps_qua[j], config.param_eps_sev[j], config.param_t_exp[0], config.param_t_inf[0], config.param_transition_leakage,
-                                config.param_transition_scale,box_corr[j,0,iter],box_corr[j,1,iter],box_corr[j,2,iter]))
+                            ## arr_for_save = np.concatenate((param_beta_exp, param_qr,param_sir, param_hosp_capacity,
+                            ## param_gamma_mor1, param_gamma_mor2, param_gamma_im,
+                            ## param_eps_exp, param_eps_qua, param_eps_sev, param_transition_leakage, param_transition_scale), axis=None)
+                            m = 17
+                            one_arr_node = np.append(one_arr_node, (config.param_init_exposed[j], config.arr_for_save[iter+1,j+0*m],   config.arr_for_save[iter+1,j+1*m], config.arr_for_save[iter+1,j+2*m],
+                                config.arr_for_save[iter+1,j+3*m], config.arr_for_save[iter+1,j+4*m], config.arr_for_save[iter+1,j+5*m], config.arr_for_save[iter+1,j+6*m], config.arr_for_save[iter+1,j+7*m],
+                                config.arr_for_save[iter+1,j+8*m], config.arr_for_save[iter+1,j+9*m], config.param_t_exp[0], config.param_t_inf[0], config.arr_for_save[iter+1,10*m],
+                                config.arr_for_save[iter+1,10*m+1],box_corr[j,0,iter],box_corr[j,1,iter],box_corr[j,2,iter]))
+
+                            #    one_arr_node = np.append(one_arr_node, (config.param_init_exposed[j], config.arr_for_save[iter,j + 0*m], config.param_qr[iter,j + 1*m], config.param_sir[iter,j+2*m],
+                            #        config.param_hosp_capacity[iter,j+3*m], config.param_gamma_mor1[iter,j+4*m], config.param_gamma_mor2[iter,j+5*m], config.param_gamma_im[iter,j+6*m], config.param_eps_exp[iter,j+7*m],
+                            #        config.param_eps_qua[iter,j+8*m], config.param_eps_sev[iter,j+9*m], config.param_t_exp[0], config.param_t_inf[0], config.param_transition_leakage[iter,j+10*m],
+                            #        config.param_transition_scale[iter,j+10*m+1],box_corr[j,0,iter],box_corr[j,1,iter],box_corr[j,2,iter]))
                             #print(param_transition_box)
                             #print(one_arr_node.shape)
                             #print(one_arr_node)
@@ -520,7 +530,7 @@ class Visual:
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
         self.param_qr_slider.value = config.param_qr[config.region]
         self.param_sir.value = config.param_sir[config.region]
-        self.param_hosp_capacity.value = config.hosp_cap_init[config.region]
+        self.param_hosp_capacity.value = config.param_hosp_capacity[config.region]
         self.param_gamma_mor1.value = config.param_gamma_mor1[config.region]
         self.param_gamma_mor2.value = config.param_gamma_mor2[config.region]
         self.param_gamma_im.value = config.param_gamma_im[config.region]
@@ -567,15 +577,15 @@ class Visual:
     def handler_param_t_exp(self, attr, old, new):
         if config.counter_func < 1:
             config.param_t_exp[0]=new
-        else : 
+        else :
             self.slider_update_initial_val(self, old, new)
 
     def handler_param_t_inf(self, attr, old, new):
         if config.counter_func < 1:
             config.param_t_inf[0]=new
-        else: 
+        else:
             self.slider_update_initial_val(self, old, new)
-        
+
     def handler_init_exposed(self, attr, old, new):
         if config.counter_func < 1:
             config.param_init_exposed[config.region]=new
@@ -630,7 +640,7 @@ class Visual:
         self.param_qr_slider = Slider(start=0.0,end=25.0,step=0.25,value=config.param_qr[config.region], title='Daily Quarantine rate of the Exposed (%)')
         self.param_qr_slider.on_change('value', self.handler_param_qr)
 
-        self.param_sir = Slider(start=0.0,end=25.0,step=0.25,value=config.param_sir[config.region], title='Daily Infected to Severe Infected transition rate (%)')
+        self.param_sir = Slider(start=0.0,end=5.0,step=0.05,value=config.param_sir[config.region], title='Daily Infected to Severe Infected transition rate (%)')
         self.param_sir.on_change('value', self.handler_param_sir)
 
         self.param_eps_exp = Slider(start=0,end=100,step=1.0,value=config.param_eps_exp[config.region], title='Disease transmission rate of Exposed compared to Infected (%)')
@@ -642,7 +652,7 @@ class Visual:
         self.param_eps_sev = Slider(start=0,end=100,step=1.0,value=config.param_eps_sev[config.region], title='Disease transmission rate of Severe Infected compared to Infected (%)')
         self.param_eps_sev.on_change('value', self.handler_param_eps_sev)
 
-        self.param_hosp_capacity = Slider(start=0,end=10000,step=1,value=config.hosp_cap_init[config.region], title='Hospital Capacity')
+        self.param_hosp_capacity = Slider(start=0,end=10000,step=1,value=config.param_hosp_capacity[config.region], title='Hospital Capacity')
         self.param_hosp_capacity.on_change('value', self.handler_param_hosp_capacity)
 
         self.param_gamma_mor1 = Slider(start=0,end=100,step=1.0,value=config.param_gamma_mor1[config.region], title='Severe Infected to Dead transition probability (%)')
@@ -654,7 +664,7 @@ class Visual:
         self.param_gamma_im = Slider(start=0,end=100,step=1,value=config.param_gamma_im[config.region], title='Infected to Recovery Immunized transition probability (%)')
         self.param_gamma_im.on_change('value', self.handler_param_gamma_im)
 
-        
+
         self.param_sim_len = Slider(start=2,end=100,step=2,value=config.loop_num, title='Length of simulation (Days)')
         self.param_sim_len.on_change('value', self.handler_param_sim_len)
 
@@ -787,7 +797,7 @@ class Visual:
         check_table = row(column(div_cb1,checkbox_group1), column(div_cb2,checkbox_group2), column(div_cb3,checkbox_group3), sliders_4)
         check_trans = row(self.data_tableT)
 
-       
+
         #kz_map_tag.js_on
         ###
         dummy_div = Div(text=""" """, height=25);

@@ -95,11 +95,11 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
         params_node[11,:] = params_old[11,:]
         params_node[12,:] = params_old[12,:]
         params_node[14,:] = params_old[14,:]
-        
+
     params_node[11,:] = params_node_[11][0]*np.ones(nodes_num)
     params_node[12,:] = params_node_[12][0]*np.ones(nodes_num)
-       
-    
+
+
     nodes = [Node(params_node[:,i], sim_iter) for i in range(nodes_num)]
 
     for index, node in enumerate(nodes):
@@ -155,8 +155,8 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
             states_arr_plot[iter, i_node, 4] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_imm)
             states_arr_plot[iter, i_node, 5] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_sus)
             states_arr_plot[iter, i_node, 6] = nodes_state_arr[iter, i_node, -1]
-    
-     
+
+
     #states_arr_plotx = np.zeros((2,17,7))
     #states_arr_plotx[0, :, :] = states_arr_plot[24,:,:]
     #states_arr_plotx[1, :, :] = states_arr_plot[48,:,:]
@@ -196,7 +196,15 @@ class DataStream(threading.Thread):
                         config.param_transition_box.append(config.box2)
                         config.param_transition_box.append(config.box3)
                         config.box_time.append(config.param_transition_box)
-                        
+
+                        arr_for_save = np.concatenate((config.param_beta_exp, config.param_qr, config.param_sir, config.param_hosp_capacity, config.param_gamma_mor1, config.param_gamma_mor2,
+                            config.param_gamma_im, config.param_eps_exp,
+                            config.param_eps_qua, config.param_eps_sev, config.param_transition_leakage, config.param_transition_scale), axis=None)
+
+                        config.arr_for_save = np.vstack([config.arr_for_save, arr_for_save ])
+
+                        print(config.arr_for_save.shape)
+
                         config.params_node = np.vstack([config.param_beta_exp, config.param_qr,
                                         config.param_sir, config.param_eps_exp, config.param_eps_qua, config.param_eps_sev,config.param_hosp_capacity,
                                         config.param_gamma_mor1,config.param_gamma_mor2, config.param_gamma_im, config.param_sim_len,

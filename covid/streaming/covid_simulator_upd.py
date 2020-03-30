@@ -467,7 +467,7 @@ class Node(object):
                 dx = 0
             else:
                 dx = round(eval)
-            
+
             # Apply the changes for the transitions to the
             # corresponding source and destination states
             temp = self.states_x[sind] - dx
