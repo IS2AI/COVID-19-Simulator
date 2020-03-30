@@ -95,26 +95,22 @@ window.onload = function(){
         ];
         var uStates = {};
 
-        uStates.draw = function(id, data, toolTip) {
+        uStates.draw = function(id, data, toolTip,sampleDataAll) {
             function mouseOver(d) {
                 d3.select("#tooltip").transition().duration(200).style("opacity", .9);
  
-                d3.select("#tooltip").html(toolTip(d.n, data[d.id])).style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
+                d3.select("#tooltip").html(toolTip(d.n, data[d.id], sampleDataAll));//.style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
             }
 
             function mouseOut() {
-                d3.select("#tooltip").transition().duration(500).style("opacity", 0.01);
-            }
-
-            function mouseClick(){
-                alert(d3.select('#tooltip')[0][0].innerHTML)
+                d3.select("#tooltip").transition().duration(500).style("opacity", 0.1);
             }
 
             d3.select(id).selectAll(".state").data(uStatePaths).enter().append("path").attr("class", "state").attr("d", function(d) {
                 return d.d;
             }).style("fill", function(d) {
                 return data[d.id].color;
-            }).on("mouseover", mouseOver).on("mouseout", mouseOut).on("click", mouseClick)
+            }).on("mouseover", mouseOver).on("mouseout", mouseOut);
         }
         this.uStates = uStates;
     }
@@ -122,17 +118,39 @@ window.onload = function(){
 
 
 
-   tooltipHtml = function(n, d){	/* function to create html content string in tooltip div. */
-        return "<h3 class='lead'>"+n+"</h3>"+
-        '<div class="btn-group bg-whte" role="group" aria-label="Basic example">'+
-            '<button type="link" class="btn btn-white">Quarantined <span class="badge badge-primary badge-pill">'+(d.tmp_state_qua)+'</button>'+
-            '<button type="link" class="btn btn-white">Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_inf)+'</span></button>'+
-            '<button type="link" class="btn btn-white">Exposed <span class="badge badge-primary badge-pill">'+(d.tmp_state_exp)+'</span></button>'+
-            '<button type="link" class="btn btn-white">Severe Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_sin)+'</span></button>'+
-            '<button type="link" class="btn btn-white">Immunized <span class="badge badge-primary badge-pill">'+(d.tmp_state_imm)+'</span></button>'+
-            '<button type="link" class="btn btn-white">Death <span class="badge badge-primary badge-pill">'+(d.tmp_state_dea)+'</span></button>'+
-            '<button type="link" class="btn btn-white">Suspended <span class="badge badge-primary badge-pill">'+(d.tmp_state_sus)+'</span></button>'+
+   tooltipHtml = function(n, d, d2){
+        html = "";
+        html += "<div class='row'>";
+        html += "<div  class='col-12'>";
+        html += '<div class="btn-group bg-white mb-3" role="group" aria-label="Basic example">'+
+                '<button type="link" class="btn btn-white">'+(n)+'</button>'+
+                '<button type="link" class="btn btn-success">Quarantined <span class="badge badge-primary badge-pill">'+(d.tmp_state_qua)+'</button>'+
+                '<button type="link" class="btn btn-white">Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_inf)+'</span></button>'+
+                '<button type="link" class="btn btn-warning">Exposed <span class="badge badge-primary badge-pill">'+(d.tmp_state_exp)+'</span></button>'+
+                '<button type="link" class="btn btn-danger" style="background:#460000 !important;">Severe Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_sin)+'</span></button>'+
+                '<button type="link" class="btn btn-info">Immunized <span class="badge badge-primary badge-pill">'+(d.tmp_state_imm)+'</span></button>'+
+                '<button type="link" class="btn btn-danger">Death <span class="badge badge-primary badge-pill">'+(d.tmp_state_dea)+'</span></button>'+
+                '<button type="link" class="btn btn-muted">Susceptible <span class="badge badge-primary badge-pill">'+(d.tmp_state_sus)+'</span></button>'+
+            "</div>"+
         "</div>";
+
+        html += '<div class="col-12">';
+        html += '<div class="btn-group bg-white mb-3" role="group" aria-label="Basic example">'+
+            '<button type="link" class="btn btn-white">Qazaqstan</button>'+
+            '<button type="link" class="btn btn-success">Quarantined <span class="badge badge-primary badge-pill">'+(d2.tmp_state_qua)+'</button>'+
+            '<button type="link" class="btn btn-white">Infected <span class="badge badge-primary badge-pill">'+(d2.tmp_state_inf)+'</span></button>'+
+            '<button type="link" class="btn btn-warning">Exposed <span class="badge badge-primary badge-pill">'+(d2.tmp_state_exp)+'</span></button>'+
+            '<button type="link" class="btn btn-danger" style="background:#460000 !important;">Severe Infected <span class="badge badge-primary badge-pill">'+(d2.tmp_state_sin)+'</span></button>'+
+            '<button type="link" class="btn btn-info">Immunized <span class="badge badge-primary badge-pill">'+(d2.tmp_state_imm)+'</span></button>'+
+            '<button type="link" class="btn btn-danger">Death <span class="badge badge-primary badge-pill">'+(d2.tmp_state_dea)+'</span></button>'+
+            '<button type="link" class="btn btn-muted">Susceptible <span class="badge badge-primary badge-pill">'+(d2.tmp_state_sus)+'</span></button>'+
+            "</div>"+
+        "</div>";
+
+        html += "</div>";
+
+        return html;
+
     }
 
     sampleData ={};	/* Sample random data. */	
@@ -155,6 +173,16 @@ window.onload = function(){
         console.log("DATA");
         console.log(entries_regions);
 
+        sampleDataAll= {
+            tmp_state_inf: 0,
+            tmp_state_sus: 0,
+            tmp_state_exp: 0,
+            tmp_state_sin: 0,
+            tmp_state_qua: 0,
+            tmp_state_imm: 0,
+            tmp_state_dea: 0
+        }
+
         entries_regions.forEach(function(d){
             ind = "O"+d[0];
 
@@ -175,13 +203,18 @@ window.onload = function(){
                 tmp_state_imm: d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ],
                 tmp_state_dea: d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ],
                 color: d3.interpolate("#ffffcc", "#800026")((d[1].tmp_state_exp[0]*100/sum_all)*100)
-
             }
 
-            
+            sampleDataAll.tmp_state_inf += d[1].tmp_state_inf[ d[1].tmp_state_inf.length - 1 ];
+            sampleDataAll.tmp_state_sus += d[1].tmp_state_sus[ d[1].tmp_state_sus.length - 1 ];
+            sampleDataAll.tmp_state_exp += d[1].tmp_state_exp[ d[1].tmp_state_exp.length - 1 ];
+            sampleDataAll.tmp_state_sin += d[1].tmp_state_sin[ d[1].tmp_state_sin.length - 1 ];
+            sampleDataAll.tmp_state_qua += d[1].tmp_state_qua[ d[1].tmp_state_qua.length - 1 ];
+            sampleDataAll.tmp_state_imm += d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ];
+            sampleDataAll.tmp_state_dea += d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ];
         })
         document.getElementById('statesvg').innerHTML="";
-        uStates.draw("#statesvg", sampleData, tooltipHtml);
+        uStates.draw("#statesvg", sampleData, tooltipHtml, sampleDataAll);
         
     }, 3000);
     
