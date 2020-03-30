@@ -33,19 +33,19 @@ pstate_dea = []
 flag_sim = 0
 
 #  Parameters
-param_beta_exp = 0.225*np.ones(nodes_num)     # Susceptible to exposed transition constant
-param_qr  = 0.02*np.ones(nodes_num)         # Daily quarantine rate (Ratio of Exposed getting Quarantined)
-param_sir  = 0.01*np.ones(nodes_num)        # Daily isolation rate (Ratio of Infected getting Isolated)
+param_beta_exp = 22.5*np.ones(nodes_num)     # Susceptible to exposed transition constant
+param_qr  = 2.0*np.ones(nodes_num)         # Daily quarantine rate (Ratio of Exposed getting Quarantined)
+param_sir  = 1.0*np.ones(nodes_num)        # Daily isolation rate (Ratio of Infected getting Isolated)
 
-param_eps_exp = 0.7*np.ones(nodes_num)       # Disease transmission rate of exposed compared to the infected
-param_eps_qua = 0.3*np.ones(nodes_num)       # Disease transmission rate of quarantined compared to the infected
-param_eps_sev  = 0.3*np.ones(nodes_num)       # D  isease transmission rate of isolated compared to the infected
+param_eps_exp = 70.0*np.ones(nodes_num)       # Disease transmission rate of exposed compared to the infected
+param_eps_qua = 30.0*np.ones(nodes_num)       # Disease transmission rate of quarantined compared to the infected
+param_eps_sev  = 30.0*np.ones(nodes_num)       # D  isease transmission rate of isolated compared to the infected
 
 param_hosp_capacity = 3000*np.ones(nodes_num)   # Maximum amount patients that hospital can accommodate
 
-param_gamma_mor1 = 0.3*np.ones(nodes_num) # Severe Infected (Hospitalized) to Dead transition probability
-param_gamma_mor2 = 0.15*np.ones(nodes_num) # Severe Infected (Not Hospitalized) to Dead transition probability
-param_gamma_im = 0.9*np.ones(nodes_num)      # Infected to Recovery Immunized transition probability
+param_gamma_mor1 = 30.0*np.ones(nodes_num) # Severe Infected (Hospitalized) to Dead transition probability
+param_gamma_mor2 = 15.0*np.ones(nodes_num) # Severe Infected (Not Hospitalized) to Dead transition probability
+param_gamma_im = 90.0*np.ones(nodes_num)      # Infected to Recovery Immunized transition probability
 
 param_sim_len = 1*np.ones(nodes_num)            # Length of simulation in days
 

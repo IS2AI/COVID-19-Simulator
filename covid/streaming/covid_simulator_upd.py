@@ -22,21 +22,21 @@ class Node(object):
         self.param_vir = 0.0           # Ratio of the immunized after vaccination
         self.param_mir = 0.0           # Maternal immunization rate
 
-        self.param_beta_exp = params[0]      # Susceptible to exposed transition constant
-        self.param_qr  = params[1]           # Daily quarantine rate (Ratio of Exposed getting Quarantined)
+        self.param_beta_exp = params[0]/100.0      # Susceptible to exposed transition constant
+        self.param_qr  = params[1]/100.0            # Daily quarantine rate (Ratio of Exposed getting Quarantined)
         self.param_beta_inf = 0.0        # Susceptible to infected transition constant
-        self.param_sir = params[2]          # Daily isolation rate (Ratio of Infected getting Isolated)
+        self.param_sir = params[2]/100.0          # Daily isolation rate (Ratio of Infected getting Isolated)
 
-        self.param_eps_exp = params[3]       # Disease transmission rate of exposed compared to the infected
-        self.param_eps_qua = params[4]       # Disease transmission rate of quarantined compared to the infected
-        self.param_eps_sev  = params[5]       # Disease transmission rate of isolated compared to the
+        self.param_eps_exp = params[3]/100.0       # Disease transmission rate of exposed compared to the infected
+        self.param_eps_qua = params[4]/100.0       # Disease transmission rate of quarantined compared to the infected
+        self.param_eps_sev  = params[5]/100.0       # Disease transmission rate of isolated compared to the
 
         self.param_hosp_capacity = params[6]   # Maximum amount patients that hospital can accommodate
 
         self.param_gamma_mor = 0.0    # Infected to Dead transition probability
-        self.param_gamma_mor1 = params[7] # Severe Infected (Hospitalized) to Dead transition probability
-        self.param_gamma_mor2 = params[8] # Severe Infected (Not Hospitalized) to Dead transition probability
-        self.param_gamma_im = params[9]      # Infected to Recovery Immunized transition probability
+        self.param_gamma_mor1 = params[7]/100.0 # Severe Infected (Hospitalized) to Dead transition probability
+        self.param_gamma_mor2 = params[8]/100.0 # Severe Infected (Not Hospitalized) to Dead transition probability
+        self.param_gamma_im = params[9]/100.0      # Infected to Recovery Immunized transition probability
 
         self.param_dt = 1/24                # Sampling time in days (1/24 corresponds to one hour)
         self.param_sim_len = params[10]       # Length of simulation in days
@@ -349,6 +349,7 @@ class Node(object):
 
 
     def stoch_solver(self):
+
         # define a list to store transitions
         expval = []
         state_1 = self.states_x[1]
@@ -455,14 +456,15 @@ class Node(object):
 
         # Randomly generate the transition value based on the expected value
         for eval, sind, dind in zip(expval, self.source_ind, self.dest_ind):
-            if eval < 10:
+            if eval < 10 and eval > 0:
                 temp1 = int(np.ceil(eval * 10 + np.finfo(np.float32).eps))
-                print('----------------------*****************', temp1)
                 if temp1 == 0:
                     dx = 0
                 else:
                     temp2 = eval/temp1
                     dx = self.dx_generator(temp1, temp2)
+            elif eval <= 0:
+                dx = 0
             else:
                 dx = round(eval)
             
