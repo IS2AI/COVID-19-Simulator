@@ -116,7 +116,7 @@ window.onload = function(){
                 return d.d;
             }).style("fill", function(d) {
                 if(Object.keys(data).length === 0 ){
-                    return "yellow";
+                    return "white";
                 } else {
                     return data[d.id].color;
                 }
