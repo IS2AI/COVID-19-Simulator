@@ -674,7 +674,7 @@ class Visual:
         self.param_gamma_im.on_change('value', self.handler_param_gamma_im)
 
 
-        self.param_sim_len = Slider(start=2,end=100,step=2,value=config.loop_num, title='Length of simulation (Days)')
+        self.param_sim_len = Slider(start=1,end=100,step=1,value=config.loop_num, title='Length of simulation (Days)')
         self.param_sim_len.on_change('value', self.handler_param_sim_len)
 
         self.param_t_exp = Slider(start=1,end=20,step=1,value=config.param_t_exp[0], title='Incubation period (Days) ')
