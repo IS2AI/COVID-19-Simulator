@@ -92,8 +92,8 @@ class Visual:
 
     def definePlot(self, source):
         THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-        img_nu  = Image.open(os.path.join(THIS_FOLDER, 'nu_logo.png')).convert('RGBA')
-        img_issai = Image.open(os.path.join(THIS_FOLDER, 'issai_logo.png')).convert('RGBA')
+        img_nu  = Image.open(os.path.join(THIS_FOLDER, 'static/nu_logo.png')).convert('RGBA')
+        img_issai = Image.open(os.path.join(THIS_FOLDER, 'static/issai_logo.png')).convert('RGBA')
 
         x_nu, y_nu = img_nu.size
         img_nu_plot = np.empty((x_nu, y_nu), dtype=np.uint32)
@@ -404,13 +404,13 @@ class Visual:
         # load transition matrix
         THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
-        transition_railway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'tr_2.csv'))))
+        transition_railway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'static/rail_tr.csv'))))
         transition_railway = np.array(transition_railway, dtype = np.float32)
 
-        transition_airway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'tr_1.csv'))))
+        transition_airway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'static/air_tr.csv'))))
         transition_airway = np.array(transition_airway, dtype = np.float32)
 
-        transition_roadway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'tr_3.csv'))))
+        transition_roadway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'static/high_tr.csv'))))
         transition_roadway = np.array(transition_roadway, dtype = np.float32)
 
         transition_matrix_init = (transition_railway + transition_airway + transition_roadway).astype(int)
