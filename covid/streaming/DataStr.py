@@ -57,17 +57,17 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
 
     # load transition matrix
     THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-
-    transition_railway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'static/rail_tr.csv'))))
+    transition_railway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'rail_tr.csv'))))
     transition_railway = np.array(transition_railway, dtype = np.float32)
 
-    transition_airway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'static/air_tr.csv'))))
+    transition_airway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'air_tr.csv'))))
     transition_airway = np.array(transition_airway, dtype = np.float32)
 
-    transition_roadway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'static/high_tr.csv'))))
+    transition_roadway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'high_tr.csv'))))
     transition_roadway = np.array(transition_roadway, dtype = np.float32)
 
     transition_matrix_init = (transition_railway + transition_airway + transition_roadway).astype(int)
+
 
     tr_table = [transition_airway, transition_railway, transition_roadway]
 

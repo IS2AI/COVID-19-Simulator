@@ -25,6 +25,7 @@ class Network:
         return nodes_new_iter
 
     def node_states_transition(self, nodes, transition_matrix, static_states_indices):
+
         temp_nodes = copy(nodes)
         for i in range(self.nodes_num):
             for j in range(self.nodes_num):
