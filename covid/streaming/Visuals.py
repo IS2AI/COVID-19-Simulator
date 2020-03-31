@@ -71,7 +71,7 @@ class Visual:
         self.doc = curdoc()
         self.layout()
         self.prev_y1 = 0
-        self.region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
+        self.region_names = ['Almaty Qalasy', 'Almaty',  'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
                             'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
 
         self.init_exposed.value = config.param_init_exposed[config.region]

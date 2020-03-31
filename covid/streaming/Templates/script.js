@@ -96,10 +96,12 @@ window.onload = function(){
         var uStates = {};
 
         uStates.draw = function(id, data, toolTip,sampleDataAll) {
+            
             function mouseOver(d) {
                 d3.select("#tooltip").transition().duration(200).style("opacity", .9);
- 
-                d3.select("#tooltip").html(toolTip(d.n, data[d.id], sampleDataAll));//.style("left", (d3.event.pageX) + "px").style("top", (d3.event.pageY - 28) + "px");
+                if(Object.keys(data).length >0 ){
+                    d3.select("#tooltip").html(toolTip(d.n, data[d.id], sampleDataAll));
+                }
             }
 
             function mouseOut() {
@@ -109,7 +111,12 @@ window.onload = function(){
             d3.select(id).selectAll(".state").data(uStatePaths).enter().append("path").attr("class", "state").attr("d", function(d) {
                 return d.d;
             }).style("fill", function(d) {
-                return data[d.id].color;
+                if(Object.keys(data).length === 0 ){
+                    return "white";
+                } else {
+                    return data[d.id].color;
+                }
+                
             }).on("mouseover", mouseOver).on("mouseout", mouseOut);
         }
         this.uStates = uStates;
@@ -119,31 +126,34 @@ window.onload = function(){
 
 
    tooltipHtml = function(n, d, d2){
+
+        if(!n) return "";
+
         html = "";
         html += "<div class='row'>";
         html += "<div  class='col-12'>";
-        html += '<div class="btn-group bg-white mb-3" role="group" aria-label="Basic example">'+
-                '<button type="link" class="btn btn-white">'+(n)+'</button>'+
-                '<button type="link" class="btn btn-success">Quarantined <span class="badge badge-primary badge-pill">'+(d.tmp_state_qua)+'</button>'+
-                '<button type="link" class="btn btn-white">Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_inf)+'</span></button>'+
-                '<button type="link" class="btn btn-warning">Exposed <span class="badge badge-primary badge-pill">'+(d.tmp_state_exp)+'</span></button>'+
-                '<button type="link" class="btn btn-danger" style="background:#460000 !important;">Severe Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_sin)+'</span></button>'+
-                '<button type="link" class="btn btn-info">Immunized <span class="badge badge-primary badge-pill">'+(d.tmp_state_imm)+'</span></button>'+
-                '<button type="link" class="btn btn-danger">Death <span class="badge badge-primary badge-pill">'+(d.tmp_state_dea)+'</span></button>'+
-                '<button type="link" class="btn btn-muted">Susceptible <span class="badge badge-primary badge-pill">'+(d.tmp_state_sus)+'</span></button>'+
+        html += '<div class="btn-group btn-group-sm bg-white mb-3" role="group" aria-label="Basic example">'+
+                '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-white">'+(n)+'</button>'+
+                '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-success">Quarantined <span class="badge badge-primary badge-pill">'+(d.tmp_state_qua)+'</button>'+
+                '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-white">Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_inf)+'</span></button>'+
+                '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-warning">Exposed <span class="badge badge-primary badge-pill">'+(d.tmp_state_exp)+'</span></button>'+
+                '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-danger" style="background:#460000 !important;">Severe Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_sin)+'</span></button>'+
+                '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-info">Immunized <span class="badge badge-primary badge-pill">'+(d.tmp_state_imm)+'</span></button>'+
+                '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-danger">Death <span class="badge badge-primary badge-pill">'+(d.tmp_state_dea)+'</span></button>'+
+                '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-muted">Susceptible <span class="badge badge-primary badge-pill">'+(d.tmp_state_sus)+'</span></button>'+
             "</div>"+
         "</div>";
 
         html += '<div class="col-12">';
         html += '<div class="btn-group bg-white mb-3" role="group" aria-label="Basic example">'+
-            '<button type="link" class="btn btn-white">Kazakhstan</button>'+
-            '<button type="link" class="btn btn-success">Quarantined <span class="badge badge-primary badge-pill">'+(d2.tmp_state_qua)+'</button>'+
-            '<button type="link" class="btn btn-white">Infected <span class="badge badge-primary badge-pill">'+(d2.tmp_state_inf)+'</span></button>'+
-            '<button type="link" class="btn btn-warning">Exposed <span class="badge badge-primary badge-pill">'+(d2.tmp_state_exp)+'</span></button>'+
-            '<button type="link" class="btn btn-danger" style="background:#460000 !important;">Severe Infected <span class="badge badge-primary badge-pill">'+(d2.tmp_state_sin)+'</span></button>'+
-            '<button type="link" class="btn btn-info">Immunized <span class="badge badge-primary badge-pill">'+(d2.tmp_state_imm)+'</span></button>'+
-            '<button type="link" class="btn btn-danger">Death <span class="badge badge-primary badge-pill">'+(d2.tmp_state_dea)+'</span></button>'+
-            '<button type="link" class="btn btn-muted">Susceptible <span class="badge badge-primary badge-pill">'+(d2.tmp_state_sus)+'</span></button>'+
+            '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-white">Kazakhstan</button>'+
+            '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-success">Quarantined <span class="badge badge-primary badge-pill">'+(d2.tmp_state_qua)+'</button>'+
+            '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-white">Infected <span class="badge badge-primary badge-pill">'+(d2.tmp_state_inf)+'</span></button>'+
+            '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-warning">Exposed <span class="badge badge-primary badge-pill">'+(d2.tmp_state_exp)+'</span></button>'+
+            '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-danger" style="background:#460000 !important;">Severe Infected <span class="badge badge-primary badge-pill">'+(d2.tmp_state_sin)+'</span></button>'+
+            '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-info">Immunized <span class="badge badge-primary badge-pill">'+(d2.tmp_state_imm)+'</span></button>'+
+            '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-danger">Death <span class="badge badge-primary badge-pill">'+(d2.tmp_state_dea)+'</span></button>'+
+            '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-muted">Susceptible <span class="badge badge-primary badge-pill">'+(d2.tmp_state_sus)+'</span></button>'+
             "</div>"+
         "</div>";
 
@@ -167,11 +177,12 @@ window.onload = function(){
     /* draw states on id #statesvg */
     
     setInterval(() => {
-        var jsonObj = JSON.parse(data.text[0]);
-        var entries_regions = Object.entries(jsonObj)
-
-        console.log("DATA");
-        console.log(entries_regions);
+        if(typeof data !== 'undefined'){
+            var jsonObj = JSON.parse(data.text[0]);
+            var entries_regions = Object.entries(jsonObj);
+        }else{
+            entries_regions = [];
+        }
 
         sampleDataAll= {
             tmp_state_inf: 0,
@@ -182,6 +193,11 @@ window.onload = function(){
             tmp_state_imm: 0,
             tmp_state_dea: 0
         }
+
+        sum_all_exposed = 0;
+        entries_regions.forEach(function(d){
+            sum_all_exposed += d[1].tmp_state_exp[ d[1].tmp_state_exp.length - 1 ];
+        })
 
         entries_regions.forEach(function(d){
             ind = "O"+d[0];
@@ -194,6 +210,8 @@ window.onload = function(){
                 d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ]+
                 d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ];
 
+            var myColor = d3.scale.linear().domain([1,100]).range(["white", "red"]);
+
             sampleData[ind] = {
                 tmp_state_inf: d[1].tmp_state_inf[ d[1].tmp_state_inf.length - 1 ],
                 tmp_state_sus: d[1].tmp_state_sus[ d[1].tmp_state_sus.length - 1 ],
@@ -202,8 +220,10 @@ window.onload = function(){
                 tmp_state_qua: d[1].tmp_state_qua[ d[1].tmp_state_qua.length - 1 ],
                 tmp_state_imm: d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ],
                 tmp_state_dea: d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ],
-                color: d3.interpolate("#ffffcc", "#800026")((d[1].tmp_state_exp[0]*100/sum_all)*100)
+                color: myColor( 100*parseInt(d[1].tmp_state_exp[ d[1].tmp_state_exp.length - 1 ]/sum_all_exposed ))
             }
+
+            console.log( 100*parseInt(d[1].tmp_state_exp[ d[1].tmp_state_exp.length - 1 ]/sum_all_exposed ) );
 
             sampleDataAll.tmp_state_inf += d[1].tmp_state_inf[ d[1].tmp_state_inf.length - 1 ];
             sampleDataAll.tmp_state_sus += d[1].tmp_state_sus[ d[1].tmp_state_sus.length - 1 ];
@@ -213,7 +233,9 @@ window.onload = function(){
             sampleDataAll.tmp_state_imm += d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ];
             sampleDataAll.tmp_state_dea += d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ];
         })
-        document.getElementById('statesvg').innerHTML="";
+        
+        d3.select("#statesvg").html("");
+
         if( entries_regions.length > 0 ){
             uStates.draw("#statesvg", sampleData, tooltipHtml, sampleDataAll);
         } else  {
