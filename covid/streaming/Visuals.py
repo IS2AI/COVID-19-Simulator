@@ -32,12 +32,20 @@ class Visual:
     def __init__(self, callbackFunc, running):
 
         self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=500, height=50) # Text to be displayed at the top of the webpage
-        self.text2 = Div(text="""<h1 style="color:blue">Select parameters for each region</h1>""", width=600, height=20) # Text to be displayed at the top of the webpage
-        self.text3 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=5) # Text to be displayed at the top of the webpage
         self.text4 = Div(text="""<h1 style="color:blue"> </h1>""", width=900, height=50) # Text to be displayed at the top of the webpage
         self.text4rr = Div(text="""<h1 style="color:blue">            </h1>""", width=500, height=15) # Text to be displayed at the top of the webpage
 
-        self.text5 = Div(text="""<h1 style="color:blue"> Change transition matrix </h1>""", width=900, height=5) # Text to be displayed at the top of the webpage
+        self.some_div = Div(text="<b>A Title</b>", style={'font-size': '300%', 'color': 'blue'})
+
+        self.text2 =  Div(text="<b>Select parameters for each region</b>", style={'font-size': '150%', 'color': 'green'},width=350) # Text to be displayed at the top of the webpage
+        self.text3 =  Div(text="<b>Select global parameters </b>", style={'font-size': '150%', 'color': 'green'}    )# Text to be displayed at the top of the webpage
+        self.text5 =  Div(text="<b>Change transition matrix</b>", style={'font-size': '150%', 'color': 'green'}) # Text to be displayed at the top of the webpage
+
+        #self.text2 = Div(text="""<h1 style="color:red"> Select parameters for each region</h1>""", width=700, height=20) # Text to be displayed at the top of the webpage
+        #self.text3 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=5) # Text to be displayed at the top of the webpage
+        #self.text5 = Div(text="""<h1 style="color:blue"> Change transition matrix </h1>""", width=900, height=5) # Text to be displayed at the top of the webpage
+
+
         self.text6 = Div(text="""<h1 style="color:blue">Select global parameters </h1>""", width=900, height=5) # Text to be displayed at the top of the webpage
         self.text7 = Div(text="""<h1 style="color:blue">Save current results to file </h1>""", width=900, height=10) # Text to be displayed at the top of the webpage
 
@@ -63,7 +71,7 @@ class Visual:
         self.doc = curdoc()
         self.layout()
         self.prev_y1 = 0
-        self.region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
+        self.region_names = ['Almaty Qalasy', 'Almaty',  'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
                             'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
 
         self.init_exposed.value = config.param_init_exposed[config.region]
@@ -302,7 +310,7 @@ class Visual:
                 regions_ids = [ lregion for lregion in range(17)]
                 for region in regions_ids:
                     if str(region) in region_states and type(region_states[region]) is dict:
-                        print("GOOOODDDDD")
+                        #print("GOOOODDDDD")
                         region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
                         region_states[region]["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
                         region_states[region]["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
@@ -311,7 +319,7 @@ class Visual:
                         region_states[region]["tmp_state_sus"].append(new_nodes_all[i][:, region, 5][-1])
                         region_states[region]["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
                     else:
-                        print("ONLY THIS")
+                        #print("ONLY THIS")
                         tmp_data = {
                             "tmp_state_inf": [],
                             "tmp_state_sin": [],
@@ -396,17 +404,17 @@ class Visual:
         # load transition matrix
         THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
-        transition_railway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'tr_2.csv'))))
+        transition_railway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'rail_tr.csv'))))
         transition_railway = np.array(transition_railway, dtype = np.float32)
 
-        transition_airway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'tr_1.csv'))))
+
+        transition_airway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'air_tr.csv'))))
         transition_airway = np.array(transition_airway, dtype = np.float32)
 
-        transition_roadway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'tr_3.csv'))))
+        transition_roadway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'high_tr.csv'))))
         transition_roadway = np.array(transition_roadway, dtype = np.float32)
 
         transition_matrix_init = (transition_railway + transition_airway + transition_roadway).astype(int)
-
         tr_table = [transition_airway, transition_railway, transition_roadway]
 
         for j, tr in enumerate(tr_table):
@@ -493,7 +501,7 @@ class Visual:
                             ## param_gamma_mor1, param_gamma_mor2, param_gamma_im,
                             ## param_eps_exp, param_eps_qua, param_eps_sev, param_transition_leakage, param_transition_scale), axis=None)
                             m = 17
-                            one_arr_node = np.append(iter, one_arr_node)
+                            one_arr_node = np.append(int(iter+1), one_arr_node)
                             one_arr_node = np.append(one_arr_node, (config.param_init_exposed[j], config.arr_for_save[iter+1,j+0*m],   config.arr_for_save[iter+1,j+1*m], config.arr_for_save[iter+1,j+2*m],
                                 config.arr_for_save[iter+1,j+3*m], config.arr_for_save[iter+1,j+4*m], config.arr_for_save[iter+1,j+5*m], config.arr_for_save[iter+1,j+6*m], config.arr_for_save[iter+1,j+7*m],
                                 config.arr_for_save[iter+1,j+8*m], config.arr_for_save[iter+1,j+9*m], config.param_t_exp[0], config.param_t_inf[0], config.arr_for_save[iter+1,10*m],
@@ -644,7 +652,7 @@ class Visual:
 
         # select region
         initial_region = 'Almaty'
-        region_selection = Select(value=initial_region, title=' ', options=regions_for_show, max_width=250, max_height=20)
+        region_selection = Select(value=initial_region, title=' ', options=regions_for_show, width=250, height=15)
         region_selection.on_change('value', self.SelectRegionHandler)
 
         #select parameters
@@ -702,10 +710,11 @@ class Visual:
         dumdiv = Div(text='',width=10)
         dumdiv2= Div(text='',width=10)
         dumdiv3= Div(text='',width=200)
+        dumdiv3ss= Div(text='',width=120)
 
         ######### CHANGE
         # Buttons
-        reset_button = Button(label = 'Reset Button', button_type='primary')
+        reset_button = Button(label = 'Reset Button', button_type='primary', background = "red")
         save_button = Button(label='Update transition matrix', button_type='primary')
         save_button_result = Button(label='Save current plot to .csv in directory results/', button_type='primary')
         run_button = Button(label='Run the simulation',button_type='primary')
@@ -778,7 +787,7 @@ class Visual:
         sliders_2 = column(self.param_hosp_capacity, self.param_gamma_mor1, self.param_gamma_mor2, self.param_gamma_im)
         sliders_0 = column(self.param_eps_exp, self.param_eps_qua, self.param_eps_sev)
 
-        sliders = row(sliders_1, dumdiv3, sliders_2, dumdiv3, sliders_0)
+        sliders = row(sliders_1, dumdiv3ss, sliders_2, dumdiv3, sliders_0)
         # regions
 
         sliders_3 = row(self.param_t_exp, self.param_t_inf, self.param_sim_len)
@@ -804,9 +813,9 @@ class Visual:
 
         reg1 = row(self.text2, region_selection)
 
-        buttons = column(buttons, reg1, self.text4)
+        buttons = column(buttons, reg1)
 
-        params =  column(sliders, self.text3, self.text4, sliders_3, self.text5, self.text4,)
+        params =  column(sliders, self.text3, sliders_3, self.text5)
 
         sliders_4 = column(self.param_tr_scale, self.param_tr_leakage)
         check_table = row(column(div_cb1,checkbox_group1), column(div_cb2,checkbox_group2), column(div_cb3,checkbox_group3), sliders_4)
