@@ -175,6 +175,8 @@ window.onload = function(){
     // console.log("How are u")
     // console.log(sampleData)
     /* draw states on id #statesvg */
+
+    getRelevantColor = d3.scale.linear().domain([1,1000]).range(["white", "red"]);
     
     setInterval(() => {
         if(typeof data !== 'undefined'){
@@ -193,24 +195,22 @@ window.onload = function(){
             tmp_state_imm: 0,
             tmp_state_dea: 0
         }
-
-        sum_all_exposed = 0;
-        entries_regions.forEach(function(d){
-            sum_all_exposed += d[1].tmp_state_exp[ d[1].tmp_state_exp.length - 1 ];
-        })
-
+        
+        var tmp_colors = [];
+        var tmp_color_vals = [];
         entries_regions.forEach(function(d){
             ind = "O"+d[0];
+            
+            sum_all_v =  0;
+            sum_all_v += d[1].tmp_state_exp[ d[1].tmp_state_exp.length - 1 ];
+            sum_all_v += d[1].tmp_state_inf[ d[1].tmp_state_inf.length - 1 ];
+            sum_all_v += d[1].tmp_state_qua[ d[1].tmp_state_qua.length - 1 ]; 
+            sum_all_v += d[1].tmp_state_sin[ d[1].tmp_state_sin.length - 1 ];
+            
+            sum_all = d[1].tmp_state_sus[ d[1].tmp_state_sus.length - 1 ];
 
-            sum_all = d[1].tmp_state_inf[ d[1].tmp_state_inf.length - 1 ]+
-                d[1].tmp_state_sus[ d[1].tmp_state_sus.length - 1 ]+
-                d[1].tmp_state_exp[ d[1].tmp_state_exp.length - 1 ]+
-                d[1].tmp_state_sin[ d[1].tmp_state_sin.length - 1 ]+
-                d[1].tmp_state_qua[ d[1].tmp_state_qua.length - 1 ]+
-                d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ]+
-                d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ];
-
-            var myColor = d3.scale.linear().domain([1,100]).range(["white", "red"]);
+            var color_number = parseInt(1000 * (sum_all_v/sum_all ));
+            var generatedColor = getRelevantColor(  color_number );
 
             sampleData[ind] = {
                 tmp_state_inf: d[1].tmp_state_inf[ d[1].tmp_state_inf.length - 1 ],
@@ -220,10 +220,8 @@ window.onload = function(){
                 tmp_state_qua: d[1].tmp_state_qua[ d[1].tmp_state_qua.length - 1 ],
                 tmp_state_imm: d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ],
                 tmp_state_dea: d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ],
-                color: myColor( 100*parseInt(d[1].tmp_state_exp[ d[1].tmp_state_exp.length - 1 ]/sum_all_exposed ))
+                color: generatedColor
             }
-
-            console.log( 100*parseInt(d[1].tmp_state_exp[ d[1].tmp_state_exp.length - 1 ]/sum_all_exposed ) );
 
             sampleDataAll.tmp_state_inf += d[1].tmp_state_inf[ d[1].tmp_state_inf.length - 1 ];
             sampleDataAll.tmp_state_sus += d[1].tmp_state_sus[ d[1].tmp_state_sus.length - 1 ];
@@ -233,13 +231,18 @@ window.onload = function(){
             sampleDataAll.tmp_state_imm += d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ];
             sampleDataAll.tmp_state_dea += d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ];
         })
+
+        // console.log(tmp_color_vals)
+        // console.log(tmp_colors)
+        // console.log(sampleData);
+        // this.console.log(sum_all_exposed);
+        // this.console.log("======================")
         
         d3.select("#statesvg").html("");
 
         if( entries_regions.length > 0 ){
             uStates.draw("#statesvg", sampleData, tooltipHtml, sampleDataAll);
         } else  {
-
             uStates.draw("#statesvg", {}, tooltipHtml, {});
         }
             

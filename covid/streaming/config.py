@@ -77,7 +77,7 @@ box3 = list(range(0, 17))
 
 region_status = np.ones((17,3))
 
-loop_num = 2
+loop_num = 1
 
 param_transition_box = []
 param_transition_box.append(box1)

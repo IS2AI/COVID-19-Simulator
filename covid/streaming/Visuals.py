@@ -72,7 +72,7 @@ class Visual:
         self.doc = curdoc()
         self.layout()
         self.prev_y1 = 0
-        self.region_names = ['Almaty Qalasy', 'Almaty',  'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
+        self.region_names = ['Almaty', 'Almaty Qalasy',  'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
                             'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
 
         self.init_exposed.value = config.param_init_exposed[config.region]
@@ -698,7 +698,7 @@ class Visual:
         self.param_gamma_im.on_change('value', self.handler_param_gamma_im)
 
 
-        self.param_sim_len = Slider(start=2,end=100,step=2,value=config.loop_num, title='Length of simulation (Days)')
+        self.param_sim_len = Slider(start=1,end=100,step=1,value=config.loop_num, title='Length of simulation (Days)')
         self.param_sim_len.on_change('value', self.handler_param_sim_len)
 
         self.param_t_exp = Slider(start=1,end=20,step=1,value=config.param_t_exp[0], title='Incubation period (Days) ')
