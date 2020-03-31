@@ -88,8 +88,6 @@ param_transition_box.append(box3)
 
 box_time = [param_transition_box]
 
-transition_matrix = transition_matrix.astype(int)
-
 header_file_csv = r'Day,Infected,Exposed,Severe Infected,Quarantined,Immunized,Susceptible,Dead,Initial Exposed,Susceptible to Exposed transition constant,Daily Quarantine rate of the Exposed,Daily Infected to Severe Infected transition rate,Hospital Capacity,Severe Infected to Dead transition probability,Severe Infected to Dead transition probability (Hospital Cap. Exceeded),Infected to Recovery Immunized transition probability,Disease transmission rate of Exposed compared to Infected,Disease transmission rate of Quarantined compared to Infected,Disease transmission rate of Severe Infected compared to Infected,Incubation period (Days),Infection  period (Days),Leakage ratio,Traffic ratio,Airway,Railway,Highway'
 
 
