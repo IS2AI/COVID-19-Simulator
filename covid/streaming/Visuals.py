@@ -749,8 +749,8 @@ class Visual:
 
         columns = [
                     TableColumn(field="c00", title=" ",),
-                    TableColumn(field="c0", title="Almaty Qalasy",),
-                    TableColumn(field="c1", title="Almaty",),
+                    TableColumn(field="c0", title="Almaty",),
+                    TableColumn(field="c1", title="Almaty Qalasy",),
                     TableColumn(field="c2", title="Aqmola",),
                     TableColumn(field="c3", title="Aqtobe",),
                     TableColumn(field="c4", title="Atyrau",),
