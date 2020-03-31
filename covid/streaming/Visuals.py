@@ -18,7 +18,8 @@ from bokeh.models import (CDSView, ColorBar, ColumnDataSource,
                           CustomJS, CustomJSFilter,
                           GeoJSONDataSource, HoverTool,
                           LinearColorMapper, Slider,PrintfTickFormatter)
-
+from bokeh.models.widgets.inputs import DatePicker
+from datetime import datetime, date, timedelta
 import csv
 import pandas as pd
 import json
@@ -85,7 +86,9 @@ class Visual:
         self.param_eps_exp.value = config.param_eps_exp[config.region]
         self.param_eps_qua.value = config.param_eps_qua[config.region]
         self.param_eps_sev.value = config.param_eps_sev[config.region]
-
+        
+        self.start_date = date.today()
+        
     def set_initial_params(self, params):
         global initial_params
         config.initial_params = params
@@ -131,7 +134,7 @@ class Visual:
 
         # create glyph for graph plotting
         # create glyph for graph plotting
-        p1 = figure(**self.plot_options, title='Covid Simulation',  toolbar_location='above')
+        p1 = figure(**self.plot_options, title='Covid Simulation',  toolbar_location='above',output_backend="webgl")
         p1.yaxis.axis_label = 'Number of people'
         p1.xaxis.axis_label = 'Simulation time (days)'
         p1.xaxis[0].formatter = PrintfTickFormatter(format="%9.0f")
@@ -139,7 +142,7 @@ class Visual:
         p1.xaxis.major_label_text_font_size = "10pt"
         p1.yaxis.major_label_text_font_size = "10pt"
 
-        p2 = figure(**self.plot_options, title='Number of Susceptible people', toolbar_location='above')
+        p2 = figure(**self.plot_options, title='Number of Susceptible people', toolbar_location='above',output_backend="webgl")
         p2.yaxis.axis_label = 'Number of people'
         p2.xaxis.axis_label = 'Simulation time (days)'
         p2.xaxis[0].formatter = PrintfTickFormatter(format="%9.0f")
@@ -242,7 +245,8 @@ class Visual:
         tmp_state_qua = [0]
         tmp_state_imm = [0]
         tmp_state_dea = [0]
-
+        start_date = self.start_date 
+        cur_date = start_date + timedelta(config.counter_func)
         if new_nodes_all != [] and config.region != 17:
             for i in range(len(config.new_plot_all)):
 
@@ -364,7 +368,8 @@ class Visual:
             c16=[(config.transition_matrix[16,i]) for i in range(0,17)],
                 )
 
-
+        print(start_date)
+        print(cur_date)
         self.source.data.update(new_data)
         #self.sourceJS.data.update(dict(text=[str_data]))
         self.sourceT.data.update(self.data1)
@@ -537,7 +542,7 @@ class Visual:
     def slider_update_initial_val(self, attr, old, new):
         self.init_exposed.value = config.param_init_exposed[config.region]
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
-        self.param_qr_slider.value = config.param_qr[config.region]
+        self.param_qr_slider.value = config.param_beta_exp[config.region]
         self.param_sir.value = config.param_sir[config.region]
         self.param_hosp_capacity.value = config.param_hosp_capacity[config.region]
         self.param_gamma_mor1.value = config.param_gamma_mor1[config.region]
@@ -550,20 +555,21 @@ class Visual:
         self.param_t_inf.value = config.param_t_inf[0]
 
     def slider_update_reset(self, attr, old, new):
-        self.init_exposed.value = config_reset.param_init_exposed[config.region]
-        self.sus_to_exp_slider.value = config_reset.param_beta_exp[config.region]
-        self.param_qr_slider.value = config_reset.param_qr[config.region]
-        self.param_sir.value = config_reset.param_sir[config.region]
-        self.param_hosp_capacity.value = config_reset.param_hosp_capacity[config.region]
-        self.param_gamma_mor1.value = config_reset.param_gamma_mor1[config.region]
-        self.param_gamma_mor2.value = config_reset.param_gamma_mor2[config.region]
-        self.param_gamma_im.value = config_reset.param_gamma_im[config.region]
-        self.param_eps_exp.value = config_reset.param_eps_exp[config.region]
-        self.param_eps_qua.value = config_reset.param_eps_qua[config.region]
-        self.param_eps_sev.value = config_reset.param_eps_sev[config.region]
-        self.param_t_exp.value = config_reset.param_t_exp[0]
-        self.param_t_inf.value = config_reset.param_t_inf[0]
-        
+        config.param_init_exposed = config_reset.param_init_exposed
+        config.param_beta_exp = config_reset.param_beta_exp
+        config.param_beta_exp = config_reset.param_qr
+        config.param_sir = config_reset.param_sir
+        config.param_hosp_capacity = config_reset.param_hosp_capacity
+        config.param_gamma_mor1 = config_reset.param_gamma_mor1
+        config.param_gamma_mor2= config_reset.param_gamma_mor2
+        config.param_gamma_im = config_reset.param_gamma_im
+        config.param_eps_exp= config_reset.param_eps_exp
+        config.param_eps_qua = config_reset.param_eps_qua
+        config.param_eps_sev = config_reset.param_eps_sev
+        config.param_t_exp[0] = config_reset.param_t_exp[0]
+        config.param_t_inf[0] = config_reset.param_t_inf[0]
+        self.slider_update_initial_val(self,old, new)
+  
     def handler_beta_exp(self, attr, old, new):
         config.param_beta_exp[config.region]=new
 
@@ -640,7 +646,11 @@ class Visual:
 
     def handler_param_save_file(self, attr, old, new):
         config.param_save_file= str(new)
-
+    
+    def get_date(self, attr, old, new):
+        self.start_date = new 
+        print(self.start_date)
+    
     def layout(self):
         regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',  'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
 
@@ -782,7 +792,13 @@ class Visual:
                     TableColumn(field="c16", title="Turkistan",),]
 
         self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1200, height=500, sortable = False)
-
+        self.datepicker = DatePicker(title="Starting date of Simulation", min_date=datetime(2015,11,1),
+                       value=datetime(datetime.now().year,1,1)
+                       )
+        
+        self.datepicker.on_change('value',self.get_date)
+        
+        
         sliders_1 = column(self.init_exposed, self.sus_to_exp_slider, self.param_qr_slider, self.param_sir)
         sliders_2 = column(self.param_hosp_capacity, self.param_gamma_mor1, self.param_gamma_mor2, self.param_gamma_im)
         sliders_0 = column(self.param_eps_exp, self.param_eps_qua, self.param_eps_sev)
@@ -790,13 +806,15 @@ class Visual:
         sliders = row(sliders_1, dumdiv3ss, sliders_2, dumdiv3, sliders_0)
         # regions
 
-        sliders_3 = row(self.param_t_exp, self.param_t_inf, self.param_sim_len)
+        sliders_3 = row(self.param_t_exp, self.param_t_inf, self.param_sim_len,self.datepicker,)
         #sliders_3
         # global
         nu_logo = Div(text="""<img src='/streaming/static/nu_logo1.jpg'>""", width=650, height=100)
         issai_logo = Div(text="""<img src='/streaming/static/issai_logo_new.png'>""", width=650, height=252)
         text2 = Div(text="""<h1 style='color:black'>   issai.nu.edu.kz/episim </h1>""", width = 500, height = 100)
+        
 
+                       
         text_footer_1 = Div(text="""<h3 style='color:green'> Developed by ISSAI Researchers : Askat Kuzdeuov, Daulet Baimukashev, Bauyrzhan Ibragimov, Aknur Karabay, Almas Mirzakhmetov, Mukhamet Nurpeiissov and Huseyin Atakan Varol </h3>""", width = 1500, height = 10)
         text_footer_2 = Div(text="""<h3 style='color:red'> Disclaimer : This simulator is a research tool. The simulation results will show general trends based on entered parameters and initial conditions  </h3>""", width = 1500, height = 10)
         text_footer = column(text_footer_1, text_footer_2)
