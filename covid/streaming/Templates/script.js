@@ -200,7 +200,7 @@ window.onload = function(){
         var tmp_color_vals = [];
         entries_regions.forEach(function(d){
             ind = "O"+d[0];
-            
+            //(exposed +infected+quarantined+severe infected) / total region population
             sum_all_v =  0;
             sum_all_v += d[1].tmp_state_exp[ d[1].tmp_state_exp.length - 1 ];
             sum_all_v += d[1].tmp_state_inf[ d[1].tmp_state_inf.length - 1 ];
