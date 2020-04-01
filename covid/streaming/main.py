@@ -13,11 +13,7 @@ import copy
 import time
 
 def threads(callbackFunc, running):
-    # set multiple threads
     datastream = DataStream(callbackFunc=callbackFunc, running=running) #initialize
-    #dataread = DataReading(callbackFunc=callbackFunc, running=running)
-    #dataread.start()
-    #start the threads
     datastream.start()
 
 def main():
@@ -34,10 +30,5 @@ if __name__ == '__main__':
         print('[INFO] Start the program.')
         main()
     except (KeyboardInterrupt):
-        print('Exiting the program. ')
+        print('[INFO] Exiting the program. ')
         pass
-
-'''
-    print('[INFO] Start the program.')
-    main()
-'''
