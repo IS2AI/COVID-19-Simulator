@@ -206,7 +206,7 @@ window.onload = function(){
             sum_all_v += d[1].tmp_state_inf[ d[1].tmp_state_inf.length - 1 ];
             sum_all_v += d[1].tmp_state_qua[ d[1].tmp_state_qua.length - 1 ]; 
             sum_all_v += d[1].tmp_state_sin[ d[1].tmp_state_sin.length - 1 ];
-            sum_all_v -= d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ];
+            //sum_all_v -= d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ];
             
             sum_all = d[1].tmp_state_sus[ d[1].tmp_state_sus.length - 1 ];
 
