@@ -206,11 +206,15 @@ window.onload = function(){
             sum_all_v += d[1].tmp_state_inf[ d[1].tmp_state_inf.length - 1 ];
             sum_all_v += d[1].tmp_state_qua[ d[1].tmp_state_qua.length - 1 ]; 
             sum_all_v += d[1].tmp_state_sin[ d[1].tmp_state_sin.length - 1 ];
+            //sum_all_v -= d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ];
             
             sum_all = d[1].tmp_state_sus[ d[1].tmp_state_sus.length - 1 ];
 
-            var color_number = parseInt(1000 * (sum_all_v/sum_all ));
-            var generatedColor = getRelevantColor(  color_number );
+            console.log(sum_all_v + '/' + sum_all);
+
+            var color_number = ((sum_all_v/sum_all ));
+
+            tmp_color_vals.push(color_number);
 
             sampleData[ind] = {
                 tmp_state_inf: d[1].tmp_state_inf[ d[1].tmp_state_inf.length - 1 ],
@@ -220,7 +224,8 @@ window.onload = function(){
                 tmp_state_qua: d[1].tmp_state_qua[ d[1].tmp_state_qua.length - 1 ],
                 tmp_state_imm: d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ],
                 tmp_state_dea: d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ],
-                color: generatedColor
+                color_number: color_number,
+                color: ''
             }
 
             sampleDataAll.tmp_state_inf += d[1].tmp_state_inf[ d[1].tmp_state_inf.length - 1 ];
@@ -230,6 +235,48 @@ window.onload = function(){
             sampleDataAll.tmp_state_qua += d[1].tmp_state_qua[ d[1].tmp_state_qua.length - 1 ];
             sampleDataAll.tmp_state_imm += d[1].tmp_state_imm[ d[1].tmp_state_imm.length - 1 ];
             sampleDataAll.tmp_state_dea += d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ];
+        })
+
+        color_max_number =  Math.max.apply(Math, tmp_color_vals);
+        color_min_number = Math.min.apply(Math, tmp_color_vals);
+
+        this.console.log(tmp_color_vals);
+        this.console.log(color_max_number);
+        this.console.log(color_min_number);
+        // set colors 
+        entries_regions.forEach(function(d){
+            ind = "O" + d[0];
+
+            if(sampleData[ind].color_number == color_max_number && color_max_number  > 0){
+                sampleData[ind].color = getRelevantColor( 1000 );
+            }else if(sampleData[ind].color_number > color_min_number && sampleData[ind].color_number < color_max_number){
+                var step_value = (color_min_number + color_max_number) / 4;
+
+                var step_one = sampleData[ind].color_number + step_value;
+                var step_two =sampleData[ind].color_number + 2*step_value;
+                var step_three =sampleData[ind].color_number + 3*step_value;
+                var step_three =sampleData[ind].color_number + 4*step_value;
+
+                var mcurrent = sampleData[ind].color_number;
+                if( mcurrent < step_one ){
+                    sampleData[ind].color = getRelevantColor(200);
+                }
+                else if( mcurrent < step_two && mcurrent > step_one){
+                    sampleData[ind].color = getRelevantColor(350);
+                }
+                else if( mcurrent < step_three && mcurrent > step_two){
+                    sampleData[ind].color = getRelevantColor(550);
+                }
+                else if( mcurrent < color_max_number && mcurrent > step_three){
+                    sampleData[ind].color = getRelevantColor(700);
+                }
+            }else if(sampleData[ind].color_number > 0) {
+                sampleData[ind].color = getRelevantColor(50);
+            }else {
+                sampleData[ind].color = getRelevantColor(0);
+            }
+
+
         })
 
         // console.log(tmp_color_vals)
