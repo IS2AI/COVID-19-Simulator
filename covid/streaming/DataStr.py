@@ -16,7 +16,6 @@ from multiprocessing import Process
 import config
 import os
 
-
 import multiprocessing
 from multiprocessing import Pool
 from network_sim import Network
@@ -30,7 +29,7 @@ import time
 import matplotlib.pyplot as plt
 import sys
 
-
+# process each node using the multiprocessing
 def process_node(node):
     temp_node = node
     temp_node.stoch_solver()
@@ -39,9 +38,8 @@ def process_node(node):
 def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_old):
 
     nodes_num = 17
-
     # load population data
-    nodes_population = np.squeeze(np.array([1854556,2039379,738587,869603,633801,652314,1125297,678224,1078362,753804,1378554,872736,794165,1378504,1011511,554519,1981747])) # np.array([100000,200000,300000])
+    nodes_population = config.param_init_susceptible
 
     # transition params
     tr_boxes = params_network[0]
@@ -67,7 +65,6 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
     transition_roadway = np.array(transition_roadway, dtype = np.float32)
 
     transition_matrix_init = (transition_railway + transition_airway + transition_roadway).astype(int)
-
 
     tr_table = [transition_airway, transition_railway, transition_roadway]
 
@@ -129,10 +126,7 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
         # put values from prev iter
         nodes = nodes_network.update_node_states(nodes, nodes_old)
 
-    start = time.time()
-
     pool = Pool()
-
     for ind in range(param_num_sim):
         nodes = list(pool.map(process_node, nodes))
         for index, node in enumerate(nodes):
@@ -141,9 +135,8 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
         if ind % param_freq_transition == 0 :
             nodes = nodes_network.node_states_transition(nodes, transition_matrix, param_static_indices)      # Update the state of every node due to transition
 
-    end = time.time()
+    pool.close()
 
-    print("[INFO] Sim.time: {:.4f} sec".format(end - start))
     states_arr_plot = np.zeros((param_num_sim, nodes_num, 7))
 
     for iter in range(param_num_sim):
@@ -156,11 +149,6 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
             states_arr_plot[iter, i_node, 5] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_sus)
             states_arr_plot[iter, i_node, 6] = nodes_state_arr[iter, i_node, -1]
 
-
-    #states_arr_plotx = np.zeros((2,17,7))
-    #states_arr_plotx[0, :, :] = states_arr_plot[24,:,:]
-    #states_arr_plotx[1, :, :] = states_arr_plot[48,:,:]
-    pool.close()
     return nodes, states_arr_plot, params_node, transition_matrix
 
 
@@ -174,23 +162,14 @@ class DataStream(threading.Thread):
 
     def run(self):
 
-        count = config.sim_len/2
-        df = pd.DataFrame()
-        nodes_old = []
-        state_sus = []
-        state_inf = []
-        state_sin = []
-        state_qua = []
-        state_imm = []
-        state_dea = []
         try:
             while True:
-                #config.new_plot_all = []
-                while config.counter != count+1 and config.run_iteration:
+                while config.counter != config.max_sim_len and config.run_iteration:
+                    # if RUN Simulation button is pressed, start simulation
                     for i in range(int(config.loop_num)):
+                        start = time.time()
                         config.flag_sim = 1
 
-                        config.iteration_over = False
                         config.param_transition_box = []
                         config.param_transition_box.append(config.box1)
                         config.param_transition_box.append(config.box2)
@@ -200,8 +179,6 @@ class DataStream(threading.Thread):
                         arr_for_save = np.concatenate((config.param_beta_exp, config.param_qr, config.param_sir, config.param_hosp_capacity, config.param_gamma_mor1, config.param_gamma_mor2,
                             config.param_gamma_im, config.param_eps_exp,
                             config.param_eps_qua, config.param_eps_sev, config.param_transition_leakage, config.param_transition_scale), axis=None)
-
-
 
                         config.arr_for_save = np.vstack([config.arr_for_save, arr_for_save ])
 
@@ -219,11 +196,14 @@ class DataStream(threading.Thread):
                         config.params_old = new_params.copy()
                         config.counter_func +=1
                         self.callbackFunc.doc.add_next_tick_callback(partial(self.callbackFunc.update, False))
+                        end = time.time()
+                        print("[INFO] Sim.time: {:.4f} sec".format(end - start))
+
                     config.flag_sim = 0
                     print('[INFO] Simulation is finished, press Simulation button for next iteration')
                     config.counter +=1
                     config.run_iteration = False
-                    config.iteration_over = True
+
         except (KeyboardInterrupt, SystemExit):
             print('[INFO] Exiting the program. ')
             pass
