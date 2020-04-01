@@ -23,7 +23,8 @@ from datetime import datetime, date, timedelta
 import csv
 import pandas as pd
 import json
-import config_reset
+
+
 #import geopandas as gpd
 #df_kz = gpd.read_file('data_geomap/KAZ_adm1.shp')
 #geosource = GeoJSONDataSource(geojson = df_kz.to_json())
@@ -448,6 +449,11 @@ class Visual:
             config.run_iteration=False
             self.update(False)
             self.slider_update_reset(self, 0, 0)
+    def transition_matrix_reset(self):
+        self.checkbox_group1.active = list(range(0, 17))
+        self.checkbox_group2.active = list(range(0, 17))
+        self.checkbox_group3.active = list(range(0, 17))
+        self.save_click()
     def run_click(self):
         if config.flag_sim == 0:
             self.save_click()
@@ -539,6 +545,7 @@ class Visual:
             print('[INFO] Saving results to .csv format ..')
 
     def slider_update_initial_val(self, attr, old, new):
+        
         self.init_exposed.value = config.param_init_exposed[config.region]
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
         self.param_qr_slider.value = config.param_beta_exp[config.region]
@@ -552,23 +559,27 @@ class Visual:
         self.param_eps_sev.value = config.param_eps_sev[config.region]
         self.param_t_exp.value = config.param_t_exp[0]
         self.param_t_inf.value = config.param_t_inf[0]
-
+        self.param_tr_leakage.value = config.param_transition_leakage
+        self.param_tr_scale.value = config.param_transition_scale
     def slider_update_reset(self, attr, old, new):
-        config.param_init_exposed = config_reset.param_init_exposed
-        config.param_beta_exp = config_reset.param_beta_exp
-        config.param_beta_exp = config_reset.param_qr
-        config.param_sir = config_reset.param_sir
-        config.param_hosp_capacity = config_reset.param_hosp_capacity
-        config.param_gamma_mor1 = config_reset.param_gamma_mor1
-        config.param_gamma_mor2= config_reset.param_gamma_mor2
-        config.param_gamma_im = config_reset.param_gamma_im
-        config.param_eps_exp= config_reset.param_eps_exp
-        config.param_eps_qua = config_reset.param_eps_qua
-        config.param_eps_sev = config_reset.param_eps_sev
-        config.param_t_exp[0] = config_reset.param_t_exp[0]
-        config.param_t_inf[0] = config_reset.param_t_inf[0]
+        nodes_num =17
+        config.param_init_exposed = 0*np.ones(nodes_num)
+        config.param_beta_exp = 30.0*np.ones(nodes_num)
+        config.param_qr = 2.0*np.ones(nodes_num)
+        config.param_sir = 0.35*np.ones(nodes_num)
+        config.param_hosp_capacity = np.array((280,2395,895,600,650,250,725,100,885,425,1670,300,465,1420,1505,380,300)) 
+        config.param_gamma_mor1 = 7.0*np.ones(nodes_num)
+        config.param_gamma_mor2= 11.0*np.ones(nodes_num)
+        config.param_gamma_im = 90.0*np.ones(nodes_num)
+        config.param_eps_exp= 100.0*np.ones(nodes_num)
+        config.param_eps_qua = 20.0*np.ones(nodes_num)
+        config.param_eps_sev = 20.0*np.ones(nodes_num)
+        config.param_t_exp = 5*np.ones(nodes_num)
+        config.param_t_inf = 14*np.ones(nodes_num)
+        config.param_transition_leakage = 0.0
+        config.param_transition_scale = 1.0
         self.slider_update_initial_val(self,old, new)
-  
+        self.transition_matrix_reset()
     def handler_beta_exp(self, attr, old, new):
         config.param_beta_exp[config.region]=new
 
@@ -739,13 +750,13 @@ class Visual:
         div_cb2 = Div(text = 'Railways', width = 150)
         div_cb3 = Div(text = 'Highways', width = 150)
 
-        checkbox_group1 = CheckboxGroup(labels=regions, active =  list(range(0, 17)))
-        checkbox_group2 = CheckboxGroup(labels=regions, active= list(range(0, 17)))
-        checkbox_group3 = CheckboxGroup(labels=regions, active= list(range(0, 17)))
+        self.checkbox_group1 = CheckboxGroup(labels=regions, active = list(range(0, 17)))
+        self.checkbox_group2 = CheckboxGroup(labels=regions, active= list(range(0, 17)))
+        self.checkbox_group3 = CheckboxGroup(labels=regions, active= list(range(0, 17)))
 
-        checkbox_group1.on_click(self.handler_checkbox_group1)
-        checkbox_group2.on_click(self.handler_checkbox_group2)
-        checkbox_group3.on_click(self.handler_checkbox_group3)
+        self.checkbox_group1.on_click(self.handler_checkbox_group1)
+        self.checkbox_group2.on_click(self.handler_checkbox_group2)
+        self.checkbox_group3.on_click(self.handler_checkbox_group3)
 
         self.data1 = dict(
             c00 =  regions,
@@ -792,7 +803,7 @@ class Visual:
 
         self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1200, height=500, sortable = False)
         self.datepicker = DatePicker(title="Starting date of Simulation", min_date=datetime(2015,11,1),
-                       value=datetime(datetime.now().year,1,1)
+                       value=datetime(date.today().year,1,1)
                        )
         
         self.datepicker.on_change('value',self.get_date)
@@ -835,7 +846,7 @@ class Visual:
         params =  column(sliders, self.text3, sliders_3, self.text5)
 
         sliders_4 = column(self.param_tr_scale, self.param_tr_leakage)
-        check_table = row(column(div_cb1,checkbox_group1), column(div_cb2,checkbox_group2), column(div_cb3,checkbox_group3), sliders_4)
+        check_table = row(column(div_cb1,self.checkbox_group1), column(div_cb2,self.checkbox_group2), column(div_cb3,self.checkbox_group3), sliders_4)
         check_trans = row(self.data_tableT)
 
 
