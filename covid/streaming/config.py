@@ -1,6 +1,5 @@
 import numpy as np
 
-# master
 #  Initial Parameters for each region
 nodes_num = 17
 

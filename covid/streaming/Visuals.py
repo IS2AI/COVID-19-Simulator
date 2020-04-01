@@ -23,9 +23,6 @@ import csv
 import pandas as pd
 import json
 
-#import geopandas as gpd
-#df_kz = gpd.read_file('data_geomap/KAZ_adm1.shp')
-#geosource = GeoJSONDataSource(geojson = df_kz.to_json())
 
 class Visual:
 
@@ -78,7 +75,7 @@ class Visual:
         self.param_eps_sev.value = config.param_eps_sev[config.region]
 
     def definePlot(self, source):
-        
+
         THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
         img_nu  = Image.open(os.path.join(THIS_FOLDER, 'nu_logo.png')).convert('RGBA')
         img_issai = Image.open(os.path.join(THIS_FOLDER, 'issai_logo.png')).convert('RGBA')
@@ -109,16 +106,6 @@ class Visual:
         p_iss.toolbar.logo = None
         p_iss.toolbar_location = None
 
-
-      #  create glyph for kazakhstan map
-      #  p_map = figure(title = ' Kazakhstan', plot_height=600, plot_width=800, background_fill_color='black',background_fill_alpha = 0.8, toolbar_location='above')
-      #  p_map.xgrid.grid_line_color=None
-      #  p_map.ygrid.grid_line_color=None
-      #  states=p_map.patches('xs','ys', source=geosource, fill_color='red', line_color='gray')
-
-
-        # create glyph for graph plotting
-        # create glyph for graph plotting
         p1 = figure(**self.plot_options, title='Covid Simulation',  toolbar_location='above')
         p1.yaxis.axis_label = 'Number of people'
         p1.xaxis.axis_label = 'Simulation time (days)'
@@ -135,10 +122,7 @@ class Visual:
         p2.xaxis.major_label_text_font_size = "10pt"
         p2.yaxis.major_label_text_font_size = "10pt"
 
-        #######################
-
-        #######################
-
+        # plot line formatting
         r0 = p2.line(source =source, x='x', y='sus', color='cyan', line_width=1,line_dash='dashed', legend='Susceptible')
         r1 = p2.circle(source=source, x='x', y='sus', color='cyan', size=10, legend='Susceptible')
 
@@ -160,7 +144,6 @@ class Visual:
         r12 = p1.line(source=source, x='x', y='dea',color='red',line_width=1,line_dash='dotted', legend='Dead')
         r13 = p1.circle(source=source, x='x', y='dea',color='red',size=10, legend='Dead')
 
-        #,,location=(5,30)
         legend = Legend(items=[
                                 ('Exposed', [r2, r3]),
                                 ('Infected', [r4, r5]),
@@ -168,7 +151,7 @@ class Visual:
                                 ('Quarantined', [r8, r9]),
                                 ('Immunized', [r10, r11]),
                                 ('Dead', [r12, r13])])
-        #p1.add_layout(legend, 'left')
+
         p1.legend.click_policy = 'hide'
 
         #styling
@@ -193,16 +176,7 @@ class Visual:
         p2.outline_line_alpha = 0.9
         p2.outline_line_color = "black"
 
-
-       # p_map.outline_line_width = 7
-       # p_map.outline_line_alpha = 0.9
-       # p_map.outline_line_color = "black"
-       # p_map.xaxis.visible = False
-       # p_map.yaxis.visible = False
-
-        #pAll = gridplot([[row(p1], [p_map]])
         kz_map_tag = Div(text="""<div id="svg_holder" style="float:left;"> <svg width="780" height="530" id="statesvg"></svg> <div id="tooltip"></div>   </div>""", width=960, height=600)
-        #kz_map_tooltip = Div(text="""<div style="float:left;" id="tooltip"></div>""", width=960, height=100)
         kz_map_row = row(kz_map_tag)
         pAll = row(p1, kz_map_row)
         return pAll
@@ -241,12 +215,9 @@ class Visual:
                 state_imm.append(new_nodes_all[i][:, config.region, 4][-1])
                 state_sus.append(new_nodes_all[i][:, config.region, 5][-1])
                 state_dea.append(new_nodes_all[i][:, config.region, 6][-1])
-
-                #newx = np.arange(0,2*config.counter_func/2)
                 newx = config.param_sim_len[0]*(np.arange(config.counter_func+1))
 
                 # for map
-
                 regions_ids = [ lregion for lregion in range(17)]
                 for region in regions_ids:
                     if region in region_states:
@@ -325,7 +296,6 @@ class Visual:
                         tmp_data["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
 
                         region_states[region] = tmp_data
-        #print(region_states)
         str_data = json.dumps(region_states, ensure_ascii=False)
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
                     qua=state_qua, imm=state_imm, dea=state_dea, text=[str_data]*len(state_imm))
@@ -713,7 +683,7 @@ class Visual:
                     TableColumn(field="c15", title="North Kazakhstan",),
                     TableColumn(field="c16", title="Turkistan",),]
 
-        self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1400, height=500, sortable = False)
+        self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1500, height=500, sortable = False)
 
         sliders_1 = column(self.init_exposed, self.sus_to_exp_slider, self.param_qr_slider, self.param_sir)
         sliders_2 = column(self.param_hosp_capacity, self.param_gamma_mor1, self.param_gamma_mor2, self.param_gamma_im)
@@ -723,7 +693,6 @@ class Visual:
         # regions
 
         sliders_3 = row(self.param_t_exp, self.param_t_inf, self.param_sim_len)
-        #sliders_3
         # global
         nu_logo = Div(text="""<img src='/streaming/static/nu_logo1.jpg'>""", width=650, height=100)
         issai_logo = Div(text="""<img src='/streaming/static/issai_logo_new.png'>""", width=650, height=252)
@@ -733,8 +702,6 @@ class Visual:
         text_footer_2 = Div(text="""<h3 style='color:red'> Disclaimer : This simulator is a research tool. The simulation results will show general trends based on entered parameters and initial conditions  </h3>""", width = 1500, height = 10)
         text_footer = column(text_footer_1, text_footer_2)
         text = column(self.text1, text2)
-        #header = None
-        #header = row(nu_logo, text , issai_logo)
 
         draw_map_js = CustomJS(code=""" uStates.draw("#statesvg", sampleData, tooltipHtml); """)
         run_button.js_on_click(draw_map_js)

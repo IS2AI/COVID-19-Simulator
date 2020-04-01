@@ -29,6 +29,7 @@ import time
 import matplotlib.pyplot as plt
 import sys
 
+# process each node using the multiprocessing
 def process_node(node):
     temp_node = node
     temp_node.stoch_solver()
@@ -37,7 +38,6 @@ def process_node(node):
 def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_old):
 
     nodes_num = 17
-
     # load population data
     nodes_population = config.param_init_susceptible
 
@@ -169,7 +169,7 @@ class DataStream(threading.Thread):
                     for i in range(int(config.loop_num)):
                         start = time.time()
                         config.flag_sim = 1
-                        
+
                         config.param_transition_box = []
                         config.param_transition_box.append(config.box1)
                         config.param_transition_box.append(config.box2)
