@@ -232,6 +232,11 @@ window.onload = function(){
             sampleDataAll.tmp_state_dea += d[1].tmp_state_dea[ d[1].tmp_state_dea.length - 1 ];
         })
 
+        // set colors 
+        sampleData.forEach(function(d){
+            
+        })
+
         // console.log(tmp_color_vals)
         // console.log(tmp_colors)
         // console.log(sampleData);
