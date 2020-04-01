@@ -140,7 +140,7 @@ window.onload = function(){
                 '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-danger" style="background:#460000 !important;">Severe Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_sin)+'</span></button>'+
                 '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-info">Immunized <span class="badge badge-primary badge-pill">'+(d.tmp_state_imm)+'</span></button>'+
                 '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-danger">Death <span class="badge badge-primary badge-pill">'+(d.tmp_state_dea)+'</span></button>'+
-                '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-muted">Susceptible <span class="badge badge-primary badge-pill">'+(d.tmp_state_sus)+'</span></button>'+
+                '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-muted">Start date: '+(mdates[0])+'</button>'+
             "</div>"+
         "</div>";
 
@@ -154,6 +154,7 @@ window.onload = function(){
             '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-info">Immunized <span class="badge badge-primary badge-pill">'+(d2.tmp_state_imm)+'</span></button>'+
             '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-danger">Death <span class="badge badge-primary badge-pill">'+(d2.tmp_state_dea)+'</span></button>'+
             '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-muted">Susceptible <span class="badge badge-primary badge-pill">'+(d2.tmp_state_sus)+'</span></button>'+
+            '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-muted">Start date: '+(mdates[1])+'</button>'+
             "</div>"+
         "</div>";
 
@@ -182,6 +183,7 @@ window.onload = function(){
         if(typeof data !== 'undefined'){
             var jsonObj = JSON.parse(data.text[0]);
             var entries_regions = Object.entries(jsonObj);
+            mdates = JSON.parse(data.mdates[0]);
         }else{
             entries_regions = [];
         }

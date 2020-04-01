@@ -54,7 +54,7 @@ class Visual:
         self.running = running
         self.callbackFunc = callbackFunc
         self.source = ColumnDataSource(dict(x=[0], sus=[config.param_init_susceptible[config.region]], exp=[config.param_init_exposed[config.region]], inf=[0], sin=[0],
-                                        qua=[0], imm=[0], dea=[0], text=[""]))
+                                        qua=[0], imm=[0], dea=[0], text=[""], mdates = [""]))
 
         self.sourceJS = ColumnDataSource(dict(text=[]))
 
@@ -345,8 +345,9 @@ class Visual:
                         region_states[region] = tmp_data
         #print(region_states)
         str_data = json.dumps(region_states, ensure_ascii=False)
+        str_mdates = json.dumps([start_date.isoformat(), cur_date.isoformat()],ensure_ascii=False)
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
-                    qua=state_qua, imm=state_imm, dea=state_dea, text=[str_data]*len(state_imm))
+                    qua=state_qua, imm=state_imm, dea=state_dea, text=[str_data]*len(state_imm), mdates=[str_mdates]*len(state_imm))
 
         self.data1 = dict(
             c0=[(config.transition_matrix[0,i]) for i in range(0,17)],
@@ -368,8 +369,6 @@ class Visual:
             c16=[(config.transition_matrix[16,i]) for i in range(0,17)],
                 )
 
-        print(start_date)
-        print(cur_date)
         self.source.data.update(new_data)
         #self.sourceJS.data.update(dict(text=[str_data]))
         self.sourceT.data.update(self.data1)
