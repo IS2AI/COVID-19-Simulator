@@ -779,5 +779,5 @@ class Visual:
         layout = column (layout,self.text4) #text_footer
 
 
-        self.doc.title = 'Covid Simulation'
+        self.doc.title = 'ISSAI Covid-19 Simulator'
         self.doc.add_root(layout)

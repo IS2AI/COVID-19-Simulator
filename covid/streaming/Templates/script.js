@@ -133,7 +133,7 @@ window.onload = function(){
         html += "<div class='row'>";
         html += "<div  class='col-12'>";
         html += '<div class="btn-group btn-group-sm bg-white mb-3" role="group" aria-label="Basic example">'+
-                '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-white">'+(n)+'</button>'+
+                '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-white"><b style="font-size:1.1rem;">'+(n)+'</b></button>'+
                 '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-success">Quarantined <span class="badge badge-primary badge-pill">'+(d.tmp_state_qua)+'</button>'+
                 '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-white">Infected <span class="badge badge-primary badge-pill">'+(d.tmp_state_inf)+'</span></button>'+
                 '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-warning">Exposed <span class="badge badge-primary badge-pill">'+(d.tmp_state_exp)+'</span></button>'+
@@ -147,7 +147,7 @@ window.onload = function(){
 
         html += '<div class="col-12">';
         html += '<div class="btn-group bg-white mb-3" role="group" aria-label="Basic example">'+
-            '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-white">Kazakhstan</button>'+
+            '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-white"><b style="font-size:1.1rem;">Kazakhstan</b></button>'+
             '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-success">Quarantined <span class="badge badge-primary badge-pill">'+(d2.tmp_state_qua)+'</button>'+
             '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-white">Infected <span class="badge badge-primary badge-pill">'+(d2.tmp_state_inf)+'</span></button>'+
             '<button style="min-width: 120px !important; width:170px !important;" type="link" class="btn btn-sm btn-warning">Exposed <span class="badge badge-primary badge-pill">'+(d2.tmp_state_exp)+'</span></button>'+
