@@ -1,7 +1,7 @@
 import numpy as np
 
-
-#  Initial Parameters for each regions
+# master
+#  Initial Parameters for each region
 nodes_num = 17
 
 param_beta_exp = 30.0*np.ones(nodes_num)     # Susceptible to Exposed transition constant
