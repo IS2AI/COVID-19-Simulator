@@ -721,7 +721,7 @@ class Visual:
                     TableColumn(field="c15", title="North Kazakhstan",),
                     TableColumn(field="c16", title="Turkistan",),]
 
-        self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1200, height=500, sortable = False)
+        self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1750, height=500, sortable = False)
         self.datepicker = DatePicker(title="Starting date of Simulation", min_date=datetime(2015,11,1),
                        value=datetime(date.today().year,1,1)
                        )
