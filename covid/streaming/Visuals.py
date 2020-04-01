@@ -135,7 +135,7 @@ class Visual:
 
         # create glyph for graph plotting
         # create glyph for graph plotting
-        p1 = figure(**self.plot_options, title='Covid Simulation',  toolbar_location='above',output_backend="webgl")
+        p1 = figure(**self.plot_options, title='Covid Simulation',  toolbar_location='above')
         p1.yaxis.axis_label = 'Number of people'
         p1.xaxis.axis_label = 'Simulation time (days)'
         p1.xaxis[0].formatter = PrintfTickFormatter(format="%9.0f")
@@ -143,7 +143,7 @@ class Visual:
         p1.xaxis.major_label_text_font_size = "10pt"
         p1.yaxis.major_label_text_font_size = "10pt"
 
-        p2 = figure(**self.plot_options, title='Number of Susceptible people', toolbar_location='above',output_backend="webgl")
+        p2 = figure(**self.plot_options, title='Number of Susceptible people', toolbar_location='above')
         p2.yaxis.axis_label = 'Number of people'
         p2.xaxis.axis_label = 'Simulation time (days)'
         p2.xaxis[0].formatter = PrintfTickFormatter(format="%9.0f")
@@ -548,7 +548,7 @@ class Visual:
         
         self.init_exposed.value = config.param_init_exposed[config.region]
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
-        self.param_qr_slider.value = config.param_beta_exp[config.region]
+        self.param_qr_slider.value = config.param_qr[config.region]
         self.param_sir.value = config.param_sir[config.region]
         self.param_hosp_capacity.value = config.param_hosp_capacity[config.region]
         self.param_gamma_mor1.value = config.param_gamma_mor1[config.region]
