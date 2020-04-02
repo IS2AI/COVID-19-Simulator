@@ -474,7 +474,7 @@ class Visual:
                         one_arr_node = one_arr[-1,:,:].astype(int)
                         one_arr_node_sum = one_arr_node.sum(axis=0)
                         one_arr_node_list = list(one_arr_node_sum)
-                        curr_date = self.start_date + timedelta(iter)
+                        curr_date = self.start_date + timedelta(iter+1)
                         alist = [iter+1] + [curr_date] + one_arr_node_list
                         data_writer.writerows([alist])
             ####
