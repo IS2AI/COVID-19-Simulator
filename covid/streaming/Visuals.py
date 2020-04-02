@@ -208,7 +208,8 @@ class Visual:
         tmp_state_imm = [0]
         tmp_state_dea = [0]
         start_date = self.start_date
-        cur_date = start_date + timedelta(config.counter_func)
+        cur_date = (start_date + timedelta(config.counter_func)).strftime("%d %b %Y")
+        start_date = self.start_date.strftime("%d %b %Y")
         if new_nodes_all != [] and config.region != 17:
             for i in range(len(config.new_plot_all)):
 
@@ -301,7 +302,7 @@ class Visual:
 
                         region_states[region] = tmp_data
         str_data = json.dumps(region_states, ensure_ascii=False)
-        str_mdates = json.dumps([start_date.isoformat(), cur_date.isoformat()],ensure_ascii=False)
+        str_mdates = json.dumps([start_date, cur_date],ensure_ascii=False)
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
                     qua=state_qua, imm=state_imm, dea=state_dea, text=[str_data]*len(state_imm), mdates=[str_mdates]*len(state_imm))
 
@@ -324,7 +325,7 @@ class Visual:
             c15=[(config.transition_matrix[15,i]) for i in range(0,17)],
             c16=[(config.transition_matrix[16,i]) for i in range(0,17)],
                 )
-
+        
         self.source.data.update(new_data)
         #self.sourceJS.data.update(dict(text=[str_data]))
         self.sourceT.data.update(self.data1)
@@ -723,8 +724,8 @@ class Visual:
 
         self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1750, height=500, sortable = False)
         self.datepicker = DatePicker(title="Starting date of Simulation", min_date=datetime(2015,11,1),
-                       value=datetime(date.today().year,1,1)
-                       )
+                       value=datetime.today())
+                      
 
         self.datepicker.on_change('value',self.get_date)
 
