@@ -750,7 +750,7 @@ class Visual:
         text_footer = column(text_footer_1, text_footer_2)
         text = column(self.text1, text2)
 
-        draw_map_js = CustomJS(code=""" uStates.draw("#statesvg", sampleData, tooltipHtml); """)
+        draw_map_js = CustomJS(code=""" uStates.draw("#statesvg", currRegionData, tooltipHtml); """)
         run_button.js_on_click(draw_map_js)
 
         layout_t = row(save_button_result, text_save)
