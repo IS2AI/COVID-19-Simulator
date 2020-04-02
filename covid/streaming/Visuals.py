@@ -417,6 +417,7 @@ class Visual:
         if config.flag_sim == 0:
             # points*nodes*states
             info = config.header_file_csv
+            info2 = config.header_file_csv2
             params_local = np.vstack([config.param_beta_exp, config.param_qr, config.param_sir, config.param_eps_exp, config.param_eps_qua,
                     config.param_eps_sev,config.param_hosp_capacity, config.param_gamma_mor1,config.param_gamma_mor2,
                     config.param_gamma_im, config.param_init_susceptible, config.param_init_exposed])
@@ -443,23 +444,40 @@ class Visual:
             for j in range(17):
                 filename =  directory + '/' + self.region_names[j] + '.csv'
                 with open(filename, 'w', newline='') as csvfile:
-                    spamwriter = csv.writer(csvfile, delimiter=',',
+                    data_writer = csv.writer(csvfile, delimiter=',',
                             escapechar=' ', quoting=csv.QUOTE_NONE)
                     #points*nodes*states
-                    spamwriter.writerow([info])
+                    data_writer.writerow([info])
                     for iter in range(config.counter_func):
                         if config.new_plot_all:
                             one_arr = config.new_plot_all[iter] #
                             one_arr_node = one_arr[-1,j,:].astype(int)
                             m = 17
-                            one_arr_node = np.append(int(iter+1), one_arr_node)
+                            curr_date = self.start_date + timedelta(iter)
                             one_arr_node = np.append(one_arr_node, (config.param_init_exposed[j], config.arr_for_save[iter+1,j+0*m],   config.arr_for_save[iter+1,j+1*m], config.arr_for_save[iter+1,j+2*m],
                                 config.arr_for_save[iter+1,j+3*m], config.arr_for_save[iter+1,j+4*m], config.arr_for_save[iter+1,j+5*m], config.arr_for_save[iter+1,j+6*m], config.arr_for_save[iter+1,j+7*m],
                                 config.arr_for_save[iter+1,j+8*m], config.arr_for_save[iter+1,j+9*m], config.param_t_exp[0], config.param_t_inf[0], config.arr_for_save[iter+1,10*m],
                                 config.arr_for_save[iter+1,10*m+1],box_corr[j,0,iter],box_corr[j,1,iter],box_corr[j,2,iter]))
+                            one_arr_node_list = list(one_arr_node)
+                            alist = [iter+1] + [curr_date] + one_arr_node_list
+                            data_writer.writerows([alist])
 
-                            spamwriter.writerows([one_arr_node])
-
+            filename =  directory + '/' + 'Kazakhstan' + '.csv'
+            with open(filename, 'w', newline='') as csvfile:
+                data_writer = csv.writer(csvfile, delimiter=',',
+                        escapechar=' ', quoting=csv.QUOTE_NONE)
+                #points*nodes*states
+                data_writer.writerow([info2])
+                for iter in range(config.counter_func):
+                    if config.new_plot_all:
+                        one_arr = config.new_plot_all[iter]
+                        one_arr_node = one_arr[-1,:,:].astype(int)
+                        one_arr_node_sum = one_arr_node.sum(axis=0)
+                        one_arr_node_list = list(one_arr_node_sum)
+                        curr_date = self.start_date + timedelta(iter)
+                        alist = [iter+1] + [curr_date] + one_arr_node_list
+                        data_writer.writerows([alist])
+            ####
             print('[INFO] Saving results to .csv format ..')
 
     def slider_update_initial_val(self, attr, old, new):
@@ -579,7 +597,6 @@ class Visual:
 
     def get_date(self, attr, old, new):
         self.start_date = new
-        print(self.start_date)
 
     def layout(self):
         regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',  'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
