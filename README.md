@@ -15,7 +15,7 @@ Transition matrix can be adjusted to model different situations.
 
 4) Clone the repository to your working directory
 
-5) Copy the files (config.py, covid_simulator_upd.py, DataStr.py, network_sim.py, Visuals.py) from *covid/streaming/* to *C:/Users/user/Anaconda3/Lib/* folder.
+5) Copy the files (config.py, covid_simulator_upd.py, DataStr.py, network_sim.py, Visuals.py) from *covid19/streaming/* to *C:/Users/user/Anaconda3/Lib/* folder.
 
 6) Go to directory *covid19/* and run the following command on terminal: **bokeh serve --show streaming**
 
