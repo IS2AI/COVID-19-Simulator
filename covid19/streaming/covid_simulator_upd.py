@@ -36,7 +36,7 @@ class Node(object):
         self.param_gamma_mor2 = params[8]/100.0 # # Severe Infected to Dead transition probability (Hospital Cap. Exceeded)
         self.param_gamma_im = params[9]/100.0      # Infected to Recovery Immunized transition probability
 
-        self.param_dt = 1/24                # Sampling time in days (1/24 corresponds to one hour)
+        self.param_dt = 1/12                # Sampling time in days (1/24 corresponds to one hour)
         self.param_sim_len = params[10]       # Length of simulation in days
 
         self.param_num_states = 0    # Number of states

@@ -79,36 +79,6 @@ class Visual:
 
     def definePlot(self, source):
 
-        THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-        img_nu  = Image.open(os.path.join(THIS_FOLDER, 'nu_logo.png')).convert('RGBA')
-        img_issai = Image.open(os.path.join(THIS_FOLDER, 'issai_logo.png')).convert('RGBA')
-
-        x_nu, y_nu = img_nu.size
-        img_nu_plot = np.empty((x_nu, y_nu), dtype=np.uint32)
-        img_nu_view = img_nu_plot.view(dtype=np.uint8).reshape((y_nu, x_nu, 4))
-        img_nu_view[:,:,:]=np.flipud(np.asarray(img_nu))
-
-        dim_nu = max(x_nu, y_nu)
-        dim_nu_y = min(x_nu, y_nu)
-        p_nu = figure(x_range=(0,dim_nu), y_range=(0,dim_nu_y), height=250, width=479)
-        p_nu.image_rgba(image=[img_nu_view], x=0, y=0, dw=x_nu, dh=y_nu)
-        p_nu.axis.visible = False
-        p_nu.axis.visible = False
-        p_nu.toolbar.logo = None
-        p_nu.toolbar_location = None
-
-        x_is, y_is = img_issai.size
-        iss_plot = np.empty((x_is, y_is), dtype=np.uint32)
-        iss_view=iss_plot.view(dtype=np.uint8).reshape((y_is, x_is, 4))
-        iss_view[:,:,:]=np.flipud(np.asarray(img_issai))
-
-        p_iss = figure(x_range=(0, x_is), y_range=(0, y_is), height=250, width=479)
-        p_iss.image_rgba(image=[iss_view], x=0, y=0, dw=x_is, dh=y_is)
-        p_iss.axis.visible = False
-        p_iss.axis.visible = False
-        p_iss.toolbar.logo = None
-        p_iss.toolbar_location = None
-
         p1 = figure(**self.plot_options, title='Covid Simulation',  toolbar_location='above')
         p1.yaxis.axis_label = 'Number of people'
         p1.xaxis.axis_label = 'Simulation time (days)'
@@ -212,8 +182,7 @@ class Visual:
         start_date = self.start_date.strftime("%d %b %Y")
         if new_nodes_all != [] and config.region != 17:
             for i in range(len(config.new_plot_all)):
-
-                state_inf.append(new_nodes_all[i][:, config.region, 0][-1])
+                state_inf.append(new_nodes_all[i][:, config.region, 0][-1] + new_nodes_all[i][:, config.region, 7][-1])
                 state_exp.append(new_nodes_all[i][:, config.region, 1][-1])
                 state_sin.append(new_nodes_all[i][:, config.region, 2][-1])
                 state_qua.append(new_nodes_all[i][:, config.region, 3][-1])
@@ -227,7 +196,7 @@ class Visual:
                 for region in regions_ids:
                     if region in region_states:
                         #print("GOOD")
-                        region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
+                        region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1]+ new_nodes_all[i][:, region, 7][-1])
                         region_states[region]["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
                         region_states[region]["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
                         region_states[region]["tmp_state_qua"].append(new_nodes_all[i][:, region, 3][-1])
@@ -246,7 +215,7 @@ class Visual:
                             "tmp_state_dea": []
                             }
 
-                        tmp_data["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
+                        tmp_data["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1]+ new_nodes_all[i][:, region, 7][-1])
                         tmp_data["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
                         tmp_data["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
                         tmp_data["tmp_state_qua"].append(new_nodes_all[i][:, region, 3][-1])
@@ -260,7 +229,7 @@ class Visual:
         elif new_nodes_all != [] and config.region == 17:
             for i in range(len(config.new_plot_all)):
 
-                state_inf.append(sum(new_nodes_all[i][:, :, 0][-1]))
+                state_inf.append(sum(new_nodes_all[i][:, :, 0][-1]) + sum(new_nodes_all[i][:, :, 7][-1]))
                 state_exp.append(sum(new_nodes_all[i][:, :, 1][-1]))
                 state_sin.append(sum(new_nodes_all[i][:, :, 2][-1]))
                 state_qua.append(sum(new_nodes_all[i][:, :, 3][-1]))
@@ -273,7 +242,7 @@ class Visual:
                 for region in regions_ids:
                     if str(region) in region_states and type(region_states[region]) is dict:
                         #print("GOOOODDDDD")
-                        region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
+                        region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1] + new_nodes_all[i][:, region, 7][-1])
                         region_states[region]["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
                         region_states[region]["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
                         region_states[region]["tmp_state_qua"].append(new_nodes_all[i][:, region, 3][-1])
@@ -292,7 +261,7 @@ class Visual:
                             "tmp_state_dea": []
                             }
 
-                        tmp_data["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1])
+                        tmp_data["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1] + new_nodes_all[i][:, region, 7][-1])
                         tmp_data["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
                         tmp_data["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
                         tmp_data["tmp_state_qua"].append(new_nodes_all[i][:, region, 3][-1])
@@ -755,14 +724,7 @@ class Visual:
         # regions
 
         sliders_3 = row(self.param_t_exp, self.param_t_inf, self.param_sim_len,self.datepicker,)
-        #sliders_3
-        # global
-        nu_logo = Div(text="""<img src='/streaming/static/nu_logo1.jpg'>""", width=650, height=100)
-        issai_logo = Div(text="""<img src='/streaming/static/issai_logo_new.png'>""", width=650, height=252)
         text2 = Div(text="""<h1 style='color:black'>   issai.nu.edu.kz/episim </h1>""", width = 500, height = 100)
-
-
-
         text_footer_1 = Div(text="""<h3 style='color:green'> Developed by ISSAI Researchers : Askat Kuzdeuov, Daulet Baimukashev, Bauyrzhan Ibragimov, Aknur Karabay, Almas Mirzakhmetov, Mukhamet Nurpeiissov and Huseyin Atakan Varol </h3>""", width = 1500, height = 10)
         text_footer_2 = Div(text="""<h3 style='color:red'> Disclaimer : This simulator is a research tool. The simulation results will show general trends based on entered parameters and initial conditions  </h3>""", width = 1500, height = 10)
         text_footer = column(text_footer_1, text_footer_2)

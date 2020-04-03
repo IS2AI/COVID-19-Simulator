@@ -39,8 +39,8 @@ class Network:
                                 #print('mode1')
                                 exp_i_j[index] = int(round(exp_i_j[index]))
                             else:
-                                random_arr = np.random.uniform(0,1,100)
-                                exp_i_j[index] = (random_arr < exp_i_j[index]/100).sum()
+                                random_arr = np.random.uniform(0,1,10)
+                                exp_i_j[index] = (random_arr < exp_i_j[index]/10).sum()
                             # do transfer from node_i to node_j if in node_i enough population
                             if  nodes[i].states_x[index] > exp_i_j[index]:
                                 temp_nodes[i].states_x[index] -= exp_i_j[index]
