@@ -6,7 +6,11 @@ function moses_visualize(states_arr, time_arr, states, param)
 % Date: March 2015
 
 
-f1 = figure(1);
+% Visualization
+try  % Show the statechart if Image Processing Toolbox is installed.
+    figure(1); I = imread('moses_statechart.png'); I = imresize(I, 0.4) ; imshow(I);
+end
+f1 = figure(2);
 set(f1,'Position',[60 60 1200 700]);
 subplot(3,1,1:2)
 hold on;
@@ -25,6 +29,9 @@ tot_inf = sum(states_arr(:,ind_inf),2);
 
 ind_iso = find(strncmp(states.name, 'Severe_Infected_',16) == 1);
 tot_iso = sum(states_arr(:,ind_iso),2);
+
+ind_isolated = find(strncmp(states.name, 'Isolated_',9) == 1);
+tot_isolated = sum(states_arr(:,ind_isolated),2);
 
 ind_imm = find(strcmp(states.type, 'Immunized') == 1);
 tot_imm = sum(states_arr(:,ind_imm),2);
@@ -50,6 +57,10 @@ if sum(tot_iso) > 0;
     p5 = stairs( time_arr, tot_iso, 'r--','LineWidth', 2);
     legend_list = [legend_list, 'Severe Infected'];
 end
+if sum(tot_isolated) > 0;
+    p5 = stairs( time_arr, tot_isolated, 'c','LineWidth', 2);
+    legend_list = [legend_list, 'Isolated'];
+end
 if sum(tot_imm) > 0;
     p6 = stairs( time_arr, tot_imm, 'b-', 'LineWidth',2 );
     legend_list = [legend_list, 'Immunized'];
@@ -62,23 +73,17 @@ legend( legend_list, 'FontName','Arial', 'FontSize', 12','FontWeight','Demi','Lo
 
 ylabel('Number of individuals','FontName','Arial', 'FontSize', 12, 'FontWeight', 'Demi');
 xlim([0 param.sim_len]);
-ylim([0 max(tot_inf)*1.2]);
+ylim([0 max(tot_inf)*2]);
 grid on; box on; 
 
 subplot 313
 yyaxis left
 stairs( time_arr, states_arr(:, end), 'LineWidth',2 );
-ylabel('Num. of Dead', 'FontSize', 12, 'FontWeight', 'Demi');
+ylabel('Num. of Dead');
 xlim([0 param.sim_len]);
-ylim([0 18000]);
 xlabel('Time (days)', 'FontName','Arial', 'FontSize', 12, 'FontWeight', 'Demi');
 grid on; box on;
-% Real-data for Lombardy from the Italian Government repository
-% https://github.com/pcm-dpc/COVID-19/tree/master/dati-regioni
-% The first column represents the day starting with 24 Feb 2020
-% The second column represents the number of deaths for each day.
-Lombardy_data= ...
-[0	6
+A = [0	6
 1	9
 2	9
 3	14
@@ -108,22 +113,23 @@ Lombardy_data= ...
 27	3456
 28	3776
 29	4178
-30	4474
-31	4861
-32	5402
-33	5944
-34	6360
-35	6818
-36	7199];
+30  4474
+31  4861
+32  5402
+33  5944
+34  6360
+35  6818
+36  7199
+37  7593
+38  7960];
 hold on; 
-plot(Lombardy_data(:,1) + 33, Lombardy_data(:,2),'r-x');
+plot(A(:,1) + 50, A(:,2),'r-x');
 hold off;
 yyaxis right
 hold on
 stairs( time_arr, tot_iso, 'LineWidth', 2);
 plot([0 param.sim_len], [param.hosp_capacity param.hosp_capacity], 'LineWidth',2 );
 xlim([0 param.sim_len])
-lgd1 = legend('Dead','Real Data', 'Severe Infected', 'Hospital Capacity',  'Location','northwest','Orientation','Vertical');
-lgd1.FontSize = 11;
+legend('Dead','Dead (Real Lombardy case)','Severe Infected', 'Hospital Capacity','Location','northwest','Orientation','Vertical');
 hold off;
 end

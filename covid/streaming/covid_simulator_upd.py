@@ -70,6 +70,7 @@ class Node(object):
         self.init_vaccination_imm = 0.0
         self.init_maternally_imm = 0.0
         self.init_recovery_imm = 0.0
+        self.init_severe_infected = 0
 
         # Define states
         self.states_x = [0, self.init_susceptible]
@@ -96,18 +97,19 @@ class Node(object):
             #print("[INFO] Initialization was done properly!")
             return 1
 
-    def create_states(self):
 
+    def create_states(self):
         # create some temporal variables
         n_vac = self.param_n_vac
         n_vac_exp = n_vac + self.param_n_exp
         n_vac_2exp = n_vac_exp + self.param_n_exp
         n_vac_2exp_inf = n_vac_2exp + self.param_n_inf
-        n_vac_2exp_2inf = n_vac_2exp_inf + self.param_n_inf + 1
+        n_vac_2exp_2inf = n_vac_2exp_inf + self.param_n_inf
+        n_vac_2exp_3inf = n_vac_2exp_2inf + self.param_n_inf + 1
         count = len(self.states_name) - 1
 
         # loop to create states
-        while count < n_vac_2exp_2inf:
+        while count < n_vac_2exp_3inf:
             # Vaccinated States
             if count <= n_vac:
                 self.states_name.append('Vaccinated_{}'.format(count))
@@ -127,7 +129,7 @@ class Node(object):
                     self.states_x.append(self.init_quarantined)
                     count += 1
                     continue
-            # Infected States (Includes both infected and isolated)
+            # Infected States (Includes: Infected, Isolated and Severe Infected)
             elif count > n_vac_2exp and count <= n_vac_2exp_inf:
                 self.states_name.append('Infected_{}'.format(count - n_vac_2exp))
                 self.states_type.append('Infected')
@@ -135,11 +137,18 @@ class Node(object):
                     self.states_x.append(self.init_infected)
                     count += 1
                     continue
-            else:
-                self.states_name.append('Severe_Infected_{}'.format(count - n_vac_2exp_inf))
+            elif count > n_vac_2exp_inf and count <= n_vac_2exp_2inf:
+                self.states_name.append('Isolated_{}'.format(count - n_vac_2exp_inf))
                 self.states_type.append('Infected')
-                if count == n_vac_2exp + 1:
+                if count == n_vac_2exp_inf + 1:
                     self.states_x.append(self.init_isolated)
+                    count += 1
+                    continue
+            else:
+                self.states_name.append('Severe_Infected_{}'.format(count - n_vac_2exp_2inf))
+                self.states_type.append('Infected')
+                if count == n_vac_2exp_2inf + 1:
+                    self.states_x.append(self.init_severe_infected)
                     count += 1
                     continue
 
@@ -164,18 +173,13 @@ class Node(object):
         self.states_type.append('Dead')
         self.states_x.append(0)
 
-        #print(self.states_name)
-
         # convert states into numpy arrays
         # for fast processing
         self.states_x = np.asarray(self.states_x, dtype=np.float32)
         self.states_dx = np.zeros(self.states_x.shape, dtype=np.float32)
-        #self.states_name = np.asarray(self.states_name, dtype=str)
-        #self.states_type = np.asarray(self.states_type, dtype=str)
 
         # initialize number of states
         self.param_num_states = len(self.states_x)
-        #print('nm', self.param_num_states)
 
         #print("[INFO] States were created...")
 
@@ -242,53 +246,72 @@ class Node(object):
             self.source.append('Quarantined_{}'.format(ind + 1))
             self.dest.append('Quarantined_{}'.format(ind + 2))
 
-        # Transition 14 - Quarantined[n_exp] to Infected[1]
+        # Transition 14 - Quarantined[n_exp] to Isolated[1]
         if self.param_n_exp != 0:
             self.source.append('Quarantined_{}'.format(n_exp))
-            self.dest.append('Infected_1')
+            self.dest.append('Isolated_1')
 
         # Transition 15 - Infected[i] to Infected[i+1] until i+1 == n_inf
         for ind in range(n_inf - 1):
             self.source.append('Infected_{}'.format(ind + 1))
             self.dest.append('Infected_{}'.format(ind + 2))
 
-        # Transition 16 - Severe_Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
+        # Transition 16 - Isolated[i] to Isolated[i+1] until i+1 == n_inf
+        for ind in range(n_inf - 1):
+            self.source.append('Isolated_{}'.format(ind + 1))
+            self.dest.append('Isolated_{}'.format(ind + 2))
+
+        # Transition 17 - Severe_Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
         for ind in range(n_inf - 1):
             self.source.append('Severe_Infected_{}'.format(ind + 1))
             self.dest.append('Severe_Infected_{}'.format(ind + 2))
 
-        # Transition 17 - Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
+        # Transition 18 - Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
         for ind in range(n_inf - 1):
             self.source.append('Infected_{}'.format(ind + 1))
             self.dest.append('Severe_Infected_{}'.format(ind + 2))
 
-        # Transition 18 - Infected[n_inf] to Recovery_Immunized
+        # Transition 19 - Isolated[i] to Severe_Infected[i+1] until i+1 == n_inf
+        for ind in range(n_inf - 1):
+            self.source.append('Isolated_{}'.format(ind + 1))
+            self.dest.append('Severe_Infected_{}'.format(ind + 2))
+
+        # Transition 20 - Infected[n_inf] to Recovery_Immunized
         self.source.append('Infected_{}'.format(n_inf))
         self.dest.append('Recovery_Immunized')
 
-        # Transition 19 - Severe_Infected[n_inf] to Recovery Immunized
+        # Transition 21 - Isolated[n_inf] to Recovery Immunized
+        self.source.append('Isolated_{}'.format(n_inf))
+        self.dest.append('Recovery_Immunized')
+
+        # Transition 22 - Infected[n_inf] to Susceptible
         self.source.append('Severe_Infected_{}'.format(n_inf))
         self.dest.append('Recovery_Immunized')
 
-        # Transition 20 - Infected[n_inf] to Susceptible
+        # Transition 23 - Infected[n_inf] to Susceptible
         self.source.append('Infected_{}'.format(n_inf))
         self.dest.append('Susceptible')
 
-        # Transition 21 - Severe_Infected[n_inf] to Susceptible
+        # Transition 24 - Isolated[n_inf] to Susceptible
+        self.source.append('Isolated_{}'.format(n_inf))
+        self.dest.append('Susceptible')
+
+        # Transition 25 - Severe_Infected[n_inf] to Susceptible
         self.source.append('Severe_Infected_{}'.format(n_inf))
         self.dest.append('Susceptible')
 
-        # Transition 22 - Infected[n_inf] to Dead
+        # Transition 26 - Infected[n_inf] to Dead
         self.source.append('Infected_{}'.format(n_inf))
         self.dest.append('Dead')
 
-        # Transition 23 - Severe_Infected[n_inf] to Dead
+        # Transition 27 - Severe_Infected[n_inf] to Dead
         self.source.append('Severe_Infected_{}'.format(n_inf))
         self.dest.append('Dead')
 
         for ind in range(len(self.source)):
             self.source_ind.append(self.states_name.index(self.source[ind]))
             self.dest_ind.append(self.states_name.index(self.dest[ind]))
+
 
         #print("[INFO] State transitions were created...")
 
@@ -302,6 +325,7 @@ class Node(object):
         self.ind_qua = np.zeros((len(self.states_x)), dtype=np.float32)
         self.ind_imm = np.zeros((len(self.states_x)), dtype=np.float32)
         self.ind_sus = np.zeros((len(self.states_x)), dtype=np.float32)
+        self.ind_iso = np.zeros((len(self.states_x)), dtype=np.float32)
 
         # intialize vectors of indices
         for ind in range(len(self.states_name)):
@@ -313,13 +337,14 @@ class Node(object):
                 self.ind_exp[ind] = 1
             elif 'Severe_Infected_' in self.states_name[ind]:
                 self.ind_sin[ind] = 1
-                #print(self.states_name[ind])
             elif 'Quarantined_' in self.states_name[ind]:
                 self.ind_qua[ind] = 1
             elif 'Immunized' in self.states_type[ind]:
                 self.ind_imm[ind] = 1
             elif 'Susceptible' in self.states_type[ind]:
                 self.ind_sus[ind] = 1
+            elif 'Isolated_' in self.states_name[ind]:
+                self.ind_iso[ind] = 1
 
         # define other indices
         self.ind_exp1 = self.states_name.index('Exposed_1')
@@ -331,9 +356,11 @@ class Node(object):
         self.ind_sin1 = self.states_name.index('Severe_Infected_1')
         self.ind_sinn = self.states_name.index('Severe_Infected_{}'.format(self.param_n_inf))
 
+        self.ind_iso1 = self.states_name.index('Isolated_1')
+        self.ind_ison = self.states_name.index('Isolated_{}'.format(self.param_n_inf))
+
         self.ind_inf1 = self.states_name.index('Infected_1')
         self.ind_infn = self.states_name.index('Infected_{}'.format(self.param_n_inf))
-
 
 
     def dx_generator(self, size, val):
@@ -343,11 +370,11 @@ class Node(object):
             rand_num = random.uniform(0, 1)
             if rand_num < val:
                 dx += 1
+
         return dx
 
 
     def stoch_solver(self):
-
         # define a list to store transitions
         expval = []
         state_1 = self.states_x[1]
@@ -383,7 +410,9 @@ class Node(object):
         # Transition 8 - Susceptible to Exposed[1]
         temp1 = self.states_x.dot(self.ind_inf).sum() + self.param_eps_exp * \
                 self.states_x.dot(self.ind_exp).sum() + self.param_eps_sev * \
-                self.states_x.dot(self.ind_sin).sum() + self.param_eps_qua * self.states_x.dot(self.ind_qua).sum()
+                self.states_x.dot(self.ind_sin).sum() + self.param_eps_sev * \
+                self.states_x.dot(self.ind_iso).sum() + self.param_eps_qua * \
+                self.states_x.dot(self.ind_qua).sum()
 
         if self.param_n_exp != 0:
             expval.append(state_1 * temp1 * self.param_beta_exp * self.param_dt / total_pop)
@@ -407,7 +436,7 @@ class Node(object):
         expval += (self.states_x[self.ind_qua1:self.ind_qua1 + self.param_n_exp - 1] * \
                    (1 - self.param_dr * self.param_dt)).tolist()
 
-        # Transition 14 - Quarantined[n_exp] to Infected[1]
+        # Transition 14 - Quarantined[n_exp] to Isolated[1]
         if self.param_n_exp != 0:
             expval.append(self.states_x[self.ind_quan] * (1 - self.param_dr * self.param_dt))
 
@@ -415,25 +444,40 @@ class Node(object):
         expval += (self.states_x[self.ind_inf1:self.ind_inf1 + self.param_n_inf - 1] * \
                    (1 - self.param_dr * self.param_dt - self.param_sir * self.param_dt)).tolist()
 
-        # Transition 16 - Severe_Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
+        # Transition 16 - Isolated[i] to Isolated[i+1] until i+1 == n_inf
+        expval += (self.states_x[self.ind_iso1:self.ind_iso1 + self.param_n_inf - 1] * \
+                   (1 - self.param_dr * self.param_dt - self.param_sir * self.param_dt)).tolist()
+
+        # Transition 17 - Severe_Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
         expval += (self.states_x[self.ind_sin1:self.ind_sin1 + self.param_n_inf - 1] * \
                    (1 - self.param_dr * self.param_dt)).tolist()
 
-        # Transition 17 - Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
+        # Transition 18 - Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
         expval += (self.states_x[self.ind_inf1:self.ind_inf1 + self.param_n_inf - 1] * \
                    (self.param_sir * self.param_dt)).tolist()
 
-        # Transition 18 - Infected[n_inf] to Recovery_Immunized
+        # Transition 19 - Isolated[i] to Severe_Infected[i+1] until i+1 == n_inf
+        expval += (self.states_x[self.ind_iso1:self.ind_iso1 + self.param_n_inf - 1] * \
+                   (self.param_sir * self.param_dt)).tolist()
+
+        # Transition 20 - Infected[n_inf] to Recovery_Immunized
         expval.append(self.states_x[self.ind_infn] * self.param_gamma_im)
 
-        # Transition 19 - Severe_Infected[n_inf] to Recovery Immunized
+        # Transition 21 - Isolated[n_inf] to Recovery_Immunized
+        expval.append(self.states_x[self.ind_ison] * self.param_gamma_im)
+
+        # Transition 22 - Severe_Infected[n_inf] to Recovery Immunized
         expval.append(self.states_x[self.ind_sinn] * self.param_gamma_im)
 
-        # Transition 20 - Infected[n_inf] to Susceptible
+        # Transition 23 - Infected[n_inf] to Susceptible
         expval.append(self.states_x[self.ind_infn] * \
                           (1 - self.param_gamma_mor - self.param_gamma_im))
 
-        # Transition 21 - Severe_Infected[n_inf] to Susceptible
+        # Transition 24 - Isolated[n_inf] to Susceptible
+        expval.append(self.states_x[self.ind_ison] * \
+                          (1 - self.param_gamma_mor - self.param_gamma_im))
+
+        # Transition 25 - Severe_Infected[n_inf] to Susceptible
         states_sin = self.states_x.dot(self.ind_sin).sum()
 
         if states_sin < self.param_hosp_capacity:
@@ -443,10 +487,10 @@ class Node(object):
             expval.append(self.states_x[self.ind_sinn] * \
                           (1 - self.param_gamma_mor2 - self.param_gamma_im))
 
-        # Transition 22 - Infected[n_inf] to Dead
+        # Transition 26 - Infected[n_inf] to Dead
         expval.append(self.states_x[self.ind_infn] * self.param_gamma_mor)
 
-        # Transition 23 - Severe_Infected[n_inf] to Dead
+        # Transition 27 - Severe_Infected[n_inf] to Dead
         if states_sin < self.param_hosp_capacity:
             expval.append(self.states_x[self.ind_sinn] *self.param_gamma_mor1)
         else:
@@ -456,12 +500,9 @@ class Node(object):
         for eval, sind, dind in zip(expval, self.source_ind, self.dest_ind):
             if eval < 10 and eval > 0:
                 temp1 = int(np.ceil(eval * 10 + np.finfo(np.float32).eps))
-                if temp1 == 0:
-                    dx = 0
-                else:
-                    temp2 = eval/temp1
-                    dx = self.dx_generator(temp1, temp2)
-            elif eval <= 0:
+                temp2 = eval/temp1
+                dx = self.dx_generator(temp1, temp2)
+            elif eval < 0:
                 dx = 0
             else:
                 dx = round(eval)

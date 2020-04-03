@@ -41,11 +41,17 @@ for ind = 1:param.n_exp
     states.type{count + ind} = 'Exposed';
 end
 
-% Infected States (Includes both infected and isolated)
+% Infected States (Includes infected, isolated and severe infected)
 states.x = [states.x, zeros(1, param.n_inf)];
 count = numel(states.name);
 for ind = 1:param.n_inf
     states.name{count + ind} = ['Infected_' , num2str(ind)];
+    states.type{count + ind} = 'Infected';
+end
+states.x = [states.x, zeros(1, param.n_inf)];
+count = numel(states.name);
+for ind = 1:param.n_inf
+    states.name{count + ind} = ['Isolated_' , num2str(ind)];
     states.type{count + ind} = 'Infected';
 end
 states.x = [states.x, zeros(1, param.n_inf)];

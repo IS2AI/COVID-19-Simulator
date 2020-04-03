@@ -105,11 +105,11 @@ for ind = 1:param.n_exp - 1
     dest{count} = ['Quarantined_', num2str(ind+1)];
 end
 
-%% Transition 14 - Quarantined[n_exp] to Severe_Infected[1]
+%% Transition 14 - Quarantined[n_exp] to Isolated[1]
 if param.n_exp ~=0
     count = count + 1;
     source{count} = ['Quarantined_', num2str(param.n_exp)];
-    dest{count} = 'Infected_1';
+    dest{count} = 'Isolated_1';
 end
 
 %% Transition 15 - Infected[i] to Infected[i+1] until i+1 == n_inf
@@ -119,47 +119,70 @@ for ind = 1:param.n_inf - 1
     dest{count} = ['Infected_', num2str(ind+1)];
 end
 
-%% Transition 16 - Severe_Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
+%% Transition 16 - Isolated[i] to Isolated[i+1] until i+1 == n_inf
+for ind = 1:param.n_inf - 1
+    count = count + 1;
+    source{count} = ['Isolated_', num2str(ind)];
+    dest{count} = ['Isolated_', num2str(ind+1)];
+end
+
+%% Transition 17 - Severe_Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
 for ind = 1:param.n_inf - 1
     count = count + 1;
     source{count} = ['Severe_Infected_', num2str(ind)];
     dest{count} = ['Severe_Infected_', num2str(ind+1)];
 end
 
-%% Transition 17 - Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
+%% Transition 18 - Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
 for ind = 1: param.n_inf - 1
     count = count + 1;
     source{count} = ['Infected_', num2str(ind) ];
     dest{count} = ['Severe_Infected_', num2str(ind+1)];
 end
 
-%% Transition 18 - Infected[n_inf] to Recovery_Immunized
+%% Transition 19 - Isolated[i] to Severe_Infected[i+1] until i+1 == n_inf
+for ind = 1: param.n_inf - 1
+    count = count + 1;
+    source{count} = ['Isolated_', num2str(ind) ];
+    dest{count} = ['Severe_Infected_', num2str(ind+1)];
+end
+
+%% Transition 20 - Infected[n_inf] to Recovery_Immunized
 count = count + 1;
 source{count} = ['Infected_', num2str(param.n_inf)];
 dest{count} = 'Recovery_Immunized';
 
+%% Transition 21 - Isolated[n_inf] to Recovery Immunized
+count = count + 1;
+source{count} = ['Isolated_', num2str(param.n_inf)];
+dest{count} = 'Recovery_Immunized';
 
-%% Transition 19 - Severe_Infected[n_inf] to Recovery Immunized
+%% Transition 22 - Severe_Infected[n_inf] to Recovery Immunized
 count = count + 1;
 source{count} = ['Severe_Infected_', num2str(param.n_inf)];
 dest{count} = 'Recovery_Immunized';
 
-%% Transition 20 - Infected[n_inf] to Susceptible
+%% Transition 23 - Infected[n_inf] to Susceptible
 count = count + 1;
 source{count} = ['Infected_', num2str(param.n_inf)];
 dest{count} = 'Susceptible';
 
-%% Transition 21 - Severe_Infected[n_inf] to Susceptible
+%% Transition 24 - Isolated[n_inf] to Susceptible
+count = count + 1;
+source{count} = ['Isolated_', num2str(param.n_inf)];
+dest{count} = 'Susceptible';
+
+%% Transition 25 - Severe_Infected[n_inf] to Susceptible
 count = count + 1;
 source{count} = ['Severe_Infected_', num2str(param.n_inf)];
 dest{count} = 'Susceptible';
 
-%% Transition 22 - Infected[n_inf] to Dead
+%% Transition 26 - Infected[n_inf] to Dead
 count = count + 1;
 source{count} = ['Infected_', num2str(param.n_inf)];
 dest{count} = 'Dead';
 
-%% Transition 23 - Severe_Infected[n_inf] to Dead
+%% Transition 27 - Severe_Infected[n_inf] to Dead
 count = count + 1;
 source{count} = ['Severe_Infected_', num2str(param.n_inf)];
 dest{count} = 'Dead';

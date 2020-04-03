@@ -325,7 +325,7 @@ class Visual:
             c15=[(config.transition_matrix[15,i]) for i in range(0,17)],
             c16=[(config.transition_matrix[16,i]) for i in range(0,17)],
                 )
-        
+
         self.source.data.update(new_data)
         #self.sourceJS.data.update(dict(text=[str_data]))
         self.sourceT.data.update(self.data1)
@@ -742,7 +742,7 @@ class Visual:
         self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1750, height=500, sortable = False)
         self.datepicker = DatePicker(title="Starting date of Simulation", min_date=datetime(2015,11,1),
                        value=datetime.today())
-                      
+
 
         self.datepicker.on_change('value',self.get_date)
 

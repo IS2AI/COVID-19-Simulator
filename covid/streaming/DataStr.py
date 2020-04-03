@@ -113,7 +113,7 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
     param_sim_len = params_node[10]
     param_num_sim = int(param_sim_len[0] / param_dt) + 1       # Number of simulation
 
-    param_static_names = ['Quarantined', 'Severe_Infected']         # States not subject to transition
+    param_static_names = ['Quarantined', 'Severe_Infected', 'Dead', 'Isolated']         # States not subject to transition
     param_static_indices1 = [i for i, s in enumerate(nodes[0].states_name) if param_static_names[0] in s]
     param_static_indices2 = [i for i, s in enumerate(nodes[0].states_name) if param_static_names[1] in s]
     param_static_indices = np.squeeze(np.array([param_static_indices1 + param_static_indices2]))
@@ -137,7 +137,7 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
 
     pool.close()
 
-    states_arr_plot = np.zeros((param_num_sim, nodes_num, 7))
+    states_arr_plot = np.zeros((param_num_sim, nodes_num, 8))
 
     for iter in range(param_num_sim):
         for i_node in range(nodes_num):
@@ -148,6 +148,7 @@ def simulate_network(params_node_, params_network, nodes_old, sim_iter, params_o
             states_arr_plot[iter, i_node, 4] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_imm)
             states_arr_plot[iter, i_node, 5] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_sus)
             states_arr_plot[iter, i_node, 6] = nodes_state_arr[iter, i_node, -1]
+            states_arr_plot[iter, i_node, 7] = nodes_state_arr[iter, i_node, :].dot(nodes[i_node].ind_iso)
 
     return nodes, states_arr_plot, params_node, transition_matrix
 

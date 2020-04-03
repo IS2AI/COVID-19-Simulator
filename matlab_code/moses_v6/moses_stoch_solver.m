@@ -12,7 +12,7 @@ function [states]  = moses_stoch_solver(states, trans, param)
 % Date: January 2016
 
 % Use persisten variables to gain speed
-persistent ind_vac ind_inf ind_exp ind_iso ind_qua ind_exp1 ind_expn ind_qua1 ind_quan ind_inf1 ind_infn ind_iso1 ind_ison
+persistent ind_vac ind_inf ind_exp ind_iso ind_isolated ind_isolated1 ind_isolatedn ind_qua ind_exp1 ind_expn ind_qua1 ind_quan ind_inf1 ind_infn ind_iso1 ind_ison
 if isempty(ind_vac)
     
     temp1 = ['Vaccinated_', num2str(param.n_vac)];
@@ -21,6 +21,7 @@ if isempty(ind_vac)
     ind_inf = strncmp('Infected_', states.name, 8);
     ind_exp = strncmp('Exposed_', states.name, 7);
     ind_iso = strncmp('Severe_Infected_', states.name, 16);
+    ind_isolated = strncmp('Isolated_', states.name, 9);
     ind_qua = strncmp('Quarantined_', states.name, 12);
     
     ind_exp1 = find( strcmp(states.name, 'Exposed_1') == 1);
@@ -31,6 +32,9 @@ if isempty(ind_vac)
     
     ind_iso1 = find( strcmp(states.name, 'Severe_Infected_1') == 1);
     ind_ison = find( strcmp(states.name, ['Severe_Infected_', num2str(param.n_inf)] ) == 1);
+    
+    ind_isolated1 = find( strcmp(states.name, 'Isolated_1') == 1);
+    ind_isolatedn = find( strcmp(states.name, ['Isolated_', num2str(param.n_inf)] ) == 1);
     
     ind_inf1 = find( strcmp(states.name, 'Infected_1') == 1);
     ind_infn = find( strcmp(states.name, ['Infected_', num2str(param.n_inf)] ) == 1);
@@ -91,7 +95,7 @@ if param.n_exp ~= 0
     % ind_qua = strncmp('Quarantined_', states.name, 12)
 
     temp1 = sum(states.x(ind_inf)) + param.eps_exp*sum(states.x(ind_exp)) + ...
-        param.eps_sev*sum(states.x(ind_iso)) + param.eps_qua*sum(states.x(ind_qua));
+        param.eps_sev*sum(states.x(ind_isolated)) + param.eps_sev*sum(states.x(ind_iso)) + param.eps_qua*sum(states.x(ind_qua));
     expval(count) = states.x(2)*temp1*param.beta_exp*param.dt/total_pop;
 end
 %% Transition 9 - Susceptible to Infected[1]
@@ -101,7 +105,7 @@ count = count + 1;
 % ind_iso = strncmp('Severe_Infected_', states.name, 9);
 % ind_qua = strncmp('Quarantined_', states.name, 12);
 temp1 = sum(states.x(ind_inf)) + param.eps_exp*sum(states.x(ind_exp)) + ...
-    param.eps_sev*sum(states.x(ind_iso)) + param.eps_qua*sum(states.x(ind_qua));
+    param.eps_sev*sum(states.x(ind_isolated)) + param.eps_sev*sum(states.x(ind_iso)) + param.eps_qua*sum(states.x(ind_qua));
 expval(count) = states.x(2)*temp1*param.beta_inf*param.dt/total_pop;
 
 %% Transition 10 - Exposed[i] to Exposed[i+1] until i+1 == n_exp
@@ -130,7 +134,7 @@ for ind = 1 : param.n_exp - 1
     expval(count) = states.x(ind_qua1 + ind - 1)*(1 - param.dr*param.dt);
 end
 
-%% Transition 14 - Quarantined[n_exp] to Severe_Infected[1]
+%% Transition 14 - Quarantined[n_exp] to Isolated[1]
 if param.n_exp ~= 0
     count = count + 1;
     % ind_quan = find( strcmp(states.name, ['Quarantined_', num2str(param.n_exp)] ) == 1);
@@ -144,35 +148,56 @@ for ind = 1:param.n_inf - 1
     expval(count) = states.x(ind_inf1 + ind - 1)*(1 - param.dr*param.dt - param.sir*param.dt);
 end
 
-%% Transition 16 - Severe_Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
+%% Transition 16 - Isolated[i] to Isolated[i+1] until i+1 == n_inf
+for ind = 1:param.n_inf - 1
+    count = count + 1;
+    expval(count) = states.x(ind_isolated1 + ind - 1)*(1 - param.dr*param.dt - param.sir*param.dt);
+end
+
+%% Transition 17 - Severe_Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
 % ind_iso1 = find( strcmp(states.name, 'Severe_Infected_1') == 1);
 for ind = 1:param.n_inf - 1
     count = count + 1;
     expval(count) = states.x(ind_iso1 + ind - 1)*(1 - param.dr*param.dt);
 end
 
-%% Transition 17 - Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
+%% Transition 18 - Infected[i] to Severe_Infected[i+1] until i+1 == n_inf
 for ind = 1: param.n_inf - 1
     count = count + 1;
     expval(count) = states.x(ind_inf1 + ind - 1)*(param.sir*param.dt);
 end
 
-%% Transition 18 - Infected[n_inf] to Recovery_Immunized
+%% Transition 19 - Isolated[i] to Severe_Infected[i+1] until i+1 == n_inf
+for ind = 1: param.n_inf - 1
+    count = count + 1;
+    expval(count) = states.x(ind_isolated1 + ind - 1)*(param.sir*param.dt);
+end
+
+%% Transition 20 - Infected[n_inf] to Recovery_Immunized
 count = count + 1;
 % ind_infn = find( strcmp(states.name, ['Infected_', numtr2str(param.n_inf)] ) == 1);
 expval(count) = states.x(ind_infn)*param.gamma_im;
 
-%% Transition 19 - Severe_Infected[n_inf] to Recovery Immunized
+%% Transition 21 - Isolated[n_inf] to Recovery Immunized
+count = count + 1;
+expval(count) = states.x(ind_isolatedn)*param.gamma_im;
+
+%% Transition 22 - Severe_Infected[n_inf] to Recovery Immunized
 count = count + 1;
 % ind_ison = find( strcmp(states.name, ['Severe_Infected_', num2str(param.n_inf)] ) == 1);
 expval(count) = states.x(ind_ison)*param.gamma_im;
 
-%% Transition 20 - Infected[n_inf] to Susceptible
+%% Transition 23 - Infected[n_inf] to Susceptible
 count = count + 1;
 % ind_infn = find( strcmp(states.name, ['Infected_', num2str(param.n_inf)] ) == 1);
 expval(count) = states.x(ind_infn)*(1 - param.gamma_mor - param.gamma_im);
 
-%% Transition 21 - Severe_Infected[n_inf] to Susceptible
+%% Transition 24 - Isolated[n_inf] to Susceptible
+count = count + 1;
+% ind_infn = find( strcmp(states.name, ['Infected_', num2str(param.n_inf)] ) == 1);
+expval(count) = states.x(ind_isolatedn)*(1 - param.gamma_mor - param.gamma_im);
+
+%% Transition 25 - Severe_Infected[n_inf] to Susceptible
 count = count + 1;
 % ind_ison = find( strcmp(states.name, ['Severe_Infected_', num2str(param.n_inf)] ) == 1);
 if sum(states.x(ind_iso)) < param.hosp_capacity
@@ -181,12 +206,12 @@ else
     expval(count) = states.x(ind_ison)*(1 - param.gamma_mor2 - param.gamma_im);
 end
 
-%% Transition 22 - Infected[n_inf] to Dead
+%% Transition 26 - Infected[n_inf] to Dead
 count = count + 1;
 % ind_infn = find( strcmp(states.name, ['Infected_', num2str(param.n_inf)] ) == 1);
 expval(count) = states.x(ind_infn)*param.gamma_mor;
 
-%% Transition 23 - Severe_Infected[n_inf] to Dead
+%% Transition 27 - Severe_Infected[n_inf] to Dead
 count = count + 1;
 % ind_ison = find( strcmp(states.name, ['Severe_Infected_', num2str(param.n_inf)] ) == 1);
 if sum(states.x(ind_iso)) < param.hosp_capacity

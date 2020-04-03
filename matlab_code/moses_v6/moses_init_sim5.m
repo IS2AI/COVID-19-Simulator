@@ -12,8 +12,8 @@ param.vr = 0.0;          % Daily vaccination rate (Ratio of susceptible populati
 param.vir = 0.9;          % Ratio of the immunized after vaccination
 param.mir = 0.0;          % Maternal immunization rate
 
-param.beta_exp = 0.4;     % Susceptible to exposed transition constant
-param.qr  = 0.02;         % Daily quarantine rate (Ratio of Exposed getting Quarantined)
+param.beta_exp = 0.23;     % Susceptible to exposed transition constant
+param.qr  = 0.8;         % Daily quarantine rate (Ratio of Exposed getting Quarantined)
 param.beta_inf = 0.0;     % Susceptible to infected transition constant
 param.sir  = 0.01;        % Daily severe infected rate (Ratio of Infected getting Severe Infected)
 param.eps_exp = 0.7;      % Disease transmission rate of exposed compared to the infected
@@ -27,11 +27,11 @@ elseif param.beta_exp ~= 0 && param.beta_inf ~= 0
     error('Both beta_exp and beta_inf cannnot be non-zero.');
 end
 
-param.hosp_capacity = 0;  % Maximum amount patients that hospital can accommodate
+param.hosp_capacity = 800;  % Maximum amount patients that hospital can accommodate
 
 param.gamma_mor = 0.0;      % Infected to Dead transition probability
-param.gamma_mor1 = 0.03;    % Severe Infected (Hospitalized) to Dead transition probability
-param.gamma_mor2 = 0.1;     % Severe Infected (Not Hospitalized) to Dead transition probability
+param.gamma_mor1 = 0.15;    % Severe Infected (Hospitalized) to Dead transition probability
+param.gamma_mor2 = 0.3;     % Severe Infected (Not Hospitalized) to Dead transition probability
 param.gamma_im = 0.9;       % Infected to Recovery Immunized transition probability
 
 param.dt = 1/24;             % Sampling time in days (1/24 corresponds to one hour)
@@ -53,10 +53,11 @@ param.rand_seed = rng( mod( now*100000, 1e5) ); % Generate random numbers that a
 % param.rand_seed = 110;                        % In case, repeatable random numbers are desired for the stochastic simulation, use a fixed seed.
 
 % Define the initial values for the states
-init.susceptible = 1000000;
+init.susceptible = 1080000;
 init.exposed = 10;
 init.quarantined = 0;
 init.infected = 0;
+init.isolated = 0;
 init.severe_infected = 0;
 init.vaccination_imm = 0;
 init.maternally_imm = 0;
