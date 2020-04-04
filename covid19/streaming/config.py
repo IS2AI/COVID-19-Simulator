@@ -72,7 +72,7 @@ pstate_dea = []
 # File save parameters
 header_file_csv = r'Day,Date,Infected,Exposed,Severe Infected,Quarantined,Immunized,Susceptible,Dead,Isolated,Initial Exposed,Susceptible to Exposed transition constant,Daily Quarantine rate of the Exposed,Daily Infected to Severe Infected transition rate,Hospital Capacity,Severe Infected to Dead transition probability,Severe Infected to Dead transition probability (Hospital Cap. Exceeded),Infected to Recovery Immunized transition probability,Disease transmission rate of Exposed compared to Infected,Disease transmission rate of Quarantined compared to Infected,Disease transmission rate of Severe Infected compared to Infected,Incubation period (Days),Infection  period (Days),Leakage ratio,Traffic ratio,Airway,Railway,Highway'
 
-header_file_csv2 = r'Day,Date,Infected,Exposed,Severe Infected,Quarantined,Immunized,Susceptible,Dead'
+header_file_csv2 = r'Day,Date,Infected,Exposed,Severe Infected,Quarantined,Immunized,Susceptible,Dead,Isolated'
 
 arr_for_save = np.concatenate((param_beta_exp, param_qr,param_sir, param_hosp_capacity,
                     param_gamma_mor1, param_gamma_mor2, param_gamma_im, param_eps_exp,
