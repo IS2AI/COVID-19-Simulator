@@ -207,4 +207,4 @@ class DataStream(threading.Thread):
 
         except (KeyboardInterrupt, SystemExit):
             print('[INFO] Exiting the program. ')
-            pass
+            exit
