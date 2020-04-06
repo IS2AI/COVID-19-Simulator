@@ -20,3 +20,6 @@ Transition matrix can be adjusted to model different situations.
 6) Go to directory *covid19/* and run the following command on terminal: **bokeh serve --show streaming**
 
 7) The web browser with visualization interface will be opened
+
+
+More detailed information about the simulator can be found from the main webpage of the project (https://issai.nu.edu.kz/episim/).
