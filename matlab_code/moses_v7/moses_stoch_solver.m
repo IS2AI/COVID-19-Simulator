@@ -175,7 +175,6 @@ end
 
 %% Transition 20 - Infected[n_inf] to Recovery_Immunized
 count = count + 1;
-% ind_infn = find( strcmp(states.name, ['Infected_', numtr2str(param.n_inf)] ) == 1);
 expval(count) = states.x(ind_infn)*param.gamma_im;
 
 %% Transition 21 - Isolated[n_inf] to Recovery Immunized
@@ -184,26 +183,30 @@ expval(count) = states.x(ind_isolatedn)*param.gamma_im;
 
 %% Transition 22 - Severe_Infected[n_inf] to Recovery Immunized
 count = count + 1;
-% ind_ison = find( strcmp(states.name, ['Severe_Infected_', num2str(param.n_inf)] ) == 1);
-expval(count) = states.x(ind_ison)*param.gamma_im;
+% v7 update
+if sum(states.x(ind_iso)) < param.hosp_capacity
+    expval(count) = states.x(ind_ison)*(1 - param.gamma_mor1)*param.gamma_im;
+else
+    expval(count) = states.x(ind_ison)*(1 - param.gamma_mor2)*param.gamma_im;
+end
 
 %% Transition 23 - Infected[n_inf] to Susceptible
 count = count + 1;
-% ind_infn = find( strcmp(states.name, ['Infected_', num2str(param.n_inf)] ) == 1);
-expval(count) = states.x(ind_infn)*(1 - param.gamma_mor - param.gamma_im);
+% v7 update
+expval(count) = states.x(ind_infn)*(1 - param.gamma_mor)*(1 - param.gamma_im);
 
 %% Transition 24 - Isolated[n_inf] to Susceptible
 count = count + 1;
-% ind_infn = find( strcmp(states.name, ['Infected_', num2str(param.n_inf)] ) == 1);
-expval(count) = states.x(ind_isolatedn)*(1 - param.gamma_mor - param.gamma_im);
+% v7 update
+expval(count) = states.x(ind_isolatedn)*(1 - param.gamma_mor)*(1 - param.gamma_im);
 
 %% Transition 25 - Severe_Infected[n_inf] to Susceptible
 count = count + 1;
-% ind_ison = find( strcmp(states.name, ['Severe_Infected_', num2str(param.n_inf)] ) == 1);
+% moses_v7 update
 if sum(states.x(ind_iso)) < param.hosp_capacity
-    expval(count) = states.x(ind_ison)*(1 - param.gamma_mor1 - param.gamma_im);
+    expval(count) = states.x(ind_ison)*(1 - param.gamma_mor1)*(1 - param.gamma_im);
 else
-    expval(count) = states.x(ind_ison)*(1 - param.gamma_mor2 - param.gamma_im);
+    expval(count) = states.x(ind_ison)*(1 - param.gamma_mor2)*(1 - param.gamma_im);
 end
 
 %% Transition 26 - Infected[n_inf] to Dead
@@ -221,6 +224,7 @@ else
     % is much higher.
     expval(count) = states.x(ind_ison)*param.gamma_mor2;
 end
+
 %% Randomly generate the transition value based on the expected value
 
 num_trans = numel(expval);
