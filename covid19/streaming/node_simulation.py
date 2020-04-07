@@ -11,7 +11,7 @@ import time
 import matplotlib.pyplot as plt
 
 class Node(object):
-    def __init__(self, params, sim_iter):
+    def __init__(self, params):
 
         self.param_br = 0.0    # Daily birth rate
         self.param_dr = 0.0     # Daily mortality rate except infected people
@@ -375,6 +375,8 @@ class Node(object):
 
 
     def stoch_solver(self):
+
+        
         # define a list to store transitions
         expval = []
         state_1 = self.states_x[1]

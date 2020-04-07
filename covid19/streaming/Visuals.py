@@ -1,43 +1,22 @@
-from bokeh.plotting import figure
-from bokeh.layouts import gridplot, column, row
-from bokeh.io import curdoc
-from tornado import gen
-import numpy as np
-from bokeh.models import CustomJS, CategoricalColorMapper, Panel, Select, Button, DataTable,DateFormatter, TableColumn, PrintfTickFormatter, Legend, Slider, TextInput, CheckboxGroup, Div, ColumnDataSource
-from covid_simulator_upd import Node
-import config
 import os
 import csv
-import copy
-from datetime import date
-from random import randint
-from PIL import Image
-from bokeh.io import output_file, show
-from bokeh.models import ColumnDataSource, DataTable, DateFormatter, TableColumn
-from bokeh.models import (CDSView, ColorBar, ColumnDataSource,
-                          CustomJS, CustomJSFilter,
-                          GeoJSONDataSource, HoverTool,
-                          LinearColorMapper, Slider,PrintfTickFormatter)
+import numpy as np
+from copy import copy
+from tornado import gen
+from bokeh.plotting import figure
+from bokeh.layouts import gridplot, column, row
+from bokeh.io import curdoc,output_file, show
+from bokeh.models import (CustomJS, CategoricalColorMapper, Panel, Select, Button, DataTable,DateFormatter, TableColumn,
+                            PrintfTickFormatter, Legend, Slider, TextInput, CheckboxGroup, Div, ColumnDataSource, FileInput)
+from bokeh.models import (CDSView, ColorBar, CustomJSFilter, GeoJSONDataSource, HoverTool, LinearColorMapper, PrintfTickFormatter)
 from bokeh.models.widgets.inputs import DatePicker
 from datetime import datetime, date, timedelta
-import csv
-import pandas as pd
 import json
-
+import config
 
 class Visual:
 
     def __init__(self, callbackFunc, running):
-
-        self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=500, height=50) # Text to be displayed at the top of the webpage
-        self.text4 = Div(text="""<h1 style="color:blue"> </h1>""", width=900, height=50) # Text to be displayed at the top of the webpage
-        self.text4rr = Div(text="""<h1 style="color:blue">            </h1>""", width=500, height=15) # Text to be displayed at the top of the webpage
-
-        self.some_div = Div(text="<b>A Title</b>", style={'font-size': '300%', 'color': 'blue'})
-
-        self.text2 =  Div(text="<b>Select parameters for each region</b>", style={'font-size': '150%', 'color': 'green'},width=350) # Text to be displayed at the top of the webpage
-        self.text3 =  Div(text="<b>Select global parameters </b>", style={'font-size': '150%', 'color': 'green'}    )# Text to be displayed at the top of the webpage
-        self.text5 =  Div(text="<b>Change transition matrix</b>", style={'font-size': '150%', 'color': 'green'}) # Text to be displayed at the top of the webpage
 
         self.running = running
         self.callbackFunc = callbackFunc
@@ -60,8 +39,7 @@ class Visual:
         self.doc = curdoc()
         self.layout()
         self.prev_y1 = 0
-        self.region_names = ['Almaty', 'Almaty Qalasy',  'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
-                            'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
+        self.region_names = config.region_names
 
         self.init_exposed.value = config.param_init_exposed[config.region]
         self.sus_to_exp_slider.value = config.param_beta_exp[config.region]
@@ -76,6 +54,10 @@ class Visual:
         self.param_eps_sev.value = config.param_eps_sev[config.region]
 
         self.start_date = date.today()
+
+        self.box1 = list(range(0, 17))
+        self.box2 = list(range(0, 17))
+        self.box3 = list(range(0, 17))
 
     def definePlot(self, source):
 
@@ -292,8 +274,7 @@ class Visual:
             c13=[(config.transition_matrix[13,i]) for i in range(0,17)],
             c14=[(config.transition_matrix[14,i]) for i in range(0,17)],
             c15=[(config.transition_matrix[15,i]) for i in range(0,17)],
-            c16=[(config.transition_matrix[16,i]) for i in range(0,17)],
-                )
+            c16=[(config.transition_matrix[16,i]) for i in range(0,17)],)
 
         self.source.data.update(new_data)
         #self.sourceJS.data.update(dict(text=[str_data]))
@@ -301,8 +282,8 @@ class Visual:
         self.data_tableT.update()
 
     def SelectRegionHandler(self, attr, old, new):
-        regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',
-                    'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
+        regions = config.region_names
+
         for i, region in enumerate(regions):
             if new == region:
                 config.region = i
@@ -310,145 +291,223 @@ class Visual:
         self.update(True)
         self.slider_update_initial_val(self, old, new)
 
-    def save_click(self):
+    def updata_transition_matrix(self):
         nodes_num = 17
-        config.param_transition_box = []
-        config.param_transition_box.append(config.box1)
-        config.param_transition_box.append(config.box2)
-        config.param_transition_box.append(config.box3)
-        tr_boxes = config.param_transition_box
+        self.param_transition_box = []
+        self.param_transition_box.append(self.box1)
+        self.param_transition_box.append(self.box2)
+        self.param_transition_box.append(self.box3)
+        tr_boxes = self.param_transition_box
 
-        param_transition_box = np.zeros((17,3))
-
+        param_transition_table = np.zeros((17,3))
         for i, way in enumerate(tr_boxes): # air 0 rail 1 road 2
             for j, node in enumerate(way):
                 status = int(node)
-                param_transition_box[status, i] = 1
-
-        param_transition_leakage = config.param_transition_leakage
-        param_transition_scale = config.param_transition_scale
-
+                param_transition_table[status, i] = 1
         # load transition matrix
-        THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+        transition_railway = config.transition_railway.copy()
+        transition_airway = config.transition_airway.copy()
+        transition_roadway = config.transition_roadway.copy()
 
-        transition_railway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'rail_tr.csv'))))
-        transition_railway = np.array(transition_railway, dtype = np.float32)
-
-
-        transition_airway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'air_tr.csv'))))
-        transition_airway = np.array(transition_airway, dtype = np.float32)
-
-        transition_roadway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'high_tr.csv'))))
-        transition_roadway = np.array(transition_roadway, dtype = np.float32)
-
-        transition_matrix_init = (transition_railway + transition_airway + transition_roadway).astype(int)
         tr_table = [transition_airway, transition_railway, transition_roadway]
 
         for j, tr in enumerate(tr_table):
             for i in range(17):
-                tr[i, :] = tr[i, :]*param_transition_box[i,j]
-                tr[:, i] = tr[i, :]*param_transition_box[i,j]
+                tr[i, :] = tr[i, :]*param_transition_table[i,j]
+                tr[:, i] = tr[i, :]*param_transition_table[i,j]
 
-        transition_matrix = (transition_railway + transition_airway + transition_roadway).astype(int)
-        transition_matrix = 0.5*transition_matrix * (param_transition_scale )
+        transition_matrix = 0.5*(transition_railway + transition_airway + transition_roadway)*(config.param_transition_scale[0] )
 
         for i in range(nodes_num):
             for j in range(nodes_num):
                 if transition_matrix[i,j] < 0.01:
-                    transition_matrix[i,j] = transition_matrix_init[i,j]*param_transition_leakage # base data is for 24 days, tran_dt = 1/2
+                    transition_matrix[i,j] = config.transition_matrix_init[i,j]*config.param_transition_leakage[0] # base data is for 24 days, tran_dt = 1/2
 
         transition_matrix = transition_matrix.astype(int)
 
-        config.transition_matrix = transition_matrix
-
+        config.param_transition_table = copy(param_transition_table)
+        config.transition_matrix = copy(transition_matrix)
         self.update(False)
 
     def reset_click(self):
         if config.flag_sim == 0:
             config.new_plot_all = []
             config.counter_func = 0
-            config.counter = 0
             config.run_iteration=False
-            self.update(False)
-            self.slider_update_reset(self, 0, 0)
 
-    def transition_matrix_reset(self):
-        self.checkbox_group1.active = list(range(0, 17))
-        self.checkbox_group2.active = list(range(0, 17))
-        self.checkbox_group3.active = list(range(0, 17))
-        self.save_click()
+            config.last_state_list = []
+            config.nodes_old = []
+            config.new_plot = []
+            config.is_loaded = False
+
+            self.slider_update_reset(self, 0, 0)
+            self.update(False)
+            print('[INFO] Resetting the simulation parameters ..')
+
+    def load_click(self):
+        self.reset_click()
+        directory = 'results' + '/' +  config.param_save_file
+        fname = directory + '/' + 'Kazakhstan' + '.csv'
+
+        if os.path.isfile(fname):
+            with open(fname,"r") as f:
+                reader = csv.reader(f,delimiter = ",")
+                data = list(reader)
+                row_n = len(data)
+
+            # reset
+            new_plot = np.zeros((row_n, 17, 8))
+            config.box_time = np.zeros((17, 3, row_n))
+            config.arr_for_save = np.zeros((row_n, 17, 15))
+
+            # fill the new_plot
+            for j in range(config.nodes_num):
+                filename =  directory + '/' + config.region_names[j] + '.csv'
+                with open(filename, newline='') as csvfile:
+                    csvreader = csv.reader(csvfile, delimiter=',')
+                    count_row = 0
+                    for row in csvreader:
+                        if count_row > 0:
+                            # states
+                            data_states = [(float(item)) for item in row[2:10]]
+                            data_states = np.array(data_states)
+                            new_plot[count_row,j,:] = data_states[:]
+                            # box_time
+                            data_box = [(float(item)) for item in row[25:28]]
+                            data_box = np.array(data_box)
+                            config.box_time[j,:, count_row] = data_box[:]
+                            # box_time
+                            data_arr = [(float(item)) for item in row[10:25]]
+                            data_arr = np.array(data_arr)
+                            config.arr_for_save[count_row,j,:] = data_arr[:]
+                        count_row += 1
+                        if count_row == (2):
+                            config.last_date = row[1]
+
+            config.counter_load = count_row-1
+            config.new_plot = new_plot
+
+            # restore parameters
+            config.param_init_exposed = config.arr_for_save[config.counter_func-1,:,0]
+            config.param_beta_exp = config.arr_for_save[config.counter_func-1,:,1]
+            config.param_qr  = config.arr_for_save[config.counter_func-1,:,2]
+            config.param_sir  = config.arr_for_save[config.counter_func-1,:,3]
+            config.param_hosp_capacity = config.arr_for_save[config.counter_func-1,:,4]
+
+            config.param_gamma_mor1 = config.arr_for_save[config.counter_func-1,:,5]
+            config.param_gamma_mor2 = config.arr_for_save[config.counter_func-1,:,6]
+            config.param_gamma_im = config.arr_for_save[config.counter_func-1,:,7]
+
+            config.param_eps_exp = config.arr_for_save[config.counter_func-1,:,8]
+            config.param_eps_qua = config.arr_for_save[config.counter_func-1,:,9]
+            config.param_eps_sev  = config.arr_for_save[config.counter_func-1,:,10]
+
+            config.param_t_exp = config.arr_for_save[config.counter_func-1,:,11]
+            config.param_t_inf = config.arr_for_save[config.counter_func-1,:,12]
+
+            config.param_transition_leakage = config.arr_for_save[config.counter_func-1,:,13]
+            config.param_transition_scale = config.arr_for_save[config.counter_func-1,:,14]
+            config.param_transition_table = copy(config.box_time[:,:,config.counter_func-1])
+
+            l1 = [i for i, x in enumerate(list(config.param_transition_table[:,0])) if x > 0]
+            l2 = [i for i, x in enumerate(list(config.param_transition_table[:,1])) if x > 0]
+            l3 = [i for i, x in enumerate(list(config.param_transition_table[:,2])) if x > 0]
+
+            self.checkbox_group1.active = l1
+            self.checkbox_group2.active = l2
+            self.checkbox_group3.active = l3
+
+            self.slider_update_initial_val(0,0,0)
+
+            filename =  directory + '/' + 'states_x' + '.csv'
+            with open(filename,"r") as f:
+                reader = csv.reader(f,delimiter = ",")
+                r_count = 0
+                for row in reader:
+                    temp = np.array(row)
+                    config.last_state_list.append(temp)
+                    r_count =+ 1
+
+            config.is_loaded = True
+            # plot graph
+            if config.flag_sim == 0:
+                config.load_iteration=True
+
+            self.datepicker.value = config.last_date
+
+        else:
+            print('[INFO] No such folder to load the results.')
+
     def run_click(self):
         if config.flag_sim == 0:
-            self.save_click()
+            self.updata_transition_matrix()
             config.run_iteration=True
             self.update(False)
 
     def save_file_click(self):
+
         if config.flag_sim == 0:
             # points*nodes*states
             info = config.header_file_csv
             info2 = config.header_file_csv2
-            params_local = np.vstack([config.param_beta_exp, config.param_qr, config.param_sir, config.param_eps_exp, config.param_eps_qua,
-                    config.param_eps_sev,config.param_hosp_capacity, config.param_gamma_mor1,config.param_gamma_mor2,
-                    config.param_gamma_im, config.param_init_susceptible, config.param_init_exposed])
-
-            params_global = [config.counter_func +1, config.param_t_exp, config.param_t_inf, 1, 12]
 
             directory = 'results' + '/' +  config.param_save_file
             if not os.path.exists(directory):
                 os.makedirs(directory)
             #####
-            box_corr = np.zeros((17,3))
-            for b in range(config.counter_func):
-                curr_transition_box = config.box_time[b+1]
-                tr_boxes = curr_transition_box
-                param_transition_box = np.zeros((17,3))
-                for i, way in enumerate(tr_boxes): # air 0 rail 1 road 2
-                    for j, node in enumerate(way):
-                        status = int(node)
-                        param_transition_box[status, i] = 1
-                box_corr = np.dstack([box_corr, param_transition_box])
-
-            box_corr = box_corr[:,:,1:]
-
-            for j in range(17):
-                filename =  directory + '/' + self.region_names[j] + '.csv'
-                with open(filename, 'w', newline='') as csvfile:
-                    data_writer = csv.writer(csvfile, delimiter=',',
-                            escapechar=' ', quoting=csv.QUOTE_NONE)
-                    #points*nodes*states
-                    data_writer.writerow([info])
-                    for iter in range(config.counter_func):
-                        if config.new_plot_all:
-                            one_arr = config.new_plot_all[iter] #
+            box_corr = config.box_time
+            if config.new_plot_all:
+                for j in range(17):
+                    filename =  directory + '/' + self.region_names[j] + '.csv'
+                    with open(filename, 'w', newline='') as csvfile:
+                        data_writer = csv.writer(csvfile, delimiter=',', escapechar=' ', quoting=csv.QUOTE_NONE)
+                        #points*nodes*states
+                        data_writer.writerow([info])
+                        for iter in range(1,config.counter_func+1):
+                            one_arr = config.new_plot_all[iter-1] #
                             one_arr_node = one_arr[-1,j,:].astype(int)
                             m = 17
-                            curr_date = self.start_date + timedelta(iter)
-                            one_arr_node = np.append(one_arr_node, (config.param_init_exposed[j], config.arr_for_save[iter+1,j+0*m],   config.arr_for_save[iter+1,j+1*m], config.arr_for_save[iter+1,j+2*m],
-                                config.arr_for_save[iter+1,j+3*m], config.arr_for_save[iter+1,j+4*m], config.arr_for_save[iter+1,j+5*m], config.arr_for_save[iter+1,j+6*m], config.arr_for_save[iter+1,j+7*m],
-                                config.arr_for_save[iter+1,j+8*m], config.arr_for_save[iter+1,j+9*m], config.param_t_exp[0], config.param_t_inf[0], config.arr_for_save[iter+1,10*m],
-                                config.arr_for_save[iter+1,10*m+1],box_corr[j,0,iter],box_corr[j,1,iter],box_corr[j,2,iter]))
+
+                            curr_date = self.start_date + timedelta(iter-1)
+                            one_arr_node = np.append(one_arr_node, (config.arr_for_save[iter,j,0], config.arr_for_save[iter,j,1], config.arr_for_save[iter,j,2],
+                                                     config.arr_for_save[iter,j,3], config.arr_for_save[iter,j,4], config.arr_for_save[iter,j,5], config.arr_for_save[iter,j,6],
+                                                     config.arr_for_save[iter,j,7], config.arr_for_save[iter,j,8], config.arr_for_save[iter,j,9], config.arr_for_save[iter,j,10],
+                                                     config.arr_for_save[iter,j,11], config.arr_for_save[iter,j,12], config.arr_for_save[iter,j,13], config.arr_for_save[iter,j,14],
+                                                     box_corr[j,0,iter],box_corr[j,1,iter],box_corr[j,2,iter]))
+
                             one_arr_node_list = list(one_arr_node)
-                            alist = [iter+1] + [curr_date] + one_arr_node_list
+                            alist = [iter] + [curr_date] + one_arr_node_list
                             data_writer.writerows([alist])
 
-            filename =  directory + '/' + 'Kazakhstan' + '.csv'
-            with open(filename, 'w', newline='') as csvfile:
-                data_writer = csv.writer(csvfile, delimiter=',',
-                        escapechar=' ', quoting=csv.QUOTE_NONE)
-                #points*nodes*states
-                data_writer.writerow([info2])
-                for iter in range(config.counter_func):
-                    if config.new_plot_all:
-                        one_arr = config.new_plot_all[iter]
-                        one_arr_node = one_arr[-1,:,:].astype(int)
-                        one_arr_node_sum = one_arr_node.sum(axis=0)
-                        one_arr_node_list = list(one_arr_node_sum)
-                        curr_date = self.start_date + timedelta(iter+1)
-                        alist = [iter+1] + [curr_date] + one_arr_node_list
-                        data_writer.writerows([alist])
-            ####
-            print('[INFO] Saving results to .csv format ..')
+                filename =  directory + '/' + 'Kazakhstan' + '.csv'
+                with open(filename, 'w', newline='') as csvfile:
+                    data_writer = csv.writer(csvfile, delimiter=',',  escapechar=' ', quoting=csv.QUOTE_NONE)
+                    #points*nodes*states
+                    data_writer.writerow([info2])
+                    for iter in range(1, config.counter_func+1):
+                        if config.new_plot_all:
+                            one_arr = config.new_plot_all[iter-1]
+                            one_arr_node = one_arr[-1,:,:].astype(int)
+                            one_arr_node_sum = one_arr_node.sum(axis=0)
+                            one_arr_node_list = list(one_arr_node_sum)
+                            curr_date = self.start_date + timedelta(iter-1)
+                            alist = [iter] + [curr_date] + one_arr_node_list
+                            data_writer.writerows([alist])
+
+                # last state save
+                filename =  directory + '/' + 'states_x' + '.csv'
+                with open(filename, 'w', newline='') as csvfile:
+                    data_writer = csv.writer(csvfile, delimiter=',', escapechar=' ', quoting=csv.QUOTE_NONE)
+                    nodes_new_iter = copy(config.nodes_old)
+                    for index, node in enumerate(nodes_new_iter):
+                       node.states_x = nodes_new_iter[index].states_x
+                       st_t = copy(node.states_x)
+                       st_t = list(st_t)
+                       data_writer.writerow(st_t)
+
+                print('[INFO] Saving results to .csv format ..')
+            else:
+                print('[INFO] No data to save.')
 
     def slider_update_initial_val(self, attr, old, new):
 
@@ -465,9 +524,8 @@ class Visual:
         self.param_eps_sev.value = config.param_eps_sev[config.region]
         self.param_t_exp.value = config.param_t_exp[0]
         self.param_t_inf.value = config.param_t_inf[0]
-        self.param_tr_leakage.value = config.param_transition_leakage
-        self.param_tr_scale.value = config.param_transition_scale
-        config.param_save_file = 'foldername'
+        self.param_tr_leakage.value = config.param_transition_leakage[0]
+        self.param_tr_scale.value = config.param_transition_scale[0]
 
     def slider_update_reset(self, attr, old, new):
         nodes_num =17
@@ -484,10 +542,23 @@ class Visual:
         config.param_eps_sev = 20.0*np.ones(nodes_num)
         config.param_t_exp = 5*np.ones(nodes_num)
         config.param_t_inf = 14*np.ones(nodes_num)
-        config.param_transition_leakage = 0.0
-        config.param_transition_scale = 1.0
+        config.param_transition_leakage = 0.0*np.ones(nodes_num)
+        config.param_transition_scale = 1.0*np.ones(nodes_num)
+
         self.slider_update_initial_val(self,old, new)
-        self.transition_matrix_reset()
+        self.checkbox_group1.active = list(range(0, 17))
+        self.checkbox_group2.active = list(range(0, 17))
+        self.checkbox_group3.active = list(range(0, 17))
+        self.updata_transition_matrix()
+
+        config.box_time = copy(config.param_transition_table)
+        config.arr_for_save = np.dstack((config.param_init_exposed, config.param_beta_exp, config.param_qr, config.param_sir, config.param_hosp_capacity,
+                                config.param_gamma_mor1, config.param_gamma_mor2, config.param_gamma_im, config.param_eps_exp,
+                                config.param_eps_qua, config.param_eps_sev, config.param_t_exp, config.param_t_inf, config.param_transition_leakage,
+                                 config.param_transition_scale))
+
+        self.datepicker.value = datetime.today()
+        self.start_date = datetime.today()
 
     def handler_beta_exp(self, attr, old, new):
         config.param_beta_exp[config.region]=new
@@ -542,25 +613,24 @@ class Visual:
             self.slider_update_initial_val(self, old, new)
 
     def handler_param_tr_scale(self, attr, old, new):
-        config.param_transition_scale=new
-        self.save_click()
+        config.param_transition_scale=new*np.ones(config.nodes_num)
+        self.updata_transition_matrix()
 
     def handler_param_tr_leakage(self, attr, old, new):
-        config.param_transition_leakage=new
-        self.save_click()
+        config.param_transition_leakage=new*np.ones(config.nodes_num)
+        self.updata_transition_matrix()
 
     def handler_checkbox_group1(self, new):
-        config.box1 = new
-        self.save_click()
+        self.box1 = new
+        self.updata_transition_matrix()
 
     def handler_checkbox_group2(self, new):
-        config.box2 = new
-        self.save_click()
+        self.box2 = new
+        self.updata_transition_matrix()
 
     def handler_checkbox_group3(self, new):
-        config.box3 = new
-        self.save_click()
-
+        self.box3 = new
+        self.updata_transition_matrix()
 
     def handler_param_save_file(self, attr, old, new):
         config.param_save_file= str(new)
@@ -569,21 +639,26 @@ class Visual:
         self.start_date = new
 
     def layout(self):
-        regions = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',  'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
 
-        regions_for_show = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy',
-                                'Qostanai',  'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
+
+        self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=500, height=50) # Text to be displayed at the top of the webpage
+        self.text4 = Div(text="""<h1 style="color:blue"> </h1>""", width=900, height=50) # Text to be displayed at the top of the webpage
+
+        self.text2 =  Div(text="<b>Select parameters for each region</b>", style={'font-size': '150%', 'color': 'green'},width=350) # Text to be displayed at the top of the webpage
+        self.text3 =  Div(text="<b>Select global parameters </b>", style={'font-size': '150%', 'color': 'green'}    )# Text to be displayed at the top of the webpage
+        self.text5 =  Div(text="<b>Change transition matrix</b>", style={'font-size': '150%', 'color': 'green'}) # Text to be displayed at the top of the webpage
+
+        regions = config.region_names
 
         text_save = TextInput(value="foldername", title="")
         text_save.on_change('value', self.handler_param_save_file)
 
         # select region
         initial_region = 'Almaty'
-        region_selection = Select(value=initial_region, title=' ', options=regions_for_show, width=250, height=15)
+        region_selection = Select(value=initial_region, title=' ', options=regions, width=250, height=15)
         region_selection.on_change('value', self.SelectRegionHandler)
 
         #select parameters
-       #select parameters
         self.sus_to_exp_slider = Slider(start=0.0,end=50.0,step=0.5,value=config.param_beta_exp[config.region], title='Susceptible to Exposed transition constant (%)')
         self.sus_to_exp_slider.on_change('value', self.handler_beta_exp)
 
@@ -624,14 +699,13 @@ class Visual:
         self.param_t_inf = Slider(start=1,end=20,step=1,value=config.param_t_inf[0], title=' Infection  period (Days) ')
         self.param_t_inf.on_change('value', self.handler_param_t_inf)
 
-
         self.init_exposed = Slider(start=0,end=100,step=1,value=config.param_init_exposed[config.region], title='Initial Exposed')
         self.init_exposed.on_change('value', self.handler_init_exposed)
 
-        self.param_tr_scale = Slider(start=0.0,end=1,step=0.01,value=config.param_transition_scale, title='Traffic ratio')
+        self.param_tr_scale = Slider(start=0.0,end=1,step=0.01,value=config.param_transition_scale[0], title='Traffic ratio')
         self.param_tr_scale.on_change('value', self.handler_param_tr_scale)
 
-        self.param_tr_leakage = Slider(start=0.0,end=1,step=0.01,value=config.param_transition_leakage, title='Leakage ratio')
+        self.param_tr_leakage = Slider(start=0.0,end=1,step=0.01,value=config.param_transition_leakage[0], title='Leakage ratio')
         self.param_tr_leakage.on_change('value', self.handler_param_tr_leakage)
 
         dumdiv = Div(text='',width=10)
@@ -639,23 +713,21 @@ class Visual:
         dumdiv3= Div(text='',width=200)
         dumdiv3ss= Div(text='',width=120)
 
-        ######### CHANGE
         # Buttons
         reset_button = Button(label = 'Reset Button', button_type='primary', background = "red")
-        save_button = Button(label='Update transition matrix', button_type='primary')
         save_button_result = Button(label='Save current plot to .csv in directory results/', button_type='primary')
         run_button = Button(label='Run the simulation',button_type='primary')
-        #########  CHANGE
+        load_button = Button(label='Load the results', button_type='primary')
 
-
-        save_button.on_click(self.save_click)
         run_button.on_click(self.run_click)
         reset_button.on_click(self.reset_click)
         save_button_result.on_click(self.save_file_click)
+        load_button.on_click(self.load_click)
 
         div_cb1 = Div(text = 'Airways', width = 150)
         div_cb2 = Div(text = 'Railways', width = 150)
         div_cb3 = Div(text = 'Highways', width = 150)
+
 
         self.checkbox_group1 = CheckboxGroup(labels=regions, active = list(range(0, 17)))
         self.checkbox_group2 = CheckboxGroup(labels=regions, active= list(range(0, 17)))
@@ -664,6 +736,7 @@ class Visual:
         self.checkbox_group1.on_click(self.handler_checkbox_group1)
         self.checkbox_group2.on_click(self.handler_checkbox_group2)
         self.checkbox_group3.on_click(self.handler_checkbox_group3)
+
 
         self.data1 = dict(
             c00 =  regions,
@@ -733,7 +806,7 @@ class Visual:
         draw_map_js = CustomJS(code=""" uStates.draw("#statesvg", currRegionData, tooltipHtml); """)
         run_button.js_on_click(draw_map_js)
 
-        layout_t = row(save_button_result, text_save)
+        layout_t = row(save_button_result, text_save, load_button)
         buttons = row(reset_button,run_button, layout_t)
 
         reg1 = row(self.text2, region_selection)
@@ -746,7 +819,6 @@ class Visual:
         check_table = row(column(div_cb1,self.checkbox_group1), column(div_cb2,self.checkbox_group2), column(div_cb3,self.checkbox_group3), sliders_4)
         check_trans = row(self.data_tableT)
 
-        #kz_map_tag.js_on
         ###
         dummy_div = Div(text=""" """, height=25);
         dummy_div11 = Div(text=""" """, height=5);
@@ -757,7 +829,6 @@ class Visual:
 
         layout = column (layout)
         layout = column (layout,self.text4) #text_footer
-
 
         self.doc.title = 'ISSAI Covid-19 Simulator'
         self.doc.add_root(layout)
