@@ -1,6 +1,6 @@
 __name__ = '__main__'
 
-from visuals import *
+from visual_show import *
 from data_stream import *
 
 def threads(callbackFunc, running):
