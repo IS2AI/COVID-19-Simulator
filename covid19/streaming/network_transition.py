@@ -35,7 +35,7 @@ class Network:
                     # for each state_index calculate the expected value
                     for index in range(nodes[0].param_num_states):
                         # if exp value greater than zero and state is subject to transition
-                        if exp_i_j[index] > 0 and index not in static_states_indices:
+                        if exp_i_j[index] > 0 and (index not in static_states_indices):
                             if exp_i_j[index] > self.exp_thresh:
                                 #print('mode1')
                                 exp_i_j[index] = int(round(exp_i_j[index]))

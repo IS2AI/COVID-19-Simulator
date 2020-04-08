@@ -183,7 +183,6 @@ class Node(object):
 
         #print("[INFO] States were created...")
 
-
     def create_transitions(self):
         # create some temporal variables
         count = len(self.source) - 1

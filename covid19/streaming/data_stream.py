@@ -58,7 +58,10 @@ def simulate_network(params_node_, nodes_old, sim_iter, transition_matrix, init_
     param_static_names = ['Quarantined', 'Severe_Infected', 'Dead', 'Isolated']         # States not subject to transition
     param_static_indices1 = [i for i, s in enumerate(nodes[0].states_name) if param_static_names[0] in s]
     param_static_indices2 = [i for i, s in enumerate(nodes[0].states_name) if param_static_names[1] in s]
-    param_static_indices = np.squeeze(np.array([param_static_indices1 + param_static_indices2]))
+    param_static_indices3 = [i for i, s in enumerate(nodes[0].states_name) if param_static_names[2] in s]
+    param_static_indices4 = [i for i, s in enumerate(nodes[0].states_name) if param_static_names[3] in s]
+
+    param_static_indices = np.squeeze(np.array([param_static_indices1 + param_static_indices2 + param_static_indices3 + param_static_indices4]))
 
     nodes_state_arr = np.zeros((param_num_sim, nodes_num, nodes[0].param_num_states))
     nodes_network = Network(nodes_num, nodes_population)
