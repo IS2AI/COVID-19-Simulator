@@ -1,11 +1,11 @@
 # COVID-19 Epidemic Simulator with Network Transition
 
-The software package contains:
+## The software package contains:
 
-## 1) In directory matlab_code/ 
-Simulation of SEQISR model for single node written in Matlab software. The simulation model of a single node is based on a previously published paper entitled “MOSES: A Matlab-based open-source stochastic epidemic simulator” (H.A. Varol) in IEEE International Conference of the Engineering in Medicine and Biology Society (EMBC), 2016 (https://ieeexplore.ieee.org/document/7591271).
+### 1) In directory matlab_code/ 
+Simulation of SEQISR model for single node written in Matlab software. This model is based on a previously published paper entitled “MOSES: A Matlab-based open-source stochastic epidemic simulator” (H.A. Varol) in IEEE International Conference of the Engineering in Medicine and Biology Society (EMBC), 2016 (https://ieeexplore.ieee.org/document/7591271).
 
-## 2) In directory covid19/
+### 2) In directory covid19/
 Stochastic epidemic simulator to model the spread of the COVID-19 epidemic in the Republic of Kazakhstan. The software integrates the dynamic transitions between 17 regions and enables to simulate the various scenarios by adjusting the parameters and transition matrix.
 
 
@@ -23,7 +23,7 @@ Stochastic epidemic simulator to model the spread of the COVID-19 epidemic in th
 
 6) The web browser with visualization interface will be opened
 
-## Video tutorials
+### Video tutorials
 
 Extensive tutorials to use the software and analysis of the simulator can be found from https://www.youtube.com/channel/UCr7o_0wW4nkqx-G5b7Zopgw
 
