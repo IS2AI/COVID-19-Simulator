@@ -23,4 +23,9 @@ Stochastic epidemic simulator to model the spread of the COVID-19 epidemic in th
 
 6) The web browser with visualization interface will be opened
 
+## Video tutorials
+
+Extensive tutorials to use the software and analysis of the simulator can be found from https://www.youtube.com/channel/UCr7o_0wW4nkqx-G5b7Zopgw
+
+
 More detailed information about the simulator can be found from the main webpage of the project (https://issai.nu.edu.kz/episim/).
