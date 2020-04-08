@@ -28,7 +28,7 @@ def process_node(node):
     temp_node.stoch_solver()
     return temp_node
 
-def simulate_network(params_node_, nodes_old, sim_iter, params_old, transition_matrix, init_sus):
+def simulate_network(params_node_, nodes_old, sim_iter, transition_matrix, init_sus):
 
     nodes_num = 17
     # load population data
@@ -53,7 +53,7 @@ def simulate_network(params_node_, nodes_old, sim_iter, params_old, transition_m
     param_dt_transition = 1/2                       # Sampling time for transition in days (1/2 corresponds to 12 hour)
     param_freq_transition  = 12
     param_sim_len = params_node[10]
-    param_num_sim = int(param_sim_len[0] / param_dt) + 1       # Number of simulation
+    param_num_sim = int(param_sim_len[0] / param_dt)      # Number of simulation
 
     param_static_names = ['Quarantined', 'Severe_Infected', 'Dead', 'Isolated']         # States not subject to transition
     param_static_indices1 = [i for i, s in enumerate(nodes[0].states_name) if param_static_names[0] in s]
@@ -71,6 +71,9 @@ def simulate_network(params_node_, nodes_old, sim_iter, params_old, transition_m
         else:
             # put values from prev iter
             nodes = nodes_network.update_node_states(nodes, nodes_old)
+    else:
+        # state values are empty
+        pass
 
     #pool = Pool()
     for ind in range(param_num_sim):
@@ -82,6 +85,7 @@ def simulate_network(params_node_, nodes_old, sim_iter, params_old, transition_m
             nodes = nodes_network.node_states_transition(nodes, transition_matrix, param_static_indices)      # Update the state of every node due to transition
 
     #pool.close()
+    # save the values to buffer
     states_arr_plot = np.zeros((param_num_sim, nodes_num, 8))
 
     for iter in range(param_num_sim):
@@ -106,22 +110,22 @@ class DataStream(threading.Thread):
     def run(self):
         try:
             while True:
-                # Run
-                while config.run_iteration:
-                    # if RUN Simulation button is pressed, start simulation
+                # wait for signal from web interface
+                if config.run_iteration:    # if RUN Simulation button is pressed
+                    #  start simulation
+                    print('[INFO] Simulation started.')
                     for i in range(int(config.loop_num)):
                         start = time.time()
                         # set simulation running flag
                         config.flag_sim = 1
 
-                        # save the params to list
+                        # save the params to buffer
                         config.box_time = np.dstack((config.box_time, config.param_transition_table))
 
                         arr_for_save = np.dstack((config.param_init_exposed, config.param_beta_exp, config.param_qr, config.param_sir, config.param_hosp_capacity,
                                                 config.param_gamma_mor1, config.param_gamma_mor2, config.param_gamma_im, config.param_eps_exp,
                                                 config.param_eps_qua, config.param_eps_sev, config.param_t_exp, config.param_t_inf, config.param_transition_leakage,
                                                  config.param_transition_scale))
-
                         config.arr_for_save = np.vstack([config.arr_for_save, arr_for_save ])
 
                         # update the params for simulation
@@ -130,38 +134,37 @@ class DataStream(threading.Thread):
                                                         config.param_gamma_mor1,config.param_gamma_mor2, config.param_gamma_im, config.param_sim_len,
                                                         config.param_t_exp, config.param_t_inf, config.param_init_susceptible, config.param_init_exposed])
 
-                        # RUN the simulation
-                        new_nodes, new_plot, new_params = simulate_network(config.params_node, config.nodes_old, config.counter_func, config.params_old,
+                        # RUN the netwoork transition
+                        new_nodes, new_plot, new_params = simulate_network(config.params_node, config.nodes_old, config.counter_func,
                                                                                     config.transition_matrix, config.param_init_susceptible)
                         config.nodes_old = new_nodes
-                        config.params_old = new_params.copy()
 
                         # append the new results to list
-                        config.new_plot_all.append(new_plot) # new plot is 2*17*7 matrix not large
+                        config.new_plot_all.append(new_plot)
                         self.callbackFunc.doc.add_next_tick_callback(partial(self.callbackFunc.update, False))
                         config.counter_func +=1
                         end = time.time()
-                        print("[INFO] Sim.time: {:.4f} sec".format(end - start))
+                        #print("[INFO] Sim.time: {:.4f} sec".format(end - start))
+                        print("[INFO] Step: {}/{}, Elapsed time: {:.4f} sec".format(i+1, int(config.loop_num), end - start))
 
                     config.flag_sim = 0
-                    print('[INFO] Simulation is finished, press Run Simulation button for next iteration')
+                    print('[INFO] Simulation finished, press Run Simulation button for next iteration.')
                     config.run_iteration = False
 
-                # Loading
-                while config.load_iteration:
+                # Loading prev experiments
+                elif config.load_iteration: # if Load Results button is pressed
                     config.flag_sim = 1
                     # plot results
                     for i in range(1,config.counter_load+1):
-                        #new_plot = [ iter, i_node , state]
                         temp_plot = np.stack((config.new_plot[i,:,:], config.new_plot[i,:,:]),axis=0)
-                        config.new_plot_all.append(temp_plot) # new plot is 2*17*7 matrix not large
+                        config.new_plot_all.append(temp_plot)
                         self.callbackFunc.doc.add_next_tick_callback(partial(self.callbackFunc.update, False))
                         config.counter_func +=1
 
                     config.flag_sim = 0
                     config.load_iteration = False
-                    print('[INFO] Loading the parameters ..')
+                    print('[INFO] Loading the previous results ..')
 
         except (KeyboardInterrupt, SystemExit):
-            print('[INFO] Exiting the program. ')
+            print('[INFO] Exiting the program.. ')
             exit

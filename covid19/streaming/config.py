@@ -32,7 +32,7 @@ param_init_exposed = 0*np.ones(nodes_num)            # Inital number of Exposed
 param_transition_scale = 1.0*np.ones(nodes_num)      # Traffic ratio
 param_transition_leakage = 0.0*np.ones(nodes_num)    # Leakage ratio
 
-# Buffer for parameters
+# Buffer parameters
 new_plot = []
 new_plot_all = []
 box_time = param_transition_table
@@ -40,6 +40,7 @@ arr_for_save = np.dstack((param_init_exposed, param_beta_exp, param_qr, param_si
                         param_gamma_im, param_eps_exp, param_eps_qua, param_eps_sev, param_t_exp, param_t_inf, param_transition_leakage, param_transition_scale))
 
 last_state_list = []
+
 # Simulation parameters
 max_sim_len = 10000
 loop_num = 1
@@ -65,7 +66,6 @@ newx = []
 
 nodes_old = []
 params_node = []
-params_old = []
 
 # File save parameters
 last_date = '2020-02-10'
@@ -79,7 +79,7 @@ header_file_csv = r'Day,Date,Infected,Exposed,Severe Infected,Quarantined,Immuni
 
 header_file_csv2 = r'Day,Date,Infected,Exposed,Severe Infected,Quarantined,Immunized,Susceptible,Dead,Isolated'
 
-# base transition_matrix
+# load the transition_matrix from the csv files
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 transition_railway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'static', 'rail_tr.csv'))))
 transition_railway = np.array(transition_railway, dtype = np.float32)
@@ -90,6 +90,6 @@ transition_airway = np.array(transition_airway, dtype = np.float32)
 transition_roadway = list(csv.reader(open(os.path.join(THIS_FOLDER, 'static', 'high_tr.csv'))))
 transition_roadway = np.array(transition_roadway, dtype = np.float32)
 
-# base transition_matrix
-transition_matrix_init =   (0.5*(transition_railway + transition_airway + transition_roadway)).astype(int) # transition dt = 1/2
+# Initialize base transition_matrix for
+transition_matrix_init =   (0.5*(transition_railway + transition_airway + transition_roadway)).astype(int) # transition between nodes happens every 12 hours or 1/2 days
 transition_matrix = transition_matrix_init

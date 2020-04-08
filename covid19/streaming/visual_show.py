@@ -20,6 +20,7 @@ class Visual:
 
         self.running = running
         self.callbackFunc = callbackFunc
+        # define the sources for plot and map
         self.source = ColumnDataSource(dict(x=[0], sus=[config.param_init_susceptible[config.region]], exp=[config.param_init_exposed[config.region]], inf=[0], sin=[0],
                                         qua=[0], imm=[0], dea=[0], text=[""], mdates = [""]))
 
@@ -39,6 +40,8 @@ class Visual:
         self.doc = curdoc()
         self.layout()
         self.prev_y1 = 0
+
+        # initialize the widgets' values
         self.region_names = config.region_names
 
         self.init_exposed.value = config.param_init_exposed[config.region]
@@ -54,13 +57,14 @@ class Visual:
         self.param_eps_sev.value = config.param_eps_sev[config.region]
 
         self.start_date = date.today()
-
+        # transition_matrix checkbox
         self.box1 = list(range(0, 17))
         self.box2 = list(range(0, 17))
         self.box3 = list(range(0, 17))
 
     def definePlot(self, source):
 
+        # format the text of the plot
         p1 = figure(**self.plot_options, title='Covid Simulation',  toolbar_location='above')
         p1.yaxis.axis_label = 'Number of people'
         p1.xaxis.axis_label = 'Simulation time (days)'
@@ -77,7 +81,7 @@ class Visual:
         p2.xaxis.major_label_text_font_size = "10pt"
         p2.yaxis.major_label_text_font_size = "10pt"
 
-        # plot line formatting
+        # format the plot line
         r0 = p2.line(source =source, x='x', y='sus', color='cyan', line_width=1,line_dash='dashed', legend='Susceptible')
         r1 = p2.circle(source=source, x='x', y='sus', color='cyan', size=10, legend='Susceptible')
 
@@ -107,9 +111,8 @@ class Visual:
                                 ('Immunized', [r10, r11]),
                                 ('Dead', [r12, r13])])
 
+        # legends
         p1.legend.click_policy = 'hide'
-
-        #styling
         p1.background_fill_color = "black"
         p1.background_fill_alpha = 0.8
         p1.legend.location = "top_left"
@@ -120,8 +123,6 @@ class Visual:
         p1.outline_line_color = "black"
 
         p2.legend.click_policy = 'hide'
-
-        #styling
         p2.background_fill_color = "black"
         p2.background_fill_alpha = 0.8
         p2.legend.location = "top_left"
@@ -134,24 +135,25 @@ class Visual:
         kz_map_tag = Div(text="""<div id="svg_holder" style="float:left;"> <svg width="780" height="530" id="statesvg"></svg> <div id="tooltip"></div>   </div>""", width=960, height=600)
         kz_map_row = row(kz_map_tag)
         pAll = row(p1, kz_map_row)
+
         return pAll
 
     #@gen.coroutine
     def update(self, change_view):
+
+        region_states = dict()
+        # obtain the state values
         new_nodes_all = config.new_plot_all
-        counter_func = config.counter_func-2
+        # construct the array for plotting the states
         newx = [0]
         state_inf = [0]
-        ######## change
         state_sus=[config.param_init_susceptible[config.region]]
-        #### change
         state_exp = [config.param_init_exposed[config.region]]
         state_sin = [0]
         state_qua = [0]
         state_imm = [0]
         state_dea = [0]
 
-        region_states = dict()
         tmp_state_inf = [0]
         tmp_state_sus=[config.param_init_susceptible[config.region]]
         tmp_state_exp = [config.param_init_exposed[config.region]]
@@ -159,9 +161,12 @@ class Visual:
         tmp_state_qua = [0]
         tmp_state_imm = [0]
         tmp_state_dea = [0]
+
         start_date = self.start_date
         cur_date = (start_date + timedelta(config.counter_func)).strftime("%d %b %Y")
         start_date = self.start_date.strftime("%d %b %Y")
+
+        # for graph
         if new_nodes_all != [] and config.region != 17:
             for i in range(len(config.new_plot_all)):
                 state_inf.append(new_nodes_all[i][:, config.region, 0][-1] + new_nodes_all[i][:, config.region, 7][-1])
@@ -177,7 +182,6 @@ class Visual:
                 regions_ids = [ lregion for lregion in range(17)]
                 for region in regions_ids:
                     if region in region_states:
-                        #print("GOOD")
                         region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1]+ new_nodes_all[i][:, region, 7][-1])
                         region_states[region]["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
                         region_states[region]["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
@@ -186,7 +190,6 @@ class Visual:
                         region_states[region]["tmp_state_sus"].append(new_nodes_all[i][:, region, 5][-1])
                         region_states[region]["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
                     else:
-                        #print("ONLY ZEROOOO")
                         tmp_data = {
                             "tmp_state_inf": [],
                             "tmp_state_sin": [],
@@ -223,7 +226,6 @@ class Visual:
                 regions_ids = [ lregion for lregion in range(17)]
                 for region in regions_ids:
                     if str(region) in region_states and type(region_states[region]) is dict:
-                        #print("GOOOODDDDD")
                         region_states[region]["tmp_state_inf"].append(new_nodes_all[i][:, region, 0][-1] + new_nodes_all[i][:, region, 7][-1])
                         region_states[region]["tmp_state_sin"].append(new_nodes_all[i][:, region, 2][-1])
                         region_states[region]["tmp_state_exp"].append(new_nodes_all[i][:, region, 1][-1])
@@ -232,7 +234,6 @@ class Visual:
                         region_states[region]["tmp_state_sus"].append(new_nodes_all[i][:, region, 5][-1])
                         region_states[region]["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
                     else:
-                        #print("ONLY THIS")
                         tmp_data = {
                             "tmp_state_inf": [],
                             "tmp_state_sin": [],
@@ -252,32 +253,32 @@ class Visual:
                         tmp_data["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
 
                         region_states[region] = tmp_data
+
         str_data = json.dumps(region_states, ensure_ascii=False)
         str_mdates = json.dumps([start_date, cur_date],ensure_ascii=False)
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
                     qua=state_qua, imm=state_imm, dea=state_dea, text=[str_data]*len(state_imm), mdates=[str_mdates]*len(state_imm))
 
         self.data1 = dict(
-            c0=[(config.transition_matrix[0,i]) for i in range(0,17)],
-            c1=[(config.transition_matrix[1,i]) for i in range(0,17)],
-            c2=[(config.transition_matrix[2,i]) for i in range(0,17)],
-            c3=[(config.transition_matrix[3,i]) for i in range(0,17)],
-            c4=[(config.transition_matrix[4,i]) for i in range(0,17)],
-            c5=[(config.transition_matrix[5,i]) for i in range(0,17)],
-            c6=[(config.transition_matrix[6,i]) for i in range(0,17)],
-            c7=[(config.transition_matrix[7,i]) for i in range(0,17)],
-            c8=[(config.transition_matrix[8,i]) for i in range(0,17)],
-            c9=[(config.transition_matrix[9,i]) for i in range(0,17)],
-            c10=[(config.transition_matrix[10,i]) for i in range(0,17)],
-            c11=[(config.transition_matrix[11,i]) for i in range(0,17)],
-            c12=[(config.transition_matrix[12,i]) for i in range(0,17)],
-            c13=[(config.transition_matrix[13,i]) for i in range(0,17)],
-            c14=[(config.transition_matrix[14,i]) for i in range(0,17)],
-            c15=[(config.transition_matrix[15,i]) for i in range(0,17)],
-            c16=[(config.transition_matrix[16,i]) for i in range(0,17)],)
+                        c0=[(config.transition_matrix[0,i]) for i in range(0,17)],
+                        c1=[(config.transition_matrix[1,i]) for i in range(0,17)],
+                        c2=[(config.transition_matrix[2,i]) for i in range(0,17)],
+                        c3=[(config.transition_matrix[3,i]) for i in range(0,17)],
+                        c4=[(config.transition_matrix[4,i]) for i in range(0,17)],
+                        c5=[(config.transition_matrix[5,i]) for i in range(0,17)],
+                        c6=[(config.transition_matrix[6,i]) for i in range(0,17)],
+                        c7=[(config.transition_matrix[7,i]) for i in range(0,17)],
+                        c8=[(config.transition_matrix[8,i]) for i in range(0,17)],
+                        c9=[(config.transition_matrix[9,i]) for i in range(0,17)],
+                        c10=[(config.transition_matrix[10,i]) for i in range(0,17)],
+                        c11=[(config.transition_matrix[11,i]) for i in range(0,17)],
+                        c12=[(config.transition_matrix[12,i]) for i in range(0,17)],
+                        c13=[(config.transition_matrix[13,i]) for i in range(0,17)],
+                        c14=[(config.transition_matrix[14,i]) for i in range(0,17)],
+                        c15=[(config.transition_matrix[15,i]) for i in range(0,17)],
+                        c16=[(config.transition_matrix[16,i]) for i in range(0,17)],)
 
         self.source.data.update(new_data)
-        #self.sourceJS.data.update(dict(text=[str_data]))
         self.sourceT.data.update(self.data1)
         self.data_tableT.update()
 
@@ -291,7 +292,7 @@ class Visual:
         self.update(True)
         self.slider_update_initial_val(self, old, new)
 
-    def updata_transition_matrix(self):
+    def update_transition_matrix(self):
         nodes_num = 17
         self.param_transition_box = []
         self.param_transition_box.append(self.box1)
@@ -372,11 +373,11 @@ class Visual:
                             data_states = [(float(item)) for item in row[2:10]]
                             data_states = np.array(data_states)
                             new_plot[count_row,j,:] = data_states[:]
-                            # box_time
+                            # transition
                             data_box = [(float(item)) for item in row[25:28]]
                             data_box = np.array(data_box)
                             config.box_time[j,:, count_row] = data_box[:]
-                            # box_time
+                            # parameters
                             data_arr = [(float(item)) for item in row[10:25]]
                             data_arr = np.array(data_arr)
                             config.arr_for_save[count_row,j,:] = data_arr[:]
@@ -440,7 +441,7 @@ class Visual:
 
     def run_click(self):
         if config.flag_sim == 0:
-            self.updata_transition_matrix()
+            self.update_transition_matrix()
             config.run_iteration=True
             self.update(False)
 
@@ -454,7 +455,7 @@ class Visual:
             directory = 'results' + '/' +  config.param_save_file
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            #####
+
             box_corr = config.box_time
             if config.new_plot_all:
                 for j in range(17):
@@ -546,10 +547,11 @@ class Visual:
         config.param_transition_scale = 1.0*np.ones(nodes_num)
 
         self.slider_update_initial_val(self,old, new)
+
         self.checkbox_group1.active = list(range(0, 17))
         self.checkbox_group2.active = list(range(0, 17))
         self.checkbox_group3.active = list(range(0, 17))
-        self.updata_transition_matrix()
+        self.update_transition_matrix()
 
         config.box_time = copy(config.param_transition_table)
         config.arr_for_save = np.dstack((config.param_init_exposed, config.param_beta_exp, config.param_qr, config.param_sir, config.param_hosp_capacity,
@@ -614,23 +616,23 @@ class Visual:
 
     def handler_param_tr_scale(self, attr, old, new):
         config.param_transition_scale=new*np.ones(config.nodes_num)
-        self.updata_transition_matrix()
+        self.update_transition_matrix()
 
     def handler_param_tr_leakage(self, attr, old, new):
         config.param_transition_leakage=new*np.ones(config.nodes_num)
-        self.updata_transition_matrix()
+        self.update_transition_matrix()
 
     def handler_checkbox_group1(self, new):
         self.box1 = new
-        self.updata_transition_matrix()
+        self.update_transition_matrix()
 
     def handler_checkbox_group2(self, new):
         self.box2 = new
-        self.updata_transition_matrix()
+        self.update_transition_matrix()
 
     def handler_checkbox_group3(self, new):
         self.box3 = new
-        self.updata_transition_matrix()
+        self.update_transition_matrix()
 
     def handler_param_save_file(self, attr, old, new):
         config.param_save_file= str(new)
@@ -640,25 +642,22 @@ class Visual:
 
     def layout(self):
 
+        # define text font, colors
+        self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=500, height=50)
+        self.text4 = Div(text="""<h1 style="color:blue"> </h1>""", width=900, height=50)
 
-        self.text1 = Div(text="""<h1 style="color:blue">COVID-19 Simulator for Kazakhstan</h1>""", width=500, height=50) # Text to be displayed at the top of the webpage
-        self.text4 = Div(text="""<h1 style="color:blue"> </h1>""", width=900, height=50) # Text to be displayed at the top of the webpage
+        self.text2 =  Div(text="<b>Select parameters for each region</b>", style={'font-size': '150%', 'color': 'green'},width=350)
+        self.text3 =  Div(text="<b>Select global parameters </b>", style={'font-size': '150%', 'color': 'green'}   )
+        self.text5 =  Div(text="<b>Change transition matrix</b>", style={'font-size': '150%', 'color': 'green'})
 
-        self.text2 =  Div(text="<b>Select parameters for each region</b>", style={'font-size': '150%', 'color': 'green'},width=350) # Text to be displayed at the top of the webpage
-        self.text3 =  Div(text="<b>Select global parameters </b>", style={'font-size': '150%', 'color': 'green'}    )# Text to be displayed at the top of the webpage
-        self.text5 =  Div(text="<b>Change transition matrix</b>", style={'font-size': '150%', 'color': 'green'}) # Text to be displayed at the top of the webpage
-
+        # select region - dropdown menu
         regions = config.region_names
 
-        text_save = TextInput(value="foldername", title="")
-        text_save.on_change('value', self.handler_param_save_file)
-
-        # select region
         initial_region = 'Almaty'
         region_selection = Select(value=initial_region, title=' ', options=regions, width=250, height=15)
         region_selection.on_change('value', self.SelectRegionHandler)
 
-        #select parameters
+        # select parameters - sliders
         self.sus_to_exp_slider = Slider(start=0.0,end=50.0,step=0.5,value=config.param_beta_exp[config.region], title='Susceptible to Exposed transition constant (%)')
         self.sus_to_exp_slider.on_change('value', self.handler_beta_exp)
 
@@ -689,7 +688,6 @@ class Visual:
         self.param_gamma_im = Slider(start=0,end=100,step=1,value=config.param_gamma_im[config.region], title='Infected to Recovery Immunized transition probability (%)')
         self.param_gamma_im.on_change('value', self.handler_param_gamma_im)
 
-
         self.param_sim_len = Slider(start=1,end=100,step=1,value=config.loop_num, title='Length of simulation (Days)')
         self.param_sim_len.on_change('value', self.handler_param_sim_len)
 
@@ -714,20 +712,24 @@ class Visual:
         dumdiv3ss= Div(text='',width=120)
 
         # Buttons
-        reset_button = Button(label = 'Reset Button', button_type='primary', background = "red")
+        reset_button = Button(label = 'Reset data', button_type='primary', background = "red")
         save_button_result = Button(label='Save current plot to .csv in directory results/', button_type='primary')
         run_button = Button(label='Run the simulation',button_type='primary')
-        load_button = Button(label='Load the results', button_type='primary')
+        load_button = Button(label='Load data from directory results/', button_type='primary')
 
         run_button.on_click(self.run_click)
         reset_button.on_click(self.reset_click)
         save_button_result.on_click(self.save_file_click)
         load_button.on_click(self.load_click)
 
+        # input folder name
+        text_save = TextInput(value="foldername", title="")
+        text_save.on_change('value', self.handler_param_save_file)
+
+        # transition matrix - checkbox
         div_cb1 = Div(text = 'Airways', width = 150)
         div_cb2 = Div(text = 'Railways', width = 150)
         div_cb3 = Div(text = 'Highways', width = 150)
-
 
         self.checkbox_group1 = CheckboxGroup(labels=regions, active = list(range(0, 17)))
         self.checkbox_group2 = CheckboxGroup(labels=regions, active= list(range(0, 17)))
@@ -737,29 +739,26 @@ class Visual:
         self.checkbox_group2.on_click(self.handler_checkbox_group2)
         self.checkbox_group3.on_click(self.handler_checkbox_group3)
 
-
+        # transition matrix - table
         self.data1 = dict(
-            c00 =  regions,
-            c0= [(config.transition_matrix[0,i]) for i in range(0,17)],
-            c1= [(config.transition_matrix[1,i]) for i in range(0,17)],
-            c2= [(config.transition_matrix[2,i]) for i in range(0,17)],
-            c3=[(config.transition_matrix[3,i]) for i in range(0,17)],
-            c4=[(config.transition_matrix[4,i]) for i in range(0,17)],
-            c5=[(config.transition_matrix[5,i]) for i in range(0,17)],
-            c6=[(config.transition_matrix[6,i]) for i in range(0,17)],
-            c7=[(config.transition_matrix[7,i]) for i in range(0,17)],
-            c8=[(config.transition_matrix[8,i]) for i in range(0,17)],
-            c9=[(config.transition_matrix[9,i]) for i in range(0,17)],
-            c10=[(config.transition_matrix[10,i]) for i in range(0,17)],
-            c11=[(config.transition_matrix[11,i]) for i in range(0,17)],
-            c12=[(config.transition_matrix[12,i]) for i in range(0,17)],
-            c13=[(config.transition_matrix[13,i]) for i in range(0,17)],
-            c14=[(config.transition_matrix[14,i]) for i in range(0,17)],
-            c15=[(config.transition_matrix[15,i]) for i in range(0,17)],
-            c16=[(config.transition_matrix[16,i]) for i in range(0,17)],
-                )
-
-        self.sourceT = ColumnDataSource(self.data1)
+                        c00 =  regions,
+                        c0= [(config.transition_matrix[0,i]) for i in range(0,17)],
+                        c1= [(config.transition_matrix[1,i]) for i in range(0,17)],
+                        c2= [(config.transition_matrix[2,i]) for i in range(0,17)],
+                        c3=[(config.transition_matrix[3,i]) for i in range(0,17)],
+                        c4=[(config.transition_matrix[4,i]) for i in range(0,17)],
+                        c5=[(config.transition_matrix[5,i]) for i in range(0,17)],
+                        c6=[(config.transition_matrix[6,i]) for i in range(0,17)],
+                        c7=[(config.transition_matrix[7,i]) for i in range(0,17)],
+                        c8=[(config.transition_matrix[8,i]) for i in range(0,17)],
+                        c9=[(config.transition_matrix[9,i]) for i in range(0,17)],
+                        c10=[(config.transition_matrix[10,i]) for i in range(0,17)],
+                        c11=[(config.transition_matrix[11,i]) for i in range(0,17)],
+                        c12=[(config.transition_matrix[12,i]) for i in range(0,17)],
+                        c13=[(config.transition_matrix[13,i]) for i in range(0,17)],
+                        c14=[(config.transition_matrix[14,i]) for i in range(0,17)],
+                        c15=[(config.transition_matrix[15,i]) for i in range(0,17)],
+                        c16=[(config.transition_matrix[16,i]) for i in range(0,17)],)
 
         columns = [
                     TableColumn(field="c00", title=" ",),
@@ -781,20 +780,20 @@ class Visual:
                     TableColumn(field="c15", title="North Kazakhstan",),
                     TableColumn(field="c16", title="Turkistan",),]
 
+        self.sourceT = ColumnDataSource(self.data1)
         self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1750, height=500, sortable = False)
-        self.datepicker = DatePicker(title="Starting date of Simulation", min_date=datetime(2015,11,1),
-                       value=datetime.today())
 
-
+        # select start date - calendar
+        self.datepicker = DatePicker(title="Starting date of simulation", min_date=datetime(2015,11,1), value=datetime.today())
         self.datepicker.on_change('value',self.get_date)
 
+        # place the widgets on the layout
 
         sliders_1 = column(self.init_exposed, self.sus_to_exp_slider, self.param_qr_slider, self.param_sir)
         sliders_2 = column(self.param_hosp_capacity, self.param_gamma_mor1, self.param_gamma_mor2, self.param_gamma_im)
         sliders_0 = column(self.param_eps_exp, self.param_eps_qua, self.param_eps_sev)
 
         sliders = row(sliders_1, dumdiv3ss, sliders_2, dumdiv3, sliders_0)
-        # regions
 
         sliders_3 = row(self.param_t_exp, self.param_t_inf, self.param_sim_len,self.datepicker,)
         text2 = Div(text="""<h1 style='color:black'>   issai.nu.edu.kz/episim </h1>""", width = 500, height = 100)
@@ -828,7 +827,7 @@ class Visual:
         layout = column (layout, check_trans, self.text4)
 
         layout = column (layout)
-        layout = column (layout,self.text4) #text_footer
+        layout = column (layout,self.text4)     # text_footer
 
         self.doc.title = 'ISSAI Covid-19 Simulator'
         self.doc.add_root(layout)

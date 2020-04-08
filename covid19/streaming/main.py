@@ -4,16 +4,19 @@ from visual_show import *
 from data_stream import *
 
 def threads(callbackFunc, running):
-    datastream = DataStream(callbackFunc=callbackFunc, running=running) #initialize
+
+    # set up the thread for reading the data
+    datastream = DataStream(callbackFunc=callbackFunc, running=running)
     datastream.start()
 
 def main():
 
-    # Set global flag
-    event = threading.Event() # event used to communicate between threads
-    event.set() # set to True
+    # start the thread
+    event = threading.Event()
+    event.set()
 
-    webVisual = Visual(callbackFunc=threads, running=event) #start Bokeh web document
+    # open the web interface
+    webVisual = Visual(callbackFunc=threads, running=event)
     threads(callbackFunc=webVisual, running=event)
 
 if __name__ == '__main__':

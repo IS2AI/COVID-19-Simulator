@@ -26,6 +26,7 @@ class Network:
     def node_states_transition(self, nodes, transition_matrix, static_states_indices):
 
         temp_nodes = copy(nodes)
+        # iterate through transition_matrix of size [nodes_num x nodes_num]
         for i in range(self.nodes_num):
             for j in range(self.nodes_num):
                 # if some transition ha ppens from node_i to node_j
@@ -47,7 +48,6 @@ class Network:
                                 temp_nodes[j].states_x[index] += exp_i_j[index]
         # update population
         self.update_node_population(transition_matrix)
-        # for plotting
         return temp_nodes
 
     def update_node_population(self, transition_matrix):
