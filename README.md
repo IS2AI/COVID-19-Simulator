@@ -9,7 +9,7 @@ Simulation of SEQISR model for single node written in Matlab software. This mode
 Stochastic epidemic simulator to model the spread of the COVID-19 epidemic in the Republic of Kazakhstan. The software integrates the dynamic transitions between 17 regions and enables to simulate the various scenarios by adjusting the parameters and transition matrix.
 
 
-### Installation guides
+## Installation guides
 
 1) Install Anaconda3 with from https://www.anaconda.com/distribution/#download-section
 
