@@ -29,6 +29,33 @@ param_init_susceptible = np.squeeze(np.array([2039379,1854556,738587,869603,6338
 param_transition_scale = 1.0        # Traffic ratio
 param_transition_leakage = 0.0      # Leakage ratio
 
+#### For Reset #####
+param_beta_exp_res = param_beta_exp      
+param_qr_res  = param_qr         
+param_sir_res  = param_sir
+
+param_eps_exp_res = param_eps_exp      
+param_eps_qua_res = param_eps_qua        
+param_eps_sev_res  = param_eps_sev       
+
+param_hosp_capacity_res = param_hosp_capacity    
+
+param_gamma_mor1_res = param_gamma_mor1
+param_gamma_mor2_res = param_gamma_mor2 
+param_gamma_im_res = param_gamma_im      
+
+param_sim_len_res = param_sim_len           
+
+param_t_exp_res = param_t_exp            
+param_t_inf_res = param_t_inf              
+
+param_init_exposed_res = param_init_exposed      
+param_init_susceptible_res = param_init_susceptible 
+
+param_transition_scale_res = param_transition_scale       
+param_transition_leakage_res = param_transition_leakage     
+
+####################
 param_save_file = 'foldername'      # Default folder name to save results
 
 # Simulation parameters
