@@ -49,43 +49,47 @@ def simulate_network(params_node_, nodes_old, sim_iter, transition_matrix, init_
         node.create_transitions()
 
     # create the network
-    param_dt = nodes[0].param_dt
+    param_dt = nodes[0].param_dt                    # Sampling time for transition
     param_dt_transition = 1/2                       # Sampling time for transition in days (1/2 corresponds to 12 hour)
     param_freq_transition  = 12
     param_sim_len = params_node[10]
     param_num_sim = int(param_sim_len[0] / param_dt)      # Number of simulation
 
-    param_static_names = ['Quarantined', 'Severe_Infected', 'Dead', 'Isolated']         # States not subject to transition
+    # Find states not subject to transition
+    param_static_names = ['Quarantined', 'Severe_Infected', 'Dead', 'Isolated']
     param_static_indices1 = [i for i, s in enumerate(nodes[0].states_name) if param_static_names[0] in s]
     param_static_indices2 = [i for i, s in enumerate(nodes[0].states_name) if param_static_names[1] in s]
     param_static_indices3 = [i for i, s in enumerate(nodes[0].states_name) if param_static_names[2] in s]
     param_static_indices4 = [i for i, s in enumerate(nodes[0].states_name) if param_static_names[3] in s]
 
-    param_static_indices = np.squeeze(np.array([param_static_indices1 + param_static_indices2 + param_static_indices3 + param_static_indices4]))
+    param_static_indices = np.squeeze(np.array([param_static_indices1 + param_static_indices2 + param_static_indices3]))
 
     nodes_state_arr = np.zeros((param_num_sim, nodes_num, nodes[0].param_num_states))
     nodes_network = Network(nodes_num, nodes_population)
 
     if sim_iter > 0:
         if config.is_loaded == True:
+            # copy state values from prev iter (loading)
             for index, node in enumerate(nodes):
                 node.states_x = np.array(config.last_state_list[index]).astype(np.float)
             config.is_loaded = False
         else:
-            # put values from prev iter
+            # copy values from prev iteration
             nodes = nodes_network.update_node_states(nodes, nodes_old)
     else:
-        # state values are empty
+        # state values are initialized from scratch
         pass
 
     #pool = Pool()
     for ind in range(param_num_sim):
         #nodes = list(pool.map(process_node, nodes))
         for index, node in enumerate(nodes):
+            # process node simulation
             node.stoch_solver()
             nodes_state_arr[ind, index, :] = node.states_x
         if ind % param_freq_transition == 0 :
-            nodes = nodes_network.node_states_transition(nodes, transition_matrix, param_static_indices)      # Update the state of every node due to transition
+            # Update the state of every node due to transition
+            nodes = nodes_network.node_states_transition(nodes, transition_matrix, param_static_indices)
 
     #pool.close()
     # save the values to buffer

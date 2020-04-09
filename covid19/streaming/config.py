@@ -32,6 +32,11 @@ param_init_exposed = 0*np.ones(nodes_num)            # Inital number of Exposed
 param_transition_scale = 1.0*np.ones(nodes_num)      # Traffic ratio
 param_transition_leakage = 0.0*np.ones(nodes_num)    # Leakage ratio
 
+# store init params
+
+params_init = [param_init_exposed, param_beta_exp, param_qr, param_sir,  param_hosp_capacity, param_gamma_mor1,  param_gamma_mor2,
+                param_gamma_im, param_eps_exp, param_eps_qua, param_eps_sev, param_t_exp, param_t_inf, param_transition_leakage, param_transition_scale]
+
 # Buffer parameters
 new_plot = []
 new_plot_all = []
@@ -71,7 +76,8 @@ params_node = []
 last_date = '2020-02-10'
 first_date = '2020-02-10'
 
-region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar', 'Qaraqandy', 'Qostanai',  'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
+region_names = ['Almaty', 'Almaty Qalasy', 'Aqmola', 'Aqtobe', 'Atyrau', 'West Kazakhstan', 'Jambyl', 'Mangystau', 'Nur-Sultan', 'Pavlodar',
+                'Qaraqandy', 'Qostanai',  'Qyzylorda', 'East Kazakhstan', 'Shymkent', 'North Kazakhstan', 'Turkistan']
 
 param_save_file = 'foldername'
 

@@ -11,6 +11,8 @@ def threads(callbackFunc, running):
 
 def main():
 
+    print('[INFO] Start the program.')
+
     # start the thread
     event = threading.Event()
     event.set()
@@ -19,6 +21,6 @@ def main():
     webVisual = Visual(callbackFunc=threads, running=event)
     threads(callbackFunc=webVisual, running=event)
 
+
 if __name__ == '__main__':
-    print('[INFO] Start the program.')
     main()
