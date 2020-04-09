@@ -27,7 +27,7 @@ Stochastic epidemic simulator to model the spread of the COVID-19 epidemic in th
 
 Visualization toolbox is presented for displaying the results from saved .csv files. Both Matlab and Python versions are included.
 
-### Video tutorials
+## Tutorials
 
 Extensive tutorials on how to use the software and analyze the results of the simulator can be found from https://www.youtube.com/channel/UCr7o_0wW4nkqx-G5b7Zopgw
 
