@@ -270,6 +270,21 @@ class Visual:
                         tmp_data["tmp_state_dea"].append(new_nodes_all[i][:, region, 6][-1])
 
                         region_states[region] = tmp_data
+        else:
+            regions_ids = [ lregion for lregion in range(17)]
+            for region in regions_ids:
+                
+                        #print("GOOOODDDDD")
+                tmp_data["tmp_state_inf"].append(tmp_state_inf)
+                tmp_data["tmp_state_sin"].append(tmp_state_sin)
+                tmp_data["tmp_state_exp"].append(tmp_state_exp)
+                tmp_data["tmp_state_qua"].append(tmp_state_qua)
+                tmp_data["tmp_state_imm"].append(tmp_state_imm)
+                tmp_data["tmp_state_sus"].append(tmp_state_sus)
+                tmp_data["tmp_state_dea"].append(tmp_state_dea)
+
+            region_states = tmp_data
+        
         str_data = json.dumps(region_states, ensure_ascii=False)
         str_mdates = json.dumps([start_date, cur_date],ensure_ascii=False)
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
@@ -471,21 +486,21 @@ class Visual:
 
     def slider_update_reset(self, attr, old, new):
         nodes_num =17
-        config.param_init_exposed = 0*np.ones(nodes_num)
-        config.param_beta_exp = 30.0*np.ones(nodes_num)
-        config.param_qr = 2.0*np.ones(nodes_num)
-        config.param_sir = 0.35*np.ones(nodes_num)
-        config.param_hosp_capacity = np.array((280,2395,895,600,650,250,725,100,885,425,1670,300,465,1420,1505,380,300))
-        config.param_gamma_mor1 = 7.0*np.ones(nodes_num)
-        config.param_gamma_mor2= 11.0*np.ones(nodes_num)
-        config.param_gamma_im = 90.0*np.ones(nodes_num)
-        config.param_eps_exp= 100.0*np.ones(nodes_num)
-        config.param_eps_qua = 20.0*np.ones(nodes_num)
-        config.param_eps_sev = 20.0*np.ones(nodes_num)
-        config.param_t_exp = 5*np.ones(nodes_num)
-        config.param_t_inf = 14*np.ones(nodes_num)
-        config.param_transition_leakage = 0.0
-        config.param_transition_scale = 1.0
+        config.param_init_exposed = config.param_init_exposed_res
+        config.param_beta_exp = config.param_beta_exp_res
+        config.param_qr = config.param_qr_res
+        config.param_sir = config.param_sir_res
+        config.param_hosp_capacity = config.param_hosp_capacity_res
+        config.param_gamma_mor1 = config.param_gamma_mor1_res
+        config.param_gamma_mor2=  config.param_gamma_mor2_res
+        config.param_gamma_im = config.param_gamma_im_res
+        config.param_eps_exp= config.param_eps_exp_res
+        config.param_eps_qua = config.param_eps_qua_res
+        config.param_eps_sev = config.param_eps_sev_res
+        config.param_t_exp = config.param_t_exp_res
+        config.param_t_inf = config.param_t_inf_res
+        config.param_transition_leakage = config.param_transition_leakage_res
+        config.param_transition_scale = config.param_transition_scale_res
         self.slider_update_initial_val(self,old, new)
         self.transition_matrix_reset()
 
