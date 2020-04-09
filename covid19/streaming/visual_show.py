@@ -530,6 +530,7 @@ class Visual:
 
     def slider_update_reset(self, attr, old, new):
         nodes_num =17
+
         config.param_init_exposed = 0*np.ones(nodes_num)
         config.param_beta_exp = 30.0*np.ones(nodes_num)
         config.param_qr = 2.0*np.ones(nodes_num)
@@ -545,9 +546,6 @@ class Visual:
         config.param_t_inf = 14*np.ones(nodes_num)
         config.param_transition_leakage = 0.0*np.ones(nodes_num)
         config.param_transition_scale = 1.0*np.ones(nodes_num)
-
-        # params_init = [param_init_exposed, param_beta_exp, param_qr, param_sir,  param_hosp_capacity, param_gamma_mor1,  param_gamma_mor2,
-        #                 param_gamma_im, param_eps_exp, param_eps_qua, param_eps_sev, param_t_exp, param_t_inf, param_transition_leakage, param_transition_scale]
 
         self.slider_update_initial_val(self,old, new)
 

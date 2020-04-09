@@ -23,6 +23,7 @@ param_sim_len = 1*np.ones(nodes_num)            # Length of simulation (Days)
 param_t_exp = 5*np.ones(nodes_num)              # Incubation period (The period from the start of incubation to the end of the incubation state)
 param_t_inf = 14*np.ones(nodes_num)             # Infection period (The period from the start of infection to the end of the infection state)
 
+
 param_transition_table = np.ones((17, 3))
 
 param_init_susceptible = np.squeeze(np.array([2039379,1854556,738587,869603,633801,652314,1125297,
@@ -32,11 +33,6 @@ param_init_exposed = 0*np.ones(nodes_num)            # Inital number of Exposed
 param_transition_scale = 1.0*np.ones(nodes_num)      # Traffic ratio
 param_transition_leakage = 0.0*np.ones(nodes_num)    # Leakage ratio
 
-# store init params
-
-params_init = [param_init_exposed, param_beta_exp, param_qr, param_sir,  param_hosp_capacity, param_gamma_mor1,  param_gamma_mor2,
-                param_gamma_im, param_eps_exp, param_eps_qua, param_eps_sev, param_t_exp, param_t_inf, param_transition_leakage, param_transition_scale]
-
 # Buffer parameters
 new_plot = []
 new_plot_all = []
@@ -45,6 +41,9 @@ arr_for_save = np.dstack((param_init_exposed, param_beta_exp, param_qr, param_si
                         param_gamma_im, param_eps_exp, param_eps_qua, param_eps_sev, param_t_exp, param_t_inf, param_transition_leakage, param_transition_scale))
 
 last_state_list = []
+
+# store init params
+params_init = np.copy(arr_for_save[:,:,:])
 
 # Simulation parameters
 max_sim_len = 10000
@@ -99,3 +98,29 @@ transition_roadway = np.array(transition_roadway, dtype = np.float32)
 # Initialize base transition_matrix for
 transition_matrix_init =   (0.5*(transition_railway + transition_airway + transition_roadway)).astype(int) # transition between nodes happens every 12 hours or 1/2 days
 transition_matrix = transition_matrix_init
+
+#reset params
+param_beta_exp_res = param_beta_exp
+param_qr_res  = param_qr
+param_sir_res  = param_sir
+
+param_eps_exp_res = param_eps_exp
+param_eps_qua_res = param_eps_qua
+param_eps_sev_res  = param_eps_sev
+
+param_hosp_capacity_res = param_hosp_capacity
+
+param_gamma_mor1_res = param_gamma_mor1
+param_gamma_mor2_res = param_gamma_mor2
+param_gamma_im_res = param_gamma_im
+
+param_sim_len_res = param_sim_len
+
+param_t_exp_res = param_t_exp
+param_t_inf_res = param_t_inf
+
+param_init_exposed_res = param_init_exposed
+param_init_susceptible_res = param_init_susceptible
+
+param_transition_scale_res = param_transition_scale
+param_transition_leakage_res = param_transition_leakage
