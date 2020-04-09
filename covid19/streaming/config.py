@@ -98,29 +98,3 @@ transition_roadway = np.array(transition_roadway, dtype = np.float32)
 # Initialize base transition_matrix for
 transition_matrix_init =   (0.5*(transition_railway + transition_airway + transition_roadway)).astype(int) # transition between nodes happens every 12 hours or 1/2 days
 transition_matrix = transition_matrix_init
-
-#reset params
-param_beta_exp_res = param_beta_exp
-param_qr_res  = param_qr
-param_sir_res  = param_sir
-
-param_eps_exp_res = param_eps_exp
-param_eps_qua_res = param_eps_qua
-param_eps_sev_res  = param_eps_sev
-
-param_hosp_capacity_res = param_hosp_capacity
-
-param_gamma_mor1_res = param_gamma_mor1
-param_gamma_mor2_res = param_gamma_mor2
-param_gamma_im_res = param_gamma_im
-
-param_sim_len_res = param_sim_len
-
-param_t_exp_res = param_t_exp
-param_t_inf_res = param_t_inf
-
-param_init_exposed_res = param_init_exposed
-param_init_susceptible_res = param_init_susceptible
-
-param_transition_scale_res = param_transition_scale
-param_transition_leakage_res = param_transition_leakage
