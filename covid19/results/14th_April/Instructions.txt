@@ -1,0 +1,5 @@
+This is the dataset for preliminary simulations for COVID-19 spread in Kazakhstan from 1st March 2020 untill 14th April 2020. 
+The dataset can be loaded to the simulator to analyze the potential conditions after 14th April 2020.
+
+1.Unzip the files and put to the results directory of the simulator.
+2. Type the name of the folder to the simulator and press "Load data from directory results/"
