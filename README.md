@@ -26,7 +26,7 @@ Stochastic epidemic simulator to model the spread of the COVID-19 epidemic in th
 
 #### Web-interface of the simulator
 
-![](simulator_capture.png)
+![](web_interface.png)
 
 ### 3) In directory visualization_tools/
 

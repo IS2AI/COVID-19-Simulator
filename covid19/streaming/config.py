@@ -23,9 +23,7 @@ param_sim_len = 1*np.ones(nodes_num)            # Length of simulation (Days)
 param_t_exp = 5*np.ones(nodes_num)              # Incubation period (The period from the start of incubation to the end of the incubation state)
 param_t_inf = 14*np.ones(nodes_num)             # Infection period (The period from the start of infection to the end of the infection state)
 
-
 param_transition_table = np.ones((17, 3))
-
 param_init_susceptible = np.squeeze(np.array([2039379,1854556,738587,869603,633801,652314,1125297,
                                             678224,1078362,753804,1378554,872736,794165,1378504,1011511,554519,1981747]))  # Inital number of Susceptible = population
 
@@ -41,12 +39,10 @@ arr_for_save = np.dstack((param_init_exposed, param_beta_exp, param_qr, param_si
                         param_gamma_im, param_eps_exp, param_eps_qua, param_eps_sev, param_t_exp, param_t_inf, param_transition_leakage, param_transition_scale))
 
 last_state_list = []
-
 # store init params
 params_init = np.copy(arr_for_save[:,:,:])
 
 # Simulation parameters
-max_sim_len = 10000
 loop_num = 1
 flag_sim = 0
 counter_func = 0

@@ -331,6 +331,7 @@ class Visual:
         self.update(False)
 
     def reset_click(self):
+        # reset the params
         if config.flag_sim == 0:
             config.new_plot_all = []
             config.counter_func = 0
@@ -346,6 +347,7 @@ class Visual:
             print('[INFO] Resetting the simulation parameters ..')
 
     def load_click(self):
+        # load the previous results
         self.reset_click()
         directory = 'results' + '/' +  config.param_save_file
         fname = directory + '/' + 'Kazakhstan' + '.csv'
