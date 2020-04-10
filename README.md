@@ -23,13 +23,14 @@ Stochastic epidemic simulator to model the spread of the COVID-19 epidemic in th
 
 6) The web browser with visualization interface will be opened
 
+
+#### Web-interface of the simulator
+
+![](simulator_capture.png)
+
 ### 3) In directory visualization_tools/
 
 Visualization toolbox is presented for displaying the results from saved .csv files. Both Matlab and Python versions are included.
-
-### Simulator web-interface
-
-![](simulator_capture.png)
 
 ## Tutorials
 
