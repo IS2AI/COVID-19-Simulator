@@ -97,11 +97,10 @@ def test_population(init_sus, nodes, num_test, prev_rate, test_sens, test_spec):
                 tneg_count = 0
                 # find the prevalance_rate
                 # later implement switch
-                if 1 == 1 :
+                if config.param_prev_mode == 0 :
                     prevalance_rate = prev_rate
                 else:
-                    prevalance_rate = (config.new_plot_all[-1][:, i, 0][-1] + config.new_plot_all[-1][:, i, 2][-1] + config.new_plot_all[-1][:, i, 7][-1]) / init_sus[i]
-                    print(config.new_plot_all[-1][:, i, 0][-1], config.new_plot_all[-1][:, i, 2][-1], config.new_plot_all[-1][:, i, 7][-1], init_sus[i])
+                    prevalance_rate = config.param_prev_auto[i]
 
                 #print('prevalance_rate ' , prevalance_rate)
                 # initialize the state probabilities
@@ -326,6 +325,12 @@ class DataStream(threading.Thread):
 
                         # append the new results to list
                         config.new_plot_all.append(new_plot)
+
+                        # update Prevalence Table
+                        for ind in range(17):
+                            config.param_prev_auto[ind] = round((config.new_plot_all[-1][:, ind, 0][-1] + config.new_plot_all[-1][:, ind, 2][-1] + config.new_plot_all[-1][:, ind, 7][-1])/config.param_init_susceptible[ind], 3)
+                            #config.param_prev_auto[ind] = config.param_init_susceptible[ind]*(i+10)
+
                         self.callbackFunc.doc.add_next_tick_callback(partial(self.callbackFunc.update, False))
                         config.counter_func +=1
                         end = time.time()
@@ -336,6 +341,7 @@ class DataStream(threading.Thread):
                     print('[INFO] Simulation finished, press Run Simulation button for next iteration.')
                     config.run_iteration = False
 
+
                 # Loading prev experiments
                 elif config.load_iteration: # if Load Results button is pressed
                     config.flag_sim = 1
@@ -343,12 +349,20 @@ class DataStream(threading.Thread):
                     for i in range(1,config.counter_load+1):
                         temp_plot = np.stack((config.new_plot[i,:,:], config.new_plot[i,:,:]),axis=0)
                         config.new_plot_all.append(temp_plot)
+
+                        # update Prevalence Table
+                        for ind in range(17):
+                            # print(config.new_plot_all[-1][:, ind, 0][-1], config.new_plot_all[-1][:, ind, 2][-1], config.new_plot_all[-1][:, ind, 7][-1], config.param_init_susceptible[ind])
+                            config.param_prev_auto[ind] = round((config.new_plot_all[-1][:, ind, 0][-1] + config.new_plot_all[-1][:, ind, 2][-1] + config.new_plot_all[-1][:, ind, 7][-1])/config.param_init_susceptible[ind], 3)
+                            #config.param_prev_auto[ind] = config.param_init_susceptible[ind]
+
                         self.callbackFunc.doc.add_next_tick_callback(partial(self.callbackFunc.update, False))
                         config.counter_func +=1
 
                     config.flag_sim = 0
                     config.load_iteration = False
                     print('[INFO] Loading the previous results ..')
+
 
                 # # Conducting the test
                 # elif config.is_test:

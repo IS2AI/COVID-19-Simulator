@@ -51,7 +51,9 @@ param_test_num = np.zeros(nodes_num, dtype=int)
 
 param_test_spec = 0.99
 param_test_sens = 0.7
+
 param_test_prev = 0.1
+param_prev_auto = np.zeros(nodes_num)
 
 param_test_sum = 0
 param_t_pos = 0
@@ -62,6 +64,8 @@ param_true_pos = 0
 param_true_neg = 0
 param_false_pos = 0
 param_false_neg = 0
+
+param_prev_mode = 0
 
 # Simulation parameters
 loop_num = 1

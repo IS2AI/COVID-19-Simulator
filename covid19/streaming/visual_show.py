@@ -260,6 +260,8 @@ class Visual:
         new_data = dict(x=newx, sus=state_sus, exp=state_exp, inf=state_inf, sin=state_sin,
                     qua=state_qua, imm=state_imm, dea=state_dea, text=[str_data]*len(state_imm), mdates=[str_mdates]*len(state_imm))
 
+        self.source.data.update(new_data)
+
         self.data1 = dict(
                         c0=[(config.transition_matrix[0,i]) for i in range(0,17)],
                         c1=[(config.transition_matrix[1,i]) for i in range(0,17)],
@@ -279,11 +281,10 @@ class Visual:
                         c15=[(config.transition_matrix[15,i]) for i in range(0,17)],
                         c16=[(config.transition_matrix[16,i]) for i in range(0,17)],)
 
-        self.source.data.update(new_data)
-
         self.sourceT.data.update(self.data1)
         self.data_tableT.update()
 
+        # update Results table
         self.dataTest = dict(
                         c00 =  ['Performed, N','Confirmed, T(+)','Not Confirmed, T(-)', 'True Positives, TP', 'False Positives, FP', 'False Negatives, FN', 'True Negatives, TN',
                                 'Truly Infected, D(+)', 'Non-Infected, D(-)',],
@@ -292,6 +293,28 @@ class Visual:
 
         self.sourceTest.data.update(self.dataTest)
         self.data_tableTest.update()
+
+        self.dataPrev = dict(
+                        c0=[config.param_prev_auto[0]],
+                        c1=[config.param_prev_auto[1]],
+                        c2=[config.param_prev_auto[2]],
+                        c3=[config.param_prev_auto[3]],
+                        c4=[config.param_prev_auto[4]],
+                        c5=[config.param_prev_auto[5]],
+                        c6=[config.param_prev_auto[6]],
+                        c7=[config.param_prev_auto[7]],
+                        c8=[config.param_prev_auto[8]],
+                        c9=[config.param_prev_auto[9]],
+                        c10=[config.param_prev_auto[10]],
+                        c11=[config.param_prev_auto[11]],
+                        c12=[config.param_prev_auto[12]],
+                        c13=[config.param_prev_auto[13]],
+                        c14=[config.param_prev_auto[14]],
+                        c15=[config.param_prev_auto[15]],
+                        c16=[config.param_prev_auto[16]],)
+
+        self.sourcePrev.data.update(self.dataPrev)
+        self.data_tablePrev.update()
 
     def SelectRegionHandler(self, attr, old, new):
         regions = config.region_names
@@ -302,6 +325,13 @@ class Visual:
                 break
         self.update(True)
         self.slider_update_initial_val(self, old, new)
+
+    def SelectPrevHandler(self, attr, old, new):
+        if new == 'Manual':
+            config.param_prev_mode = 0
+        else:
+            config.param_prev_mode = 1
+        print(config.param_prev_mode)
 
     def update_transition_matrix(self):
         nodes_num = 17
@@ -606,6 +636,7 @@ class Visual:
         config.param_test_spec = 0.99
         config.param_test_sens = 0.7
         config.param_test_prev = 0.1
+        config.param_prev_auto = np.zeros(nodes_num)
 
         config.param_test_num = np.zeros(nodes_num, dtype=int)
         config.param_test_sum = 0
@@ -784,9 +815,9 @@ class Visual:
         self.text5 =  Div(text="<b>Change transition matrix</b>", style={'font-size': '150%', 'color': 'green'})
 
         self.text6 =  Div(text="<b>Select testing parameters</b>", style={'font-size': '150%', 'color': 'green'})
-        self.text7 =  Div(text="<b>Enter test amount for each region</b>", style={'font-size': '150%', 'color': 'green'})
+        self.text7 =  Div(text="<b>Enter number of test</b>", style={'font-size': '150%', 'color': 'green'})
         self.text8 =  Div(text="<b>Testing results</b>", style={'font-size': '150%', 'color': 'green'})
-        self.text9 =  Div(text="<b>Select prevalance rate</b>", style={'font-size': '150%', 'color': 'green'})
+        self.text9 =  Div(text="<b>Select prevalence rate</b>", style={'font-size': '150%', 'color': 'green'})
 
         # select region - dropdown menu
         regions = config.region_names
@@ -794,6 +825,11 @@ class Visual:
         initial_region = 'Almaty'
         region_selection = Select(value=initial_region, title=' ', options=regions, width=250, height=15)
         region_selection.on_change('value', self.SelectRegionHandler)
+
+        initial_prev = 'Manual'
+        options_prev = ['Auto', 'Manual']
+        prev_selection = Select(value=initial_prev, title=' ', options=options_prev, width=250, height=15)
+        prev_selection.on_change('value', self.SelectPrevHandler)
 
         # select parameters - sliders
         self.sus_to_exp_slider = Slider(start=0.0,end=50.0,step=0.5,value=config.param_beta_exp[config.region], title='Susceptible to Exposed transition constant (%)')
@@ -851,7 +887,7 @@ class Visual:
         self.param_test_sens = Slider(start=0.0,end=1,step=0.01,value=config.param_test_sens, title='Test sensitivity')
         self.param_test_sens.on_change('value', self.handler_param_test_sens)
 
-        self.param_test_prev = Slider(start=0.0,end=1,step=0.01,value=config.param_test_prev, title='Prevalence rate')
+        self.param_test_prev = Slider(start=0.0,end=1,step=0.01,value=config.param_test_prev, title='Prevalence rate (Manual)')
         self.param_test_prev.on_change('value', self.handler_param_test_prev)
 
         self.param_text_1 = TextInput(value="0", title=regions[0], width = 100)
@@ -996,7 +1032,52 @@ class Visual:
                     TableColumn(field="c0", title="Values",),]
 
         self.sourceTest = ColumnDataSource(self.dataTest)
-        self.data_tableTest = DataTable(source=self.sourceTest, columns=columnsTest, width=400, height=500, sortable = False)
+        self.data_tableTest = DataTable(source=self.sourceTest, columns=columnsTest, width=400, height=300, sortable = False)
+
+        # prevalance_rate
+        self.dataPrev = dict(
+                        c00=['Prevalence rate (Auto)'],
+                        c0=[config.param_prev_auto[0]],
+                        c1=[config.param_prev_auto[1]],
+                        c2=[config.param_prev_auto[2]],
+                        c3=[config.param_prev_auto[3]],
+                        c4=[config.param_prev_auto[4]],
+                        c5=[config.param_prev_auto[5]],
+                        c6=[config.param_prev_auto[6]],
+                        c7=[config.param_prev_auto[7]],
+                        c8=[config.param_prev_auto[8]],
+                        c9=[config.param_prev_auto[9]],
+                        c10=[config.param_prev_auto[10]],
+                        c11=[config.param_prev_auto[11]],
+                        c12=[config.param_prev_auto[12]],
+                        c13=[config.param_prev_auto[13]],
+                        c14=[config.param_prev_auto[14]],
+                        c15=[config.param_prev_auto[15]],
+                        c16=[config.param_prev_auto[16]],)
+
+        columnsPrev = [
+                    TableColumn(field="c00", title=" ",),
+                    TableColumn(field="c0", title="Almaty",),
+                    TableColumn(field="c1", title="Almaty Qalasy",),
+                    TableColumn(field="c2", title="Aqmola",),
+                    TableColumn(field="c3", title="Aqtobe",),
+                    TableColumn(field="c4", title="Atyrau",),
+                    TableColumn(field="c5", title="West Kazakhstan",),
+                    TableColumn(field="c6", title="Jambyl",),
+                    TableColumn(field="c7", title="Mangystau",),
+                    TableColumn(field="c8", title="Nur-Sultan",),
+                    TableColumn(field="c9", title="Pavlodar",),
+                    TableColumn(field="c10", title="Qaragandy",),
+                    TableColumn(field="c11", title="Qostanai",),
+                    TableColumn(field="c12", title="Qyzylorda",),
+                    TableColumn(field="c13", title="East Kazakhstan",),
+                    TableColumn(field="c14", title="Shymkent",),
+                    TableColumn(field="c15", title="North Kazakhstan",),
+                    TableColumn(field="c16", title="Turkistan",),]
+
+        self.sourcePrev = ColumnDataSource(self.dataPrev)
+        self.data_tablePrev = DataTable(source=self.sourcePrev, columns=columnsPrev, width=2200, height=80, sortable = False)
+
 
         # select start date - calendar
         self.datepicker = DatePicker(title="Starting date of simulation", min_date=datetime(2015,11,1), value=datetime.today())
@@ -1041,12 +1122,15 @@ class Visual:
 
         layout = column (layout, check_trans, self.text4)
 
-        sliders_test = column(self.param_test_spec, self.param_test_sens, self.param_test_prev)
+        sliders_test = column(self.param_test_spec, self.param_test_sens)
         layout_num_test = row(self.param_text_1, self.param_text_2, self.param_text_3, self.param_text_4, self.param_text_5, self.param_text_6,
                                 self.param_text_7, self.param_text_8, self.param_text_9, self.param_text_10, self.param_text_11, self.param_text_12,
                                 self.param_text_13, self.param_text_14, self.param_text_15, self.param_text_16, self.param_text_17)
 
-        layout = column (layout, self.text6, sliders_test, self.text7, layout_num_test, column(test_button, self.text8, self.data_tableTest))
+        layout = column (layout, self.text6, sliders_test, row(self.text9, prev_selection))
+        layout = column(layout, dummy_div11, column(self.param_test_prev,dummy_div11), self.data_tablePrev, self.text7,layout_num_test, column(test_button, self.text8, self.data_tableTest) )
+
+
         layout = column (layout,self.text4)     # text_footer
 
         self.doc.title = 'ISSAI Covid-19 Simulator'
