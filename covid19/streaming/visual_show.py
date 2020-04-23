@@ -13,6 +13,7 @@ from bokeh.models.widgets.inputs import DatePicker
 from datetime import datetime, date, timedelta
 import json
 import config
+from data_stream import test_population
 
 class Visual:
 
@@ -279,8 +280,18 @@ class Visual:
                         c16=[(config.transition_matrix[16,i]) for i in range(0,17)],)
 
         self.source.data.update(new_data)
+
         self.sourceT.data.update(self.data1)
         self.data_tableT.update()
+
+        self.dataTest = dict(
+                        c00 =  ['Performed, N','Confirmed, T(+)','Not Confirmed, T(-)', 'True Positives, TP', 'False Positives, FP', 'False Negatives, FN', 'True Negatives, TN',
+                                'Truly Infected, D(+)', 'Non-Infected, D(-)',],
+                        c0=[config.param_test_sum, config.param_t_pos, config.param_t_neg, config.param_true_pos, config.param_false_pos, config.param_false_neg, config.param_true_neg,
+                             config.param_d_pos, config.param_d_neg],)
+
+        self.sourceTest.data.update(self.dataTest)
+        self.data_tableTest.update()
 
     def SelectRegionHandler(self, attr, old, new):
         regions = config.region_names
@@ -329,6 +340,16 @@ class Visual:
         config.param_transition_table = copy(param_transition_table)
         config.transition_matrix = copy(transition_matrix)
         self.update(False)
+
+    def test_click(self):
+        if config.flag_sim == 0:
+
+            config.is_test = True
+
+            test_population(config.param_init_susceptible, config.nodes_old, config.param_test_num, config.param_test_prev, config.param_test_sens, config.param_test_spec)
+
+            self.update(False)
+            pass
 
     def reset_click(self):
         # reset the params
@@ -387,6 +408,7 @@ class Visual:
                         if count_row == (2):
                             config.last_date = row[1]
 
+
             config.counter_load = count_row-1
             config.new_plot = new_plot
 
@@ -427,9 +449,13 @@ class Visual:
                 reader = csv.reader(f,delimiter = ",")
                 r_count = 0
                 for row in reader:
-                    temp = np.array(row)
-                    config.last_state_list.append(temp)
-                    r_count =+ 1
+                    if r_count < 17:
+                        temp = np.array(row)
+                        config.last_state_list.append(temp)
+                    else:
+                        temp = np.array(row)
+                        config.load_states_name.append(temp)
+                    r_count += 1
 
             config.is_loaded = True
             # plot graph
@@ -503,10 +529,15 @@ class Visual:
                     data_writer = csv.writer(csvfile, delimiter=',', escapechar=' ', quoting=csv.QUOTE_NONE)
                     nodes_new_iter = copy(config.nodes_old)
                     for index, node in enumerate(nodes_new_iter):
-                       node.states_x = nodes_new_iter[index].states_x
-                       st_t = copy(node.states_x)
-                       st_t = list(st_t)
-                       data_writer.writerow(st_t)
+                        node.states_x = nodes_new_iter[index].states_x
+                        st_t = copy(node.states_x)
+                        st_t = list(st_t)
+                        data_writer.writerow(st_t)
+
+                    # save states_name
+                    st_t = copy(nodes_new_iter[0].states_name)
+                    st_t = list(st_t)
+                    data_writer.writerow(st_t)
 
                 print('[INFO] Saving results to .csv format ..')
             else:
@@ -530,6 +561,28 @@ class Visual:
         self.param_tr_leakage.value = config.param_transition_leakage[0]
         self.param_tr_scale.value = config.param_transition_scale[0]
 
+        self.param_test_spec.value = config.param_test_spec
+        self.param_test_sens.value = config.param_test_sens
+        self.param_test_prev.value = config.param_test_prev
+
+        self.param_text_1.value = str(config.param_test_num[0])
+        self.param_text_2.value = str(config.param_test_num[1])
+        self.param_text_3.value = str(config.param_test_num[2])
+        self.param_text_4.value = str(config.param_test_num[3])
+        self.param_text_5.value = str(config.param_test_num[4])
+        self.param_text_6.value = str(config.param_test_num[5])
+        self.param_text_7.value = str(config.param_test_num[6])
+        self.param_text_8.value = str(config.param_test_num[7])
+        self.param_text_9.value = str(config.param_test_num[8])
+        self.param_text_10.value = str(config.param_test_num[9])
+        self.param_text_11.value = str(config.param_test_num[10])
+        self.param_text_12.value = str(config.param_test_num[11])
+        self.param_text_13.value = str(config.param_test_num[12])
+        self.param_text_14.value = str(config.param_test_num[13])
+        self.param_text_15.value = str(config.param_test_num[14])
+        self.param_text_16.value = str(config.param_test_num[15])
+        self.param_text_17.value = str(config.param_test_num[16])
+
     def slider_update_reset(self, attr, old, new):
         nodes_num =17
 
@@ -549,6 +602,22 @@ class Visual:
         config.param_transition_leakage = 0.0*np.ones(nodes_num)
         config.param_transition_scale = 1.0*np.ones(nodes_num)
 
+        # testing
+        config.param_test_spec = 0.99
+        config.param_test_sens = 0.7
+        config.param_test_prev = 0.1
+
+        config.param_test_num = np.zeros(nodes_num, dtype=int)
+        config.param_test_sum = 0
+        config.param_t_pos = 0
+        config.param_t_neg = 0
+        config.param_d_pos = 0
+        config.param_d_neg = 0
+        config.param_true_pos = 0
+        config.param_true_neg = 0
+        config.param_false_pos = 0
+        config.param_false_neg = 0
+
         self.slider_update_initial_val(self,old, new)
 
         self.checkbox_group1.active = list(range(0, 17))
@@ -564,6 +633,7 @@ class Visual:
 
         self.datepicker.value = datetime.today()
         self.start_date = datetime.today()
+
 
     def handler_beta_exp(self, attr, old, new):
         config.param_beta_exp[config.region]=new
@@ -643,6 +713,66 @@ class Visual:
     def get_date(self, attr, old, new):
         self.start_date = new
 
+    def handler_param_test_spec(self, attr, old, new):
+        config.param_test_spec=new
+
+    def handler_param_test_sens(self, attr, old, new):
+        config.param_test_sens=new
+
+    def handler_param_test_prev(self, attr, old, new):
+        config.param_test_prev=new
+
+    def handler_param_text_1(self, attr, old, new):
+        config.param_test_num[0]= str(new)
+
+    def handler_param_text_2(self, attr, old, new):
+        config.param_test_num[1]= str(new)
+
+    def handler_param_text_3(self, attr, old, new):
+        config.param_test_num[2]= str(new)
+
+    def handler_param_text_4(self, attr, old, new):
+        config.param_test_num[3]= str(new)
+
+    def handler_param_text_5(self, attr, old, new):
+        config.param_test_num[4]= str(new)
+
+    def handler_param_text_6(self, attr, old, new):
+        config.param_test_num[5]= str(new)
+
+    def handler_param_text_7(self, attr, old, new):
+        config.param_test_num[6]= str(new)
+
+    def handler_param_text_8(self, attr, old, new):
+        config.param_test_num[7]= str(new)
+
+    def handler_param_text_9(self, attr, old, new):
+        config.param_test_num[8]= str(new)
+
+    def handler_param_text_10(self, attr, old, new):
+        config.param_test_num[9]= str(new)
+
+    def handler_param_text_11(self, attr, old, new):
+        config.param_test_num[10]= str(new)
+
+    def handler_param_text_12(self, attr, old, new):
+        config.param_test_num[11]= str(new)
+
+    def handler_param_text_13(self, attr, old, new):
+        config.param_test_num[12]= str(new)
+
+    def handler_param_text_14(self, attr, old, new):
+        config.param_test_num[13]= str(new)
+
+    def handler_param_text_15(self, attr, old, new):
+        config.param_test_num[14]= str(new)
+
+    def handler_param_text_16(self, attr, old, new):
+        config.param_test_num[15]= str(new)
+
+    def handler_param_text_17(self, attr, old, new):
+        config.param_test_num[16]= str(new)
+
     def layout(self):
 
         # define text font, colors
@@ -652,6 +782,11 @@ class Visual:
         self.text2 =  Div(text="<b>Select parameters for each region</b>", style={'font-size': '150%', 'color': 'green'},width=350)
         self.text3 =  Div(text="<b>Select global parameters </b>", style={'font-size': '150%', 'color': 'green'}   )
         self.text5 =  Div(text="<b>Change transition matrix</b>", style={'font-size': '150%', 'color': 'green'})
+
+        self.text6 =  Div(text="<b>Select testing parameters</b>", style={'font-size': '150%', 'color': 'green'})
+        self.text7 =  Div(text="<b>Enter test amount for each region</b>", style={'font-size': '150%', 'color': 'green'})
+        self.text8 =  Div(text="<b>Testing results</b>", style={'font-size': '150%', 'color': 'green'})
+        self.text9 =  Div(text="<b>Select prevalance rate</b>", style={'font-size': '150%', 'color': 'green'})
 
         # select region - dropdown menu
         regions = config.region_names
@@ -709,6 +844,67 @@ class Visual:
         self.param_tr_leakage = Slider(start=0.0,end=1,step=0.01,value=config.param_transition_leakage[0], title='Leakage ratio')
         self.param_tr_leakage.on_change('value', self.handler_param_tr_leakage)
 
+        # testing
+        self.param_test_spec = Slider(start=0.0,end=1,step=0.01,value=config.param_test_spec, title='Test specifity')
+        self.param_test_spec.on_change('value', self.handler_param_test_spec)
+
+        self.param_test_sens = Slider(start=0.0,end=1,step=0.01,value=config.param_test_sens, title='Test sensitivity')
+        self.param_test_sens.on_change('value', self.handler_param_test_sens)
+
+        self.param_test_prev = Slider(start=0.0,end=1,step=0.01,value=config.param_test_prev, title='Prevalence rate')
+        self.param_test_prev.on_change('value', self.handler_param_test_prev)
+
+        self.param_text_1 = TextInput(value="0", title=regions[0], width = 100)
+        self.param_text_1.on_change('value', self.handler_param_text_1)
+
+        self.param_text_2 = TextInput(value="0", title=regions[1], width = 100)
+        self.param_text_2.on_change('value', self.handler_param_text_2)
+
+        self.param_text_3 = TextInput(value="0", title=regions[2], width = 100)
+        self.param_text_3.on_change('value', self.handler_param_text_3)
+
+        self.param_text_4 = TextInput(value="0", title=regions[3], width = 100)
+        self.param_text_4.on_change('value', self.handler_param_text_4)
+
+        self.param_text_5 = TextInput(value="0", title=regions[4], width = 100)
+        self.param_text_5.on_change('value', self.handler_param_text_5)
+
+        self.param_text_6 = TextInput(value="0", title=regions[5], width = 100)
+        self.param_text_6.on_change('value', self.handler_param_text_6)
+
+        self.param_text_7 = TextInput(value="0", title=regions[6], width = 100)
+        self.param_text_7.on_change('value', self.handler_param_text_7)
+
+        self.param_text_8 = TextInput(value="0", title=regions[7], width = 100)
+        self.param_text_8.on_change('value', self.handler_param_text_8)
+
+        self.param_text_9 = TextInput(value="0", title=regions[8], width = 100)
+        self.param_text_9.on_change('value', self.handler_param_text_9)
+
+        self.param_text_10 = TextInput(value="0", title=regions[9], width = 100)
+        self.param_text_10.on_change('value', self.handler_param_text_10)
+
+        self.param_text_11 = TextInput(value="0", title=regions[10], width = 100)
+        self.param_text_11.on_change('value', self.handler_param_text_11)
+
+        self.param_text_12 = TextInput(value="0", title=regions[11], width = 100)
+        self.param_text_12.on_change('value', self.handler_param_text_12)
+
+        self.param_text_13 = TextInput(value="0", title=regions[12], width = 100)
+        self.param_text_13.on_change('value', self.handler_param_text_13)
+
+        self.param_text_14 = TextInput(value="0", title=regions[13], width = 100)
+        self.param_text_14.on_change('value', self.handler_param_text_14)
+
+        self.param_text_15 = TextInput(value="0", title=regions[14], width = 100)
+        self.param_text_15.on_change('value', self.handler_param_text_15)
+
+        self.param_text_16 = TextInput(value="0", title=regions[15], width = 100)
+        self.param_text_16.on_change('value', self.handler_param_text_16)
+
+        self.param_text_17 = TextInput(value="0", title=regions[16], width = 100)
+        self.param_text_17.on_change('value', self.handler_param_text_17)
+
         dumdiv = Div(text='',width=10)
         dumdiv2= Div(text='',width=10)
         dumdiv3= Div(text='',width=200)
@@ -719,11 +915,13 @@ class Visual:
         save_button_result = Button(label='Save current plot to .csv in directory results/', button_type='primary')
         run_button = Button(label='Run the simulation',button_type='primary')
         load_button = Button(label='Load data from directory results/', button_type='primary')
+        test_button = Button(label='Run testing', button_type='primary')
 
         run_button.on_click(self.run_click)
         reset_button.on_click(self.reset_click)
         save_button_result.on_click(self.save_file_click)
         load_button.on_click(self.load_click)
+        test_button.on_click(self.test_click)
 
         # input folder name
         text_save = TextInput(value="foldername", title="")
@@ -786,6 +984,20 @@ class Visual:
         self.sourceT = ColumnDataSource(self.data1)
         self.data_tableT = DataTable(source=self.sourceT, columns=columns, width=1750, height=500, sortable = False)
 
+        # results of the testing
+        self.dataTest = dict(
+                        c00 =  ['Performed, N','Confirmed, T(+)','Not Confirmed, T(-)', 'True Positives, TP', 'False Positives, FP', 'False Negatives, FN', 'True Negatives, TN',
+                                'Truly Infected, D(+)', 'Non-Infected, D(-)',],
+                        c0=[config.param_test_sum, config.param_t_pos, config.param_t_neg, config.param_true_pos, config.param_false_pos, config.param_false_neg, config.param_true_neg,
+                             config.param_d_pos, config.param_d_neg],)
+
+        columnsTest = [
+                    TableColumn(field="c00", title=" ",),
+                    TableColumn(field="c0", title="Values",),]
+
+        self.sourceTest = ColumnDataSource(self.dataTest)
+        self.data_tableTest = DataTable(source=self.sourceTest, columns=columnsTest, width=400, height=500, sortable = False)
+
         # select start date - calendar
         self.datepicker = DatePicker(title="Starting date of simulation", min_date=datetime(2015,11,1), value=datetime.today())
         self.datepicker.on_change('value',self.get_date)
@@ -829,7 +1041,12 @@ class Visual:
 
         layout = column (layout, check_trans, self.text4)
 
-        layout = column (layout)
+        sliders_test = column(self.param_test_spec, self.param_test_sens, self.param_test_prev)
+        layout_num_test = row(self.param_text_1, self.param_text_2, self.param_text_3, self.param_text_4, self.param_text_5, self.param_text_6,
+                                self.param_text_7, self.param_text_8, self.param_text_9, self.param_text_10, self.param_text_11, self.param_text_12,
+                                self.param_text_13, self.param_text_14, self.param_text_15, self.param_text_16, self.param_text_17)
+
+        layout = column (layout, self.text6, sliders_test, self.text7, layout_num_test, column(test_button, self.text8, self.data_tableTest))
         layout = column (layout,self.text4)     # text_footer
 
         self.doc.title = 'ISSAI Covid-19 Simulator'
