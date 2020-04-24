@@ -363,7 +363,6 @@ class DataStream(threading.Thread):
                     config.load_iteration = False
                     print('[INFO] Loading the previous results ..')
 
-
                 # # Conducting the test
                 # elif config.is_test:
                 #     config.flag_sim = 1

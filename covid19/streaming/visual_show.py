@@ -1029,7 +1029,7 @@ class Visual:
 
         columnsTest = [
                     TableColumn(field="c00", title=" ",),
-                    TableColumn(field="c0", title="Values",),]
+                    TableColumn(field="c0", title=" ",),]
 
         self.sourceTest = ColumnDataSource(self.dataTest)
         self.data_tableTest = DataTable(source=self.sourceTest, columns=columnsTest, width=400, height=300, sortable = False)
