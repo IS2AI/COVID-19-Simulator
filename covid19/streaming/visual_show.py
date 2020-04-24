@@ -331,7 +331,6 @@ class Visual:
             config.param_prev_mode = 0
         else:
             config.param_prev_mode = 1
-        print(config.param_prev_mode)
 
     def update_transition_matrix(self):
         nodes_num = 17

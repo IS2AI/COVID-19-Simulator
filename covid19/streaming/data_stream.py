@@ -148,7 +148,6 @@ def test_population(init_sus, nodes, num_test, prev_rate, test_sens, test_spec):
                     else:
                         print('[INFO] All state values are zero')
 
-
                 # return updated state_x
                 # if nodes:
                 #     print('run finish')
@@ -169,9 +168,11 @@ def test_population(init_sus, nodes, num_test, prev_rate, test_sens, test_spec):
                 t_pos += tpos_count
                 t_neg += tneg_count
 
+        d_pos = t_pos
+        d_neg = t_neg
 
-        d_pos = (num_test.sum() * test_spec - num_test.sum() + t_pos) / (test_sens + test_spec - 1)
-        d_neg = (num_test.sum() * test_sens - t_pos) / (test_sens + test_spec - 1)
+        # d_pos = (num_test.sum() * test_spec - num_test.sum() + t_pos) / (test_sens + test_spec - 1)
+        # d_neg = (num_test.sum() * test_sens - t_pos) / (test_sens + test_spec - 1)
 
         true_pos = test_sens * d_pos
         false_pos = (1 - test_spec) * d_neg
@@ -186,6 +187,9 @@ def test_population(init_sus, nodes, num_test, prev_rate, test_sens, test_spec):
         true_neg = int(round(true_neg))
         false_neg = int(round(false_neg))
 
+        t_pos = true_pos + false_pos
+        t_neg = false_neg + true_neg
+
         config.param_test_sum = num_test.sum()
         config.param_t_pos = t_pos
         config.param_t_neg = t_neg
@@ -197,10 +201,7 @@ def test_population(init_sus, nodes, num_test, prev_rate, test_sens, test_spec):
         config.param_false_neg = false_neg
 
         #print('N= {} \n T+ = {}, T- = {}, D+ = {}, D- = {}, \n TP = {}, TN = {}, FP = {}, FN = {}'.format(num_test.sum(), t_pos, t_neg, d_pos, d_neg, true_pos, true_neg, false_pos, false_neg))
-
         print('[INFO] Testing finished.')
-
-        #print("[INFO] Step: {}/{}, Elapsed time: {:.4f} sec".format(i+1, int(config.loop_num), end - start))
 
 def simulate_network(params_node_, nodes_old, sim_iter, transition_matrix, init_sus):
 
