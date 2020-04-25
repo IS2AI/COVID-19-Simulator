@@ -329,7 +329,7 @@ class DataStream(threading.Thread):
 
                         # update Prevalence Table
                         for ind in range(17):
-                            config.param_prev_auto[ind] = round((config.new_plot_all[-1][:, ind, 0][-1] + config.new_plot_all[-1][:, ind, 2][-1] + config.new_plot_all[-1][:, ind, 7][-1])/config.param_init_susceptible[ind], 3)
+                            config.param_prev_auto[ind] = round((config.new_plot_all[-1][:, ind, 0][-1] + config.new_plot_all[-1][:, ind, 2][-1] + config.new_plot_all[-1][:, ind, 7][-1])/config.param_init_susceptible[ind], 6)
                             #config.param_prev_auto[ind] = config.param_init_susceptible[ind]*(i+10)
 
                         self.callbackFunc.doc.add_next_tick_callback(partial(self.callbackFunc.update, False))
@@ -354,7 +354,7 @@ class DataStream(threading.Thread):
                         # update Prevalence Table
                         for ind in range(17):
                             # print(config.new_plot_all[-1][:, ind, 0][-1], config.new_plot_all[-1][:, ind, 2][-1], config.new_plot_all[-1][:, ind, 7][-1], config.param_init_susceptible[ind])
-                            config.param_prev_auto[ind] = round((config.new_plot_all[-1][:, ind, 0][-1] + config.new_plot_all[-1][:, ind, 2][-1] + config.new_plot_all[-1][:, ind, 7][-1])/config.param_init_susceptible[ind], 3)
+                            config.param_prev_auto[ind] = round((config.new_plot_all[-1][:, ind, 0][-1] + config.new_plot_all[-1][:, ind, 2][-1] + config.new_plot_all[-1][:, ind, 7][-1])/config.param_init_susceptible[ind], 6)
                             #config.param_prev_auto[ind] = config.param_init_susceptible[ind]
 
                         self.callbackFunc.doc.add_next_tick_callback(partial(self.callbackFunc.update, False))
