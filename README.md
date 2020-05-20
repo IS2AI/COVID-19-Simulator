@@ -11,7 +11,7 @@ Stochastic epidemic simulator to model the spread of the COVID-19 epidemic in th
 
 #### Installation guides
 
-1) Install Anaconda3 with from https://www.anaconda.com/distribution/#download-section
+1) Install Anaconda3 from https://www.anaconda.com/distribution/#download-section
 
 2) Start Anaconda3 Terminal (Anaconda Prompt)
 
