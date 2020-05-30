@@ -34,7 +34,7 @@ Visualization toolbox is presented for displaying the results from saved .csv fi
 
 ## Tutorials
 
-Extensive tutorials on how to use the software and analyze the results of the simulator can be found from https://www.youtube.com/channel/UCr7o_0wW4nkqx-G5b7Zopgw
+Extensive tutorials on how to use the software and analyse the obtained results of the simulator can be found from https://www.youtube.com/channel/UCr7o_0wW4nkqx-G5b7Zopgw
 
 
 More information about the project can be found from the webpage (https://issai.nu.edu.kz/episim/).
