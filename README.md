@@ -18,7 +18,7 @@ DOI: [10.1109/JBHI.2020.3005160](https://ieeexplore.ieee.org/document/9127137)
 ## The software package contains:
 
 ### 1) In directory matlab_code/
-A Matlab version of the SEIR model for a single node simulation. The model is based on a previously published paper entitled “MOSES: A Matlab-based open-source stochastic epidemic simulator” (H.A. Varol) in IEEE International Conference of the Engineering in Medicine and Biology Society (EMBC), 2016 (https://ieeexplore.ieee.org/document/7591271).
+A Matlab version of the SEIR model for a single node simulation. The model is based on a previously published paper entitled “MOSES: A Matlab-based open-source stochastic epidemic simulator” (H.A. Varol) in IEEE International Conference of the Engineering in Medicine and Biology Society (EMBC), 2016, doi: [10.1109/EMBC.2016.7591271](https://ieeexplore.ieee.org/document/7591271).
 
 ### 2) In directory covid19/
 Stochastic epidemic simulator to model the spread of the COVID-19 epidemic in the Republic of Kazakhstan. The software integrates the dynamic transitions between 17 regions and enables to simulate the various scenarios by adjusting the parameters and transition matrix.
