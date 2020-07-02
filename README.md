@@ -5,20 +5,13 @@ The full-text of the paper can be found in the following link: https://ieeexplor
 ## BibTex:
 @ARTICLE{9127137,
 
-  author={A. {Kuzdeuov} and D. {Baimukashev} and A. {Karabay} and B. {Ibragimov} and A. {Mirzakhmetov} and M. {Nurpeiissov} and M. {Lewis} and H. A. {Varol}},
-  
-  journal={IEEE Journal of Biomedical and Health Informatics}, 
-  
-  title={A Network-Based Stochastic Epidemic Simulator: Controlling COVID-19 with Region-Specific Policies}, 
-  
-  year={2020},
-  
-  volume={},
-  
-  number={},
-  
-  pages={1-1},
-  
+  author={A. {Kuzdeuov} and D. {Baimukashev} and A. {Karabay} and B. {Ibragimov} and A. {Mirzakhmetov} and M. {Nurpeiissov} and M. {Lewis} and H. A. {Varol}}, \
+  journal={IEEE Journal of Biomedical and Health Informatics}, \
+  title={A Network-Based Stochastic Epidemic Simulator: Controlling COVID-19 with Region-Specific Policies}, \
+  year={2020},\
+  volume={},\
+  number={},\
+  pages={1-1},\
   }
 
 ## The software package contains:
