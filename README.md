@@ -1,7 +1,5 @@
 # A Network-Based Stochastic Epidemic Simulator: Controlling COVID-19 with Region-Specific Policies
-By Askat Kuzdeuov, Daulet Baimukashev, Aknur Karabay, Bauyrzhan Ibragimov, Almas Mirzakhmetov, Mukhamet Nurpeiissov, Michael Lewis, and Huseyin Atakan Varol.
-The full-text of the paper can be found here: \
-DOI: [10.1109/JBHI.2020.3005160](https://ieeexplore.ieee.org/document/9127137) 
+*By Askat Kuzdeuov, Daulet Baimukashev, Aknur Karabay, Bauyrzhan Ibragimov, Almas Mirzakhmetov, Mukhamet Nurpeiissov, Michael Lewis, and Huseyin Atakan Varol. IEEE Journal of Biomedical and Health Informatics, doi: [10.1109/JBHI.2020.3005160](https://ieeexplore.ieee.org/document/9127137).*
 
 ## BibTex:
 @ARTICLE{9127137,
