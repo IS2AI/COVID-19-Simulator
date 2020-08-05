@@ -28,14 +28,23 @@ Stochastic epidemic simulator to model the spread of the COVID-19 epidemic in th
 
 2) Start Anaconda3 Terminal (Anaconda Prompt)
 
-3) Install Bokeh visualization library using the command: **conda install bokeh**
+3) Create the conda environment with python=3.7.4: **conda create -n sim_env python=3.7.4 anaconda**
 
-4) Clone the repository to your working directory
+4) Activate the new conda environment: **conda activate sim_env**
 
-5) Go to directory *covid19/* and run the following command on terminal: **bokeh serve --show streaming**
+5) Install Bokeh visualization library using the command: **conda install bokeh=1.3.4**
 
-6) The web browser with visualization interface will be opened
+6) Clone the repository to your working directory
 
+#### How to run the simulator?
+
+1) Start Anaconda3 Terminal (Anaconda Prompt)
+
+2) Activate the conda environment: **conda activate sim_env**
+
+3) Go to directory *covid19/* and run the following command on terminal: **bokeh serve --show streaming**
+
+4) The web browser with visualization interface will be opened
 
 #### Web-interface of the simulator
 
