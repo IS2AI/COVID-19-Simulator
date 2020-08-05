@@ -28,7 +28,7 @@ Stochastic epidemic simulator to model the spread of the COVID-19 epidemic in th
 
 2) Start Anaconda3 Terminal (Anaconda Prompt)
 
-3) Create the conda environment with python=3.7.4: **conda create -n sim_env python=3.7.4 anaconda**
+3) Create the conda environment: **conda create -n sim_env python=3.7.4 anaconda**
 
 4) Activate the new conda environment: **conda activate sim_env**
 
