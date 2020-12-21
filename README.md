@@ -2,6 +2,7 @@
 *By Askat Kuzdeuov, Daulet Baimukashev, Aknur Karabay, Bauyrzhan Ibragimov, Almas Mirzakhmetov, Mukhamet Nurpeiissov, Michael Lewis, and Huseyin Atakan Varol. IEEE Journal of Biomedical and Health Informatics. DOI: [10.1109/JBHI.2020.3005160](https://ieeexplore.ieee.org/document/9127137).*
 
 ## BibTex:
+```
 @ARTICLE{9127137,
 
   author={A. {Kuzdeuov} and D. {Baimukashev} and A. {Karabay} and B. {Ibragimov} and A. {Mirzakhmetov} and M. {Nurpeiissov} and M. {Lewis} and H. {Atakan Varol}},
@@ -12,7 +13,7 @@
   number={10},
   pages={2743-2754},
   doi={10.1109/JBHI.2020.3005160}}
-
+```
 
 ## The software package contains:
 
